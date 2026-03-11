@@ -14,7 +14,8 @@ People who are new to agentic coding and may not be comfortable using a terminal
 - Markdown files for lesson content (with YAML frontmatter)
 - Static assets served via Workers Assets (`assets.directory` in wrangler.jsonc)
 - Tailwind CSS v4 for styling, compiled via the `@tailwindcss/cli` as a build step (outputs to `public/styles/`)
-- A small amount of vanilla JS for progress tracking (localStorage) and interactive UI (collapsible sections, copy buttons)
+- Cloudflare KV for progress sync (student ID → progress JSON)
+- A small amount of vanilla JS for progress tracking (localStorage as local cache, KV as source of truth) and interactive UI (collapsible sections, copy buttons)
 - `marked` (or `markdown-it`) for Markdown-to-HTML conversion at request time
 - `shiki` for server-side syntax highlighting of code blocks
 - TypeScript throughout
@@ -49,6 +50,8 @@ opencode.school/
       lessons.test.ts      # Tests for lesson loading/parsing
       markdown.ts          # Markdown rendering + syntax highlighting config
       markdown.test.ts     # Tests for markdown rendering
+      student-id.ts        # Student ID generation (word lists + random number)
+      student-id.test.ts   # Tests for student ID generation
   styles/
     main.css               # Tailwind CSS source file (imports, theme, custom styles)
   lessons/
@@ -108,10 +111,13 @@ Lessons are read from the filesystem and rendered to HTML by the Hono app at req
 
 ## Pages and routes
 
-| Route | Description |
-| ------------------------------ | ------------------------------------------- |
-| `/`                            | Homepage with lesson listing and intro text |
-| `/lessons/:slug`               | Individual lesson page                      |
+| Route                      | Method | Description                                      |
+| -------------------------- | ------ | ------------------------------------------------ |
+| `/`                        | GET    | Homepage with lesson listing and intro text      |
+| `/lessons/:slug`           | GET    | Individual lesson page                           |
+| `/api/enroll`              | POST   | Generate a new student ID, store in KV           |
+| `/api/progress/:studentId` | GET    | Fetch progress for a student ID (404 if unknown) |
+| `/api/progress/:studentId` | PUT    | Update progress for a student ID                 |
 
 ## Lessons to write (v1)
 
@@ -164,20 +170,86 @@ Lessons are read from the filesystem and rendered to HTML by the Hono app at req
 - Collapsible sections for long code examples
 - Copy button on code blocks
 
-## Progress tracking (v1)
+## Student IDs
 
-- localStorage stores an object mapping lesson slugs to completion booleans
-- A small vanilla JS script (`progress.js`) reads/writes this on page load
-- On the homepage, completed lessons show a checkmark
-- On lesson pages, the "Mark as complete" checkbox persists state
-- No authentication required
+Each user gets a "student ID" — a memorable, unguessable identifier in the format `<adjective>-<noun>-<nnnn>`. Examples: `fastidious-pupil-3451`, `experimental-artist-6780`, `curious-hacker-2019`.
 
-## Progress tracking (future ideas)
+The word lists live in `src/lib/student-id.ts`:
 
-- An OpenCode skill or slash command (`/school`) that syncs progress from the local machine
-- A `.opencode/school.json` file in the user's home config that tracks completed lessons
-- The website could read/write this file if accessed locally, or the skill could push progress to the site
-- This would let users track progress across sessions and share it
+- ~35 adjectives: ambitious, analytical, bold, brilliant, clever, creative, curious, daring, diligent, eager, experimental, fastidious, fearless, focused, inventive, keen, methodical, nimble, observant, persistent, playful, prolific, radical, relentless, resourceful, rigorous, scrappy, sharp, tenacious, thorough, tireless, unconventional, versatile, vivid, whimsical, zealous
+- ~30 nouns: apprentice, architect, artist, builder, coder, crafter, detective, dreamer, engineer, explorer, hacker, inventor, learner, maker, navigator, operator, pathfinder, pilgrim, pioneer, practitioner, pupil, researcher, scholar, seeker, student, thinker, tinkerer, traveler, voyager, wizard
+- 4-digit number: 1000–9999
+
+That gives ~35 × 30 × 9000 = ~9.5 million possible IDs.
+
+## Progress tracking and sync
+
+Progress is tracked in two layers:
+
+- Cloudflare KV (source of truth): keyed by `student:{studentId}`, stores a JSON object with completed lesson slugs and timestamps
+- localStorage (local cache): mirrors the KV state for fast reads, syncs on page load
+
+### KV schema
+
+Key: `student:{studentId}`
+
+```json
+{
+  "completedLessons": ["getting-started", "modes"],
+  "createdAt": "2026-03-10T...",
+  "updatedAt": "2026-03-10T..."
+}
+```
+
+### API
+
+- `POST /api/enroll` — generates a new student ID, writes an empty progress object to KV, returns the student ID
+- `GET /api/progress/:studentId` — returns the progress object, or 404 if the student ID doesn't exist (enrollment required)
+- `PUT /api/progress/:studentId` — updates the progress object in KV, returns the updated object
+
+No authentication. Student IDs are unguessable enough for low-stakes progress data (just lesson completion booleans).
+
+### Website behavior
+
+- On first visit, no student ID exists. The user browses freely with localStorage-only progress.
+- When the user clicks "Enroll" (or similar CTA), the site calls `POST /api/enroll`, gets a student ID, and saves it to localStorage.
+- After enrollment, progress writes go to both localStorage and KV (via `PUT /api/progress/:studentId`).
+- On page load, if a student ID exists in localStorage, the site fetches progress from KV and merges it with localStorage.
+- If the URL contains `?sid=<studentId>`, the site saves that student ID to localStorage and fetches progress from KV. This is how a student ID from OpenCode gets linked to the website.
+
+### Sync with OpenCode
+
+The website and a user's local OpenCode instance can stay in sync through the student ID.
+
+**Website → OpenCode flow:**
+
+After enrolling, the site shows a copy-pasteable prompt:
+
+> Ready to start learning? Open OpenCode and paste this:
+>
+> `Let's work through the lessons at opencode.school. My student ID is curious-hacker-2019`
+
+OpenCode recognizes the student ID, saves it to `~/.config/opencode/school.json`, and can call the progress API via curl to read/write progress.
+
+**OpenCode → Website flow:**
+
+If a user starts in OpenCode with something like "Let's enroll in opencode.school", the agent:
+
+1. Calls `POST https://opencode.school/api/enroll` to create a new student ID
+2. Saves the student ID to `~/.config/opencode/school.json`
+3. Gives the user a link: `https://opencode.school?sid=curious-hacker-2019`
+
+The user opens that URL, the site picks up the `?sid=` param, and both sides are synced.
+
+**Local file format** (`~/.config/opencode/school.json`):
+
+```json
+{
+  "studentId": "curious-hacker-2019"
+}
+```
+
+No OpenCode skill is required. The agent can call the API via curl and read/write the local JSON file directly.
 
 ## Footer
 
