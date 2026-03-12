@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Run Tailwind watcher and Wrangler dev server in parallel
+npx @tailwindcss/cli -i styles/main.css -o public/styles/main.css --watch &
+TAILWIND_PID=$!
+
+npx wrangler dev &
+WRANGLER_PID=$!
+
+trap "kill $TAILWIND_PID $WRANGLER_PID 2>/dev/null" EXIT
+
+wait

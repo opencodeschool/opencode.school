@@ -1,0 +1,25 @@
+{
+	"name": "opencode.school",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "script/dev",
+		"build": "script/build",
+		"lint": "script/lint",
+		"test": "script/test"
+	},
+	"dependencies": {
+		"hono": "^4",
+		"marked": "^15"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1",
+		"@cloudflare/vitest-pool-workers": "^0.8",
+		"@cloudflare/workers-types": "^4",
+		"@tailwindcss/cli": "^4",
+		"@tailwindcss/typography": "^0.5",
+		"tailwindcss": "^4",
+		"vitest": "^3",
+		"wrangler": "^4"
+	}
+}

@@ -1,0 +1,15 @@
+{
+	"name": "opencodeschool",
+	"main": "src/index.tsx",
+	"compatibility_date": "2025-01-01",
+	"assets": {
+		"directory": "public"
+	},
+	"rules": [
+		{
+			"type": "Text",
+			"globs": ["**/*.md"],
+			"fallthrough": true
+		}
+	]
+}
