@@ -40,50 +40,61 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
 
   <!-- Mark as complete -->
   <div id="lesson-complete-section" class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-800 hidden" data-lesson-slug={lesson.data.slug}>
-    <label class="flex items-center gap-3 cursor-pointer select-none group">
-      <input
-        type="checkbox"
-        id="mark-complete"
-        class="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-green-500 focus:ring-green-500 dark:bg-gray-800 cursor-pointer"
-      />
-      <span class="text-sm text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-200 transition-colors">
-        Mark this lesson as complete
-      </span>
-    </label>
+    <button
+      id="mark-complete"
+      class="flex items-center gap-3 px-5 py-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-green-400 dark:hover:border-green-600 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none"
+    >
+      <span id="mark-complete-check" class="w-5 h-5 rounded border-2 border-gray-300 dark:border-gray-600 flex items-center justify-center text-green-500 dark:text-green-400 text-sm font-bold transition-colors"></span>
+      <span id="mark-complete-label">Mark this lesson as complete</span>
+    </button>
   </div>
 
   <script is:inline define:vars={{ lessonSlug: lesson.data.slug }}>
     (function() {
       const section = document.getElementById("lesson-complete-section");
-      const checkbox = document.getElementById("mark-complete");
-      if (!section || !checkbox || !window.school) return;
+      const btn = document.getElementById("mark-complete");
+      const check = document.getElementById("mark-complete-check");
+      const label = document.getElementById("mark-complete-label");
+      if (!section || !btn || !window.school) return;
 
       // Only show if enrolled
       if (!window.school.getStudentId()) return;
       section.classList.remove("hidden");
 
-      // Set initial state from cache
-      if (window.school.isLessonComplete(lessonSlug)) {
-        checkbox.checked = true;
+      function setCompleted() {
+        check.textContent = "\u2713";
+        check.classList.add("border-green-500", "dark:border-green-400");
+        check.classList.remove("border-gray-300", "dark:border-gray-600");
+        label.textContent = "Lesson complete";
+        btn.classList.add("border-green-400", "dark:border-green-600");
+        btn.classList.remove("border-gray-200", "dark:border-gray-700");
       }
 
-      checkbox.addEventListener("change", async () => {
-        if (checkbox.checked) {
-          checkbox.disabled = true;
-          const progress = await window.school.markComplete(lessonSlug);
-          checkbox.disabled = false;
-          if (!progress) {
-            checkbox.checked = false;
-          }
+      // Set initial state from cache
+      if (window.school.isLessonComplete(lessonSlug)) {
+        setCompleted();
+      }
+
+      btn.addEventListener("click", async () => {
+        if (window.school.isLessonComplete(lessonSlug)) return;
+        btn.disabled = true;
+        label.textContent = "Saving...";
+        const progress = await window.school.markComplete(lessonSlug);
+        btn.disabled = false;
+        if (progress) {
+          setCompleted();
+        } else {
+          label.textContent = "Mark this lesson as complete";
         }
       });
 
       // Update after progress fetch completes (in case cached state was stale)
-      const originalFetch = window.school.fetchProgress.bind(window.school);
       const origUpdate = window.school.updateAllCheckmarks.bind(window.school);
       window.school.updateAllCheckmarks = function() {
         origUpdate();
-        checkbox.checked = window.school.isLessonComplete(lessonSlug);
+        if (window.school.isLessonComplete(lessonSlug)) {
+          setCompleted();
+        }
       };
     })();
   </script>
