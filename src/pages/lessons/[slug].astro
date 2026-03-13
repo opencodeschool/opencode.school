@@ -34,6 +34,10 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
     <p class="text-gray-600 dark:text-gray-400 mt-2">{lesson.data.description}</p>
   </header>
 
+  <div id="lesson-completed-banner" class="hidden mb-6 px-4 py-3 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-sm text-blue-700 dark:text-blue-300 font-medium">
+    You completed this lesson!
+  </div>
+
   <article class="prose dark:prose-invert max-w-none">
     <Content />
   </article>
@@ -55,6 +59,7 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
       const btn = document.getElementById("mark-complete");
       const check = document.getElementById("mark-complete-check");
       const label = document.getElementById("mark-complete-label");
+      const banner = document.getElementById("lesson-completed-banner");
       if (!section || !btn || !window.school) return;
 
       // Only show if enrolled
@@ -64,6 +69,7 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
       function setCompleted() {
         check.textContent = "\u2713";
         label.textContent = "Lesson complete";
+        if (banner) banner.classList.remove("hidden");
       }
 
       // Set initial state from cache
