@@ -96,6 +96,16 @@ const currentPath = Astro.url.pathname;
             if (checkEl) checkEl.textContent = complete ? "\u2713" : "";
             if (numEl) numEl.style.display = complete ? "none" : "";
           });
+          // Update sidebar completion circles
+          document.querySelectorAll("[data-sidebar-slug]").forEach((el) => {
+            const slug = el.getAttribute("data-sidebar-slug");
+            const circle = el.querySelector(".sidebar-check");
+            if (circle && this.isLessonComplete(slug)) {
+              circle.textContent = "\u2713";
+              circle.classList.remove("hidden");
+              circle.classList.add("flex");
+            }
+          });
         },
       };
     </script>
@@ -128,19 +138,22 @@ const currentPath = Astro.url.pathname;
             const isActive = currentPath === href || currentPath === `${href}/`;
             const isStub = lesson.body?.trim() === "Coming soon.";
             return (
-              <li>
+              <li data-sidebar-slug={lesson.data.slug}>
                 <a
                   href={href}
                   class:list={[
-                    "block px-3 py-1.5 rounded-md text-sm transition-colors",
+                    "flex items-center justify-between px-3 py-1.5 rounded-md text-sm transition-colors",
                     isActive
                       ? "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300 font-medium"
                       : "text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-900",
                     isStub && "opacity-50",
                   ]}
                 >
-                  <span class="text-gray-400 dark:text-gray-600 mr-1.5">{String(lesson.data.order).padStart(2, "0")}.</span>
-                  {lesson.data.title}
+                  <span>
+                    <span class="text-gray-400 dark:text-gray-600 mr-1.5">{String(lesson.data.order).padStart(2, "0")}.</span>
+                    {lesson.data.title}
+                  </span>
+                  <span class="sidebar-check w-4 h-4 rounded-full bg-blue-600 dark:bg-blue-500 text-white text-[10px] font-bold items-center justify-center shrink-0 ml-2 hidden"></span>
                 </a>
               </li>
             );
@@ -202,6 +215,8 @@ const currentPath = Astro.url.pathname;
             window.school.updateAllCheckmarks();
           });
         } else if (window.school.getStudentId()) {
+          // Show cached state immediately, then refresh from server
+          window.school.updateAllCheckmarks();
           window.school.fetchProgress().then(() => {
             window.school.updateAllCheckmarks();
           });

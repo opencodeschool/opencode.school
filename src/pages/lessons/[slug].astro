@@ -42,9 +42,9 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
   <div id="lesson-complete-section" class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-800 hidden" data-lesson-slug={lesson.data.slug}>
     <button
       id="mark-complete"
-      class="flex items-center gap-3 px-5 py-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-green-400 dark:hover:border-green-600 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none"
+      class="flex items-center gap-3 px-5 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none"
     >
-      <span id="mark-complete-check" class="w-5 h-5 rounded border-2 border-gray-300 dark:border-gray-600 flex items-center justify-center text-green-500 dark:text-green-400 text-sm font-bold transition-colors"></span>
+      <span id="mark-complete-check" class="w-5 h-5 rounded border-2 border-blue-400 flex items-center justify-center text-white text-sm font-bold transition-colors"></span>
       <span id="mark-complete-label">Mark this lesson as complete</span>
     </button>
   </div>
@@ -63,11 +63,12 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
 
       function setCompleted() {
         check.textContent = "\u2713";
-        check.classList.add("border-green-500", "dark:border-green-400");
-        check.classList.remove("border-gray-300", "dark:border-gray-600");
+        check.classList.add("bg-white");
+        check.classList.remove("border-blue-400");
+        check.style.color = "#2563eb";
         label.textContent = "Lesson complete";
-        btn.classList.add("border-green-400", "dark:border-green-600");
-        btn.classList.remove("border-gray-200", "dark:border-gray-700");
+        btn.classList.add("bg-green-600", "hover:bg-green-700");
+        btn.classList.remove("bg-blue-600", "hover:bg-blue-700");
       }
 
       // Set initial state from cache
