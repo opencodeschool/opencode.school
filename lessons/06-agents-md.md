@@ -1,0 +1,81 @@
+---
+title: "AGENTS.md"
+slug: agents-md
+description: "Write custom instructions that OpenCode follows in every session."
+order: 6
+---
+
+Every time OpenCode starts a new [session](/glossary#session), it looks for a file called `AGENTS.md` and reads whatever instructions you've written there. Think of it as a set of standing orders for your AI assistant — preferences, rules, and context that apply to everything it does.
+
+## Global vs. project
+
+There are two kinds of AGENTS.md files:
+
+- **Global** (`~/.config/opencode/AGENTS.md`) — Applies to every OpenCode session on your machine. This is your personal preferences file. It's not committed to Git or shared with anyone.
+- **Project** (`AGENTS.md` in a project's root directory) — Applies only when you're working in that project. This one you typically commit to Git so your whole team benefits from the same instructions.
+
+Both can exist at the same time. When they do, OpenCode reads both — global rules first, then project rules on top.
+
+In this lesson, we're creating the global one.
+
+## Create your AGENTS.md
+
+Open OpenCode Desktop and paste:
+
+```
+Create my global AGENTS.md file at ~/.config/opencode/AGENTS.md with sensible starter content for a beginner. Include rules about being concise, explaining what you're doing before making changes, and asking for confirmation before deleting files.
+```
+
+OpenCode will create the file and populate it with starter content. Approve any permission prompts that appear.
+
+## What to put in it
+
+Here's an example of what a global AGENTS.md might look like:
+
+```markdown
+## Communication
+
+- Be concise and direct. Avoid unnecessary filler.
+- Explain what you're about to do before making changes.
+- If you're unsure about something, ask instead of guessing.
+
+## Safety
+
+- Ask before deleting any files or directories.
+- Don't modify .env files without explicit permission.
+- Don't push to git without asking first.
+
+## Style
+
+- Use TypeScript when possible.
+- Prefer named exports over default exports.
+- Write comments only when the code isn't self-explanatory.
+```
+
+This is just a starting point. The beauty of AGENTS.md is that you can make it as specific as you want. Prefer tabs over spaces? Say so. Want OpenCode to always write tests? Add that rule. Hate emoji in commit messages? Put it in writing.
+
+The more specific your instructions, the better OpenCode will work for you.
+
+## Edit it anytime
+
+Your AGENTS.md is a plain text file. Open it in your text editor whenever you want to add, change, or remove rules. Changes take effect on the next session.
+
+You can also ask OpenCode to update it for you:
+
+```
+Add a rule to my global AGENTS.md: always use semantic commit messages when making git commits.
+```
+
+## Initializing a project AGENTS.md
+
+When you start working on a project with OpenCode, you can generate a project-specific AGENTS.md using the `/init` command. This scans your codebase and creates an AGENTS.md that describes your project's structure, conventions, and tech stack.
+
+```
+/init
+```
+
+The project AGENTS.md is meant to be committed to Git. It helps OpenCode (and your teammates' OpenCode sessions) understand the project better.
+
+For more details, see the [rules documentation](https://opencode.ai/docs/rules/).
+
+Once your global AGENTS.md exists at `~/.config/opencode/AGENTS.md`, this lesson is complete.
