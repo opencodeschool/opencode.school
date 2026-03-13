@@ -1,0 +1,45 @@
+---
+import Base from "../layouts/Base.astro";
+import { getCollection } from "astro:content";
+
+const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b.data.order);
+---
+
+<Base title="Home">
+  <h1 class="text-3xl font-bold font-mono mb-2">OpenCode School</h1>
+  <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
+    A free, self-paced course for learning <a href="https://opencode.ai" class="text-blue-600 dark:text-blue-400 underline">OpenCode</a>, the open-source AI coding agent.
+  </p>
+
+  <h2 class="text-sm font-mono uppercase tracking-wider text-gray-500 dark:text-gray-500 mb-4">Lessons</h2>
+
+  <ol class="space-y-3">
+    {lessons.map((lesson) => {
+      const isStub = lesson.body?.trim() === "Coming soon.";
+      return (
+        <li>
+          <a
+            href={`/lessons/${lesson.data.slug}`}
+            class="block p-4 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 transition-colors group"
+          >
+            <div class="flex items-start gap-3">
+              <span class="text-sm font-mono text-gray-400 dark:text-gray-600 mt-0.5 shrink-0">
+                {String(lesson.data.order).padStart(2, "0")}
+              </span>
+              <div class="min-w-0">
+                <h3 class:list={[
+                  "font-medium group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors",
+                  isStub && "text-gray-400 dark:text-gray-600",
+                ]}>
+                  {lesson.data.title}
+                  {isStub && <span class="ml-2 text-xs font-normal text-gray-400 dark:text-gray-600">(coming soon)</span>}
+                </h3>
+                <p class="text-sm text-gray-500 dark:text-gray-500 mt-0.5">{lesson.data.description}</p>
+              </div>
+            </div>
+          </a>
+        </li>
+      );
+    })}
+  </ol>
+</Base>
