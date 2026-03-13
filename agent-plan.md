@@ -11,7 +11,7 @@ People who are new to agentic coding and may not be comfortable using a terminal
 ## What's been built
 
 - Astro 6 site with `@astrojs/cloudflare` adapter, deployed to Cloudflare Workers
-- 13 MDX lessons in an Astro content collection (7 with content, 6 stubs)
+- 12 MDX lessons in an Astro content collection (6 with content, 6 stubs)
 - Responsive layout with dark/light mode, sidebar nav, prev/next lesson navigation
 - Glossary page
 - Tailwind CSS v4 with typography plugin
@@ -93,21 +93,20 @@ opencode.school/
 
 ## Lessons
 
-| #  | Slug                 | Title                   | Status   |
-| -- | -------------------- | ----------------------- | -------- |
-| 0  | intro                | Introduction            | Done     |
-| 1  | prerequisites        | Prerequisites           | Done     |
-| 2  | installing-opencode  | Installing OpenCode     | Done     |
-| 3  | enrollment           | Enrollment              | Done     |
-| 4  | configuration        | Configuration           | Done     |
-| 5  | permissions          | Permissions             | Done     |
-| 6  | agents-md            | AGENTS.md               | Done     |
-| 7  | models               | Models                  | Stub     |
-| 8  | mcp-servers          | MCP Servers             | Stub     |
-| 9  | skills               | Skills                  | Stub     |
-| 10 | modes                | Modes                   | Stub     |
-| 11 | not-just-for-coding  | Not Just for Coding     | Stub     |
-| 12 | workspaces           | Workspaces              | Stub     |
+| #  | Slug                 | Title               | Status |
+| -- | -------------------- | ------------------- | ------ |
+| 0  | enrollment           | Enrollment          | Done   |
+| 1  | prerequisites        | Prerequisites       | Done   |
+| 2  | installing-opencode  | Installation        | Done   |
+| 3  | configuration        | Configuration       | Done   |
+| 4  | permissions          | Permissions         | Done   |
+| 5  | agents-md            | AGENTS.md           | Done   |
+| 6  | models               | Models              | Stub   |
+| 7  | mcp-servers          | MCP Servers         | Stub   |
+| 8  | skills               | Skills              | Stub   |
+| 9  | modes                | Modes               | Stub   |
+| 10 | not-just-for-coding  | Not Just for Coding | Stub   |
+| 11 | workspaces           | Workspaces          | Stub   |
 
 ## Progress tracking API
 

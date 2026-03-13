@@ -1,0 +1,78 @@
+---
+title: "Enrollment"
+slug: enrollment
+description: "Get your student ID and start tracking your progress."
+order: 0
+---
+
+Let's get you set up. Click the button below to generate your student ID — a unique identifier that tracks your progress through the course.
+
+<div id="enrollment-area">
+
+<div id="not-enrolled">
+
+<button id="enroll-button" class="mt-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-mono text-sm rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">Generate my student ID</button>
+
+<p id="enroll-error" class="mt-2 text-red-500 text-sm hidden">Something went wrong. Please try again.</p>
+
+</div>
+
+<div id="enrolled" class="hidden">
+
+<div id="student-id-card" class="my-6 p-6 rounded-lg border-2 border-green-500/30 bg-green-50 dark:bg-green-950/30">
+  <p class="text-xs font-mono uppercase tracking-wider text-green-600 dark:text-green-400 mb-2">Student ID</p>
+  <p id="student-id-display" class="text-2xl font-mono font-bold text-green-700 dark:text-green-300"></p>
+</div>
+
+You're enrolled. Your progress will be saved as you work through the lessons.
+
+Later, once you have OpenCode installed, you'll use this student ID to sync your progress between the website and the app. For now, just keep going — the next lesson covers what you'll need before installing OpenCode.
+
+</div>
+
+</div>
+
+## Already have a student ID?
+
+If you enrolled from OpenCode and were given a link like `https://opencode.school?sid=curious-hacker-2019`, just visit that URL and your progress will be linked automatically.
+
+<script>{`
+document.addEventListener("DOMContentLoaded", function() {
+  var enrollBtn = document.getElementById("enroll-button");
+  var enrollError = document.getElementById("enroll-error");
+  var notEnrolled = document.getElementById("not-enrolled");
+  var enrolled = document.getElementById("enrolled");
+  var studentIdDisplay = document.getElementById("student-id-display");
+
+  if (!enrollBtn || !window.school) return;
+
+  function showEnrolled(studentId) {
+    notEnrolled.classList.add("hidden");
+    enrolled.classList.remove("hidden");
+    studentIdDisplay.textContent = studentId;
+  }
+
+  var existingId = window.school.getStudentId();
+  if (existingId) {
+    showEnrolled(existingId);
+  }
+
+  enrollBtn.addEventListener("click", async function() {
+    enrollBtn.disabled = true;
+    enrollBtn.textContent = "Generating...";
+    enrollError.classList.add("hidden");
+
+    try {
+      var data = await window.school.enroll();
+      showEnrolled(data.studentId);
+
+      var completeSection = document.getElementById("lesson-complete-section");
+      if (completeSection) completeSection.classList.remove("hidden");
+    } catch (e) {
+      enrollError.classList.remove("hidden");
+      enrollBtn.disabled = false;
+      enrollBtn.textContent = "Generate my student ID";
+    }
+  });
+});
+`}</script>
