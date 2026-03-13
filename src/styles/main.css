@@ -1,0 +1,49 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", "Fira Code",
+    Menlo, Monaco, Consolas, monospace;
+}
+
+/*
+  Light/dark mode via OS preference.
+  We add .dark to <html> via a tiny inline script so Tailwind's
+  dark variant works without client-side JS toggles.
+*/
+
+@layer base {
+  body {
+    @apply bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100;
+  }
+
+  /* Prose overrides for dark mode */
+  .prose {
+    --tw-prose-body: theme(--color-gray-700);
+    --tw-prose-headings: theme(--color-gray-900);
+    --tw-prose-links: theme(--color-blue-600);
+    --tw-prose-code: theme(--color-gray-800);
+    --tw-prose-pre-bg: theme(--color-gray-50);
+    --tw-prose-pre-code: theme(--color-gray-800);
+  }
+
+  .dark .prose {
+    --tw-prose-body: theme(--color-gray-300);
+    --tw-prose-headings: theme(--color-gray-100);
+    --tw-prose-links: theme(--color-blue-400);
+    --tw-prose-code: theme(--color-gray-200);
+    --tw-prose-pre-bg: theme(--color-gray-900);
+    --tw-prose-pre-code: theme(--color-gray-200);
+    --tw-prose-bold: theme(--color-gray-100);
+    --tw-prose-counters: theme(--color-gray-400);
+    --tw-prose-bullets: theme(--color-gray-500);
+    --tw-prose-hr: theme(--color-gray-700);
+    --tw-prose-quotes: theme(--color-gray-300);
+    --tw-prose-quote-borders: theme(--color-gray-600);
+    --tw-prose-th-borders: theme(--color-gray-600);
+    --tw-prose-td-borders: theme(--color-gray-700);
+  }
+}

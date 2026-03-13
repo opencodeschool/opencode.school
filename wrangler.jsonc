@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "opencodeschool",
+  "compatibility_date": "2026-03-12",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "./dist"
+  },
+  "routes": [
+    {
+      "pattern": "opencode.school",
+      "custom_domain": true
+    }
+  ]
+}
