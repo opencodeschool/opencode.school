@@ -1,4 +1,6 @@
 ---
+export const prerender = true;
+
 import Base from "../../layouts/Base.astro";
 import { getCollection, render } from "astro:content";
 
@@ -36,7 +38,57 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
     <Content />
   </article>
 
-  <nav class="mt-12 pt-6 border-t border-gray-200 dark:border-gray-800 flex justify-between gap-4">
+  <!-- Mark as complete -->
+  <div id="lesson-complete-section" class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-800 hidden" data-lesson-slug={lesson.data.slug}>
+    <label class="flex items-center gap-3 cursor-pointer select-none group">
+      <input
+        type="checkbox"
+        id="mark-complete"
+        class="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-green-500 focus:ring-green-500 dark:bg-gray-800 cursor-pointer"
+      />
+      <span class="text-sm text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-200 transition-colors">
+        Mark this lesson as complete
+      </span>
+    </label>
+  </div>
+
+  <script is:inline define:vars={{ lessonSlug: lesson.data.slug }}>
+    (function() {
+      const section = document.getElementById("lesson-complete-section");
+      const checkbox = document.getElementById("mark-complete");
+      if (!section || !checkbox || !window.school) return;
+
+      // Only show if enrolled
+      if (!window.school.getStudentId()) return;
+      section.classList.remove("hidden");
+
+      // Set initial state from cache
+      if (window.school.isLessonComplete(lessonSlug)) {
+        checkbox.checked = true;
+      }
+
+      checkbox.addEventListener("change", async () => {
+        if (checkbox.checked) {
+          checkbox.disabled = true;
+          const progress = await window.school.markComplete(lessonSlug);
+          checkbox.disabled = false;
+          if (!progress) {
+            checkbox.checked = false;
+          }
+        }
+      });
+
+      // Update after progress fetch completes (in case cached state was stale)
+      const originalFetch = window.school.fetchProgress.bind(window.school);
+      const origUpdate = window.school.updateAllCheckmarks.bind(window.school);
+      window.school.updateAllCheckmarks = function() {
+        origUpdate();
+        checkbox.checked = window.school.isLessonComplete(lessonSlug);
+      };
+    })();
+  </script>
+
+  <nav class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-800 flex justify-between gap-4">
     {prev ? (
       <a
         href={`/lessons/${prev.data.slug}`}

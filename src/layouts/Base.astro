@@ -102,6 +102,7 @@ const currentPath = Astro.url.pathname;
     </div>
 
     <script is:inline>
+      // Mobile menu toggle
       const toggle = document.getElementById("menu-toggle");
       const sidebar = document.getElementById("sidebar");
       if (toggle && sidebar) {
@@ -116,6 +117,98 @@ const currentPath = Astro.url.pathname;
           }
         });
       }
+
+      // Progress tracking
+      window.school = {
+        getStudentId() {
+          return localStorage.getItem("studentId");
+        },
+
+        setStudentId(id) {
+          localStorage.setItem("studentId", id);
+        },
+
+        getCachedProgress() {
+          try {
+            return JSON.parse(localStorage.getItem("progress") || "null");
+          } catch { return null; }
+        },
+
+        setCachedProgress(progress) {
+          localStorage.setItem("progress", JSON.stringify(progress));
+        },
+
+        isLessonComplete(slug) {
+          const progress = this.getCachedProgress();
+          return progress?.completedLessons?.includes(slug) || false;
+        },
+
+        async enroll() {
+          const res = await fetch("/api/enroll", { method: "POST" });
+          if (!res.ok) throw new Error("Enrollment failed");
+          const data = await res.json();
+          this.setStudentId(data.studentId);
+          this.setCachedProgress(data.progress);
+          return data;
+        },
+
+        async fetchProgress() {
+          const studentId = this.getStudentId();
+          if (!studentId) return null;
+          const res = await fetch(`/api/progress/${studentId}`);
+          if (!res.ok) return null;
+          const progress = await res.json();
+          this.setCachedProgress(progress);
+          return progress;
+        },
+
+        async markComplete(lessonSlug) {
+          const studentId = this.getStudentId();
+          if (!studentId) return null;
+          const res = await fetch(`/api/progress/${studentId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ lessonSlug }),
+          });
+          if (!res.ok) return null;
+          const progress = await res.json();
+          this.setCachedProgress(progress);
+          return progress;
+        },
+
+        updateAllCheckmarks() {
+          document.querySelectorAll("[data-lesson-slug]").forEach((el) => {
+            const slug = el.getAttribute("data-lesson-slug");
+            const checkEl = el.querySelector(".lesson-check");
+            const numEl = el.querySelector(".lesson-number");
+            const complete = this.isLessonComplete(slug);
+            if (checkEl) checkEl.textContent = complete ? "\u2713" : "";
+            if (numEl) numEl.style.display = complete ? "none" : "";
+          });
+        },
+      };
+
+      // Handle ?sid= param: save student ID from URL and clean up
+      (function() {
+        const params = new URLSearchParams(window.location.search);
+        const sid = params.get("sid");
+        if (sid) {
+          window.school.setStudentId(sid);
+          // Remove ?sid= from URL without reload
+          const url = new URL(window.location);
+          url.searchParams.delete("sid");
+          window.history.replaceState({}, "", url.pathname + url.search);
+          // Fetch progress for this student
+          window.school.fetchProgress().then(() => {
+            window.school.updateAllCheckmarks();
+          });
+        } else if (window.school.getStudentId()) {
+          // Already enrolled — sync progress on page load
+          window.school.fetchProgress().then(() => {
+            window.school.updateAllCheckmarks();
+          });
+        }
+      })();
     </script>
   </body>
 </html>

@@ -1,4 +1,6 @@
 ---
+export const prerender = true;
+
 import Base from "../layouts/Base.astro";
 import { getCollection } from "astro:content";
 
@@ -17,14 +19,15 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
     {lessons.map((lesson) => {
       const isStub = lesson.body?.trim() === "Coming soon.";
       return (
-        <li>
+        <li data-lesson-slug={lesson.data.slug}>
           <a
             href={`/lessons/${lesson.data.slug}`}
             class="block p-4 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 transition-colors group"
           >
             <div class="flex items-start gap-3">
-              <span class="text-sm font-mono text-gray-400 dark:text-gray-600 mt-0.5 shrink-0">
-                {String(lesson.data.order).padStart(2, "0")}
+              <span class="text-sm font-mono text-gray-400 dark:text-gray-600 mt-0.5 shrink-0 w-6 text-right">
+                <span class="lesson-check text-green-500 dark:text-green-400 font-bold"></span>
+                <span class="lesson-number">{String(lesson.data.order).padStart(2, "0")}</span>
               </span>
               <div class="min-w-0">
                 <h3 class:list={[
@@ -42,4 +45,19 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
       );
     })}
   </ol>
+
+  <script is:inline>
+    // Hide lesson numbers and show checkmarks for completed lessons
+    if (window.school) {
+      document.querySelectorAll("[data-lesson-slug]").forEach((el) => {
+        const slug = el.getAttribute("data-lesson-slug");
+        const checkEl = el.querySelector(".lesson-check");
+        const numEl = el.querySelector(".lesson-number");
+        if (window.school.isLessonComplete(slug)) {
+          if (checkEl) checkEl.textContent = "\u2713";
+          if (numEl) numEl.style.display = "none";
+        }
+      });
+    }
+  </script>
 </Base>
