@@ -139,7 +139,7 @@ const currentPath = Astro.url.pathname;
                     isStub && "opacity-50",
                   ]}
                 >
-                  <span class="text-gray-400 dark:text-gray-600 mr-1.5">{lesson.data.order}.</span>
+                  <span class="text-gray-400 dark:text-gray-600 mr-1.5">{String(lesson.data.order).padStart(2, "0")}.</span>
                   {lesson.data.title}
                 </a>
               </li>
