@@ -42,19 +42,78 @@ document.addEventListener("DOMContentLoaded", function() {
   var enrollError = document.getElementById("enroll-error");
   var notEnrolled = document.getElementById("not-enrolled");
   var enrolled = document.getElementById("enrolled");
-  var studentIdDisplay = document.getElementById("student-id-display");
+  var display = document.getElementById("student-id-display");
 
   if (!enrollBtn || !window.school) return;
 
-  function showEnrolled(studentId) {
+  var chars = "abcdefghijklmnopqrstuvwxyz";
+  var digits = "0123456789";
+
+  function randomChar(real) {
+    if (real === "-") return "-";
+    if (real >= "0" && real <= "9") return digits[Math.floor(Math.random() * digits.length)];
+    return chars[Math.floor(Math.random() * chars.length)];
+  }
+
+  function scramble(target) {
+    var result = "";
+    for (var i = 0; i < target.length; i++) {
+      result += randomChar(target[i]);
+    }
+    return result;
+  }
+
+  function cipherReveal(target, callback) {
+    var resolved = 0;
+    var current = scramble(target);
+    display.textContent = current;
+
+    var scrambleInterval = setInterval(function() {
+      var next = "";
+      for (var i = 0; i < target.length; i++) {
+        if (i < resolved) {
+          next += target[i];
+        } else if (target[i] === "-") {
+          next += "-";
+        } else {
+          next += randomChar(target[i]);
+        }
+      }
+      current = next;
+      display.textContent = current;
+    }, 40);
+
+    var resolveInterval = setInterval(function() {
+      if (resolved >= target.length) {
+        clearInterval(scrambleInterval);
+        clearInterval(resolveInterval);
+        display.textContent = target;
+        if (callback) callback();
+        return;
+      }
+      if (target[resolved] === "-") {
+        resolved++;
+      }
+      resolved++;
+    }, 80);
+  }
+
+  function showEnrolled(studentId, animate) {
     notEnrolled.classList.add("hidden");
     enrolled.classList.remove("hidden");
-    studentIdDisplay.textContent = studentId;
+    if (animate) {
+      cipherReveal(studentId, function() {
+        var completeSection = document.getElementById("lesson-complete-section");
+        if (completeSection) completeSection.classList.remove("hidden");
+      });
+    } else {
+      display.textContent = studentId;
+    }
   }
 
   var existingId = window.school.getStudentId();
   if (existingId) {
-    showEnrolled(existingId);
+    showEnrolled(existingId, false);
   }
 
   enrollBtn.addEventListener("click", async function() {
@@ -64,10 +123,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     try {
       var data = await window.school.enroll();
-      showEnrolled(data.studentId);
-
-      var completeSection = document.getElementById("lesson-complete-section");
-      if (completeSection) completeSection.classList.remove("hidden");
+      showEnrolled(data.studentId, true);
     } catch (e) {
       enrollError.classList.remove("hidden");
       enrollBtn.disabled = false;
