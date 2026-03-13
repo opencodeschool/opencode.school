@@ -81,21 +81,24 @@ document.addEventListener("DOMContentLoaded", function() {
       }
       current = next;
       display.textContent = current;
-    }, 40);
+    }, 30);
 
-    var resolveInterval = setInterval(function() {
-      if (resolved >= target.length) {
-        clearInterval(scrambleInterval);
-        clearInterval(resolveInterval);
-        display.textContent = target;
-        if (callback) callback();
-        return;
-      }
-      if (target[resolved] === "-") {
+    // Scramble for a beat before characters start locking in
+    setTimeout(function() {
+      var resolveInterval = setInterval(function() {
+        if (resolved >= target.length) {
+          clearInterval(scrambleInterval);
+          clearInterval(resolveInterval);
+          display.textContent = target;
+          if (callback) callback();
+          return;
+        }
+        if (target[resolved] === "-") {
+          resolved++;
+        }
         resolved++;
-      }
-      resolved++;
-    }, 80);
+      }, 140);
+    }, 600);
   }
 
   function showEnrolled(studentId, animate) {
