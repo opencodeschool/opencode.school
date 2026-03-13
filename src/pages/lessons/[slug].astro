@@ -63,12 +63,7 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
 
       function setCompleted() {
         check.textContent = "\u2713";
-        check.classList.add("bg-white");
-        check.classList.remove("border-blue-400");
-        check.style.color = "#2563eb";
         label.textContent = "Lesson complete";
-        btn.classList.add("bg-green-600", "hover:bg-green-700");
-        btn.classList.remove("bg-blue-600", "hover:bg-blue-700");
       }
 
       // Set initial state from cache
