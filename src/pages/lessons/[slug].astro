@@ -53,7 +53,7 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
     </button>
   </div>
 
-  <script is:inline define:vars={{ lessonSlug: lesson.data.slug }}>
+  <script is:inline define:vars={{ lessonSlug: lesson.data.slug, nextLessonUrl: next ? `/lessons/${next.data.slug}` : "" }}>
     (function() {
       const section = document.getElementById("lesson-complete-section");
       const btn = document.getElementById("mark-complete");
@@ -85,6 +85,9 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
         btn.disabled = false;
         if (progress) {
           setCompleted();
+          if (nextLessonUrl) {
+            setTimeout(() => { window.location.href = nextLessonUrl; }, 600);
+          }
         } else {
           label.textContent = "Mark this lesson as complete";
         }
