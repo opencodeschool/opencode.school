@@ -4,7 +4,7 @@ slug: glossary
 description: "Definitions of common terms used in OpenCode School."
 ---
 
-## Agent
+## agent
 
 An AI assistant that can read files, write code, run commands, and perform tasks on your behalf. OpenCode's built-in agents include "build" (for making changes) and "plan" (for thinking through problems without making changes). You can also create custom agents for specialized tasks.
 
@@ -16,17 +16,21 @@ A plain text file containing custom instructions that OpenCode reads at the star
 
 **Command-Line Interface.** A way to interact with software by typing text commands. OpenCode has a CLI for running one-off tasks, like `opencode run "explain this function"`. Unlike the [TUI](#tui), the CLI runs a single command and exits.
 
-## Command
+## command
 
 A slash-prefixed action you can run inside OpenCode, like `/models` to switch AI models, `/share` to share a conversation, or `/undo` to revert the last change. You can also create custom commands for repetitive tasks.
 
-## Config
+## config
 
 Short for configuration. A file (usually `opencode.jsonc`) where you define preferences for how OpenCode behaves — which [model](#model) to use, what [permissions](#permissions) to grant, which [MCP servers](#mcp) to connect, and more. Config files can be global (applying to all sessions) or per-project.
 
 ## GUI
 
 **Graphical User Interface.** A visual interface with windows, buttons, and menus that you interact with using a mouse and keyboard. OpenCode Desktop is a GUI. Compare with [TUI](#tui) and [CLI](#cli).
+
+## Homebrew
+
+A package manager for macOS (and Linux) that lets you install software from the command line. Run `brew install <package>` to install something, `brew update` to update Homebrew itself, and `brew upgrade` to update installed packages. OpenCode Desktop can be installed with `brew install --cask opencode-desktop`. See [brew.sh](https://brew.sh/).
 
 ## LLM
 
@@ -52,39 +56,45 @@ To learn the Markdown format interactively, check out [Markdown Live Preview](ht
 
 **Model Context Protocol.** An open standard that lets OpenCode connect to external tools and services. For example, you can add an MCP server that gives OpenCode access to your GitHub issues, Sentry error logs, or documentation search. MCP servers can be local (running on your machine) or remote (hosted on the internet).
 
-## Mode
+## mode
 
 OpenCode has different operating modes. **Build mode** lets the agent make changes to your files. **Plan mode** restricts it to only reading and suggesting — useful for thinking through a problem before committing to changes. Switch between them with the Tab key in the TUI, or through the mode selector in Desktop.
+
+## model
+
+The AI brain that powers OpenCode. Models are created by companies like Anthropic (Claude), OpenAI (GPT), and Google (Gemini). Different models have different strengths, speeds, and costs. You choose which model to use, and you can switch between them at any time.
 
 ## Ollama
 
 A [CLI](#cli) tool for downloading and running [LLMs](#llm) locally on your computer. It works like a package manager for AI models — run `ollama pull llama3` to download a model and `ollama run llama3` to start chatting with it. OpenCode can connect to Ollama as a local [provider](#provider). See [ollama.com](https://ollama.com/).
 
-## Model
-
-The AI brain that powers OpenCode. Models are created by companies like Anthropic (Claude), OpenAI (GPT), and Google (Gemini). Different models have different strengths, speeds, and costs. You choose which model to use, and you can switch between them at any time.
-
-## Permissions
+## permissions
 
 Rules that control what OpenCode is allowed to do on your machine. Each action can be set to `allow` (run without asking), `ask` (prompt for approval), or `deny` (block entirely). For example, you might allow file reads but require approval before deleting files.
 
-## Prompt
+## prompt
 
 The message or instruction you type into OpenCode. A good prompt gives the AI enough context to do what you want. For example: "Add a dark mode toggle to the settings page" or "Explain how authentication works in this project."
 
-## Provider
+## provider
 
 A company or service that hosts AI [models](#model). Anthropic, OpenAI, and Google are providers. OpenCode supports 75+ providers, including self-hosted options like Ollama for running models locally.
 
-## Session
+## session
 
 A single conversation with OpenCode. Each session has its own context and history. You can run multiple sessions in parallel, and you can share sessions with others using the `/share` command.
 
-## Skill
+## skill
 
 A reusable set of instructions packaged as a `SKILL.md` file. Skills are loaded on-demand by OpenCode when they're relevant to the current task. Think of them as specialized knowledge packs — for example, a skill that knows how to draft release notes or set up a new React component.
 
-## Tool
+## text editor
+
+A program for writing and editing plain text files. You'll need one for viewing and editing OpenCode's [config](#config) files, though OpenCode itself handles most file creation and editing.
+
+A few popular cross-platform editors (all free): [VS Code](https://code.visualstudio.com), [Cursor](https://cursor.com), [Zed](https://zed.dev), and [Windsurf](https://windsurf.com/editor). If you don't want to install anything extra, your operating system includes one: TextEdit on macOS (set it to plain text mode in Settings), Notepad on Windows, or gedit/Kate/nano on Linux.
+
+## tool
 
 A capability that OpenCode's AI agent can use. Built-in tools include reading files, editing code, running shell commands, searching the web, and more. [MCP servers](#mcp) can add additional tools from external services.
 

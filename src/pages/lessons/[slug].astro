@@ -45,24 +45,32 @@ const isEnrollment = lesson.data.slug === "enrollment";
     <Content />
   </article>
 
-  <!-- Mark as complete (hidden for enrollment lesson which auto-completes) -->
+  <!-- Lesson action: combined mark-complete + next-lesson button -->
   {!isEnrollment && (
-    <div id="lesson-complete-section" class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-800 hidden" data-lesson-slug={lesson.data.slug}>
-      <button
-        id="mark-complete"
-        class="flex items-center gap-3 px-5 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none"
-      >
-        <span id="mark-complete-check" class="w-5 h-5 rounded border-2 border-blue-400 flex items-center justify-center text-white text-sm font-bold transition-colors"></span>
-        <span id="mark-complete-label">Mark this lesson as complete</span>
-      </button>
+    <div id="lesson-action" class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-800 hidden">
+      {next ? (
+        <button
+          id="lesson-action-btn"
+          data-next-url={`/lessons/${next.data.slug}`}
+          class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none"
+        >
+          <span id="lesson-action-label">Next lesson: {next.data.title} &rarr;</span>
+        </button>
+      ) : (
+        <button
+          id="lesson-action-btn"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none"
+        >
+          <span id="lesson-action-label">Mark this lesson as complete</span>
+        </button>
+      )}
     </div>
   )}
 
-  <!-- Next lesson button (shown after lesson is completed) -->
-  {next && (
+  <!-- Next lesson button for enrollment page (shown after auto-complete) -->
+  {isEnrollment && next && (
     <div id="next-lesson-nav" class="hidden mt-8">
       <a
-        id="next-lesson-link"
         href={`/lessons/${next.data.slug}`}
         class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors text-sm"
       >
@@ -71,21 +79,17 @@ const isEnrollment = lesson.data.slug === "enrollment";
     </div>
   )}
 
-  <script is:inline define:vars={{ lessonSlug: lesson.data.slug, isEnrollment, nextLessonUrl: next ? `/lessons/${next.data.slug}` : "" }}>
+  <script is:inline define:vars={{ lessonSlug: lesson.data.slug, isEnrollment }}>
     (function() {
-      var nextNav = document.getElementById("next-lesson-nav");
-
-      function showNextLesson() {
-        if (nextNav) nextNav.classList.remove("hidden");
-      }
-
-      // Enrollment page handles its own completion; just wire up the next-lesson reveal
+      // Enrollment page: just wire up the next-lesson reveal via updateAllCheckmarks
       if (isEnrollment) {
+        var nextNav = document.getElementById("next-lesson-nav");
+        function showNextLesson() {
+          if (nextNav) nextNav.classList.remove("hidden");
+        }
         if (window.school && window.school.isLessonComplete(lessonSlug)) {
           showNextLesson();
         }
-        // The enrollment script calls updateAllCheckmarks after completing,
-        // so hook into that to reveal the next-lesson button
         var origUpdate = window.school.updateAllCheckmarks.bind(window.school);
         window.school.updateAllCheckmarks = function() {
           origUpdate();
@@ -96,49 +100,62 @@ const isEnrollment = lesson.data.slug === "enrollment";
         return;
       }
 
-      var section = document.getElementById("lesson-complete-section");
-      var btn = document.getElementById("mark-complete");
-      var check = document.getElementById("mark-complete-check");
-      var label = document.getElementById("mark-complete-label");
+      // Regular lessons: combined action button
+      var action = document.getElementById("lesson-action");
+      var btn = document.getElementById("lesson-action-btn");
+      var label = document.getElementById("lesson-action-label");
       var banner = document.getElementById("lesson-completed-banner");
-      if (!section || !btn || !window.school) return;
+      if (!action || !btn || !window.school) return;
 
       // Only show if enrolled
       if (!window.school.getStudentId()) return;
-      section.classList.remove("hidden");
+      action.classList.remove("hidden");
+
+      var nextUrl = btn.getAttribute("data-next-url");
+      var originalLabel = label.textContent;
 
       function setCompleted() {
-        check.textContent = "\u2713";
-        label.textContent = "Lesson complete";
         if (banner) banner.classList.remove("hidden");
-        showNextLesson();
-      }
-
-      // Set initial state from cache
-      if (window.school.isLessonComplete(lessonSlug)) {
-        setCompleted();
-      }
-
-      btn.addEventListener("click", async function() {
-        if (window.school.isLessonComplete(lessonSlug)) return;
-        btn.disabled = true;
-        label.textContent = "Saving...";
-        var progress = await window.school.markComplete(lessonSlug);
-        btn.disabled = false;
-        if (progress) {
-          setCompleted();
-          window.school.updateAllCheckmarks();
+        if (nextUrl) {
+          // Already shows "Next lesson: X" — just navigate
+          window.location.href = nextUrl;
         } else {
-          label.textContent = "Mark this lesson as complete";
+          label.textContent = "Lesson complete!";
+          btn.disabled = true;
         }
-      });
+      }
+
+      // If already complete, show the banner and make the button navigate directly
+      if (window.school.isLessonComplete(lessonSlug)) {
+        if (banner) banner.classList.remove("hidden");
+        if (nextUrl) {
+          // Turn it into a plain link
+          btn.addEventListener("click", function() { window.location.href = nextUrl; });
+        } else {
+          label.textContent = "Lesson complete!";
+          btn.disabled = true;
+        }
+      } else {
+        btn.addEventListener("click", async function() {
+          btn.disabled = true;
+          label.textContent = "Saving...";
+          var progress = await window.school.markComplete(lessonSlug);
+          if (progress) {
+            window.school.updateAllCheckmarks();
+            setCompleted();
+          } else {
+            btn.disabled = false;
+            label.textContent = originalLabel;
+          }
+        });
+      }
 
       // Update after progress fetch completes (in case cached state was stale)
       var origUpdate2 = window.school.updateAllCheckmarks.bind(window.school);
       window.school.updateAllCheckmarks = function() {
         origUpdate2();
         if (window.school.isLessonComplete(lessonSlug)) {
-          setCompleted();
+          if (banner) banner.classList.remove("hidden");
         }
       };
     })();

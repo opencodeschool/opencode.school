@@ -2,7 +2,21 @@
 export const prerender = true;
 
 import Base from "../layouts/Base.astro";
-import { readFile } from "node:fs/promises";
+import { marked } from "marked";
+import glossaryRaw from "../../lessons/glossary.md?raw";
+
+const renderer = new marked.Renderer();
+renderer.heading = function ({ text, depth }) {
+  // Generate slug the same way marked does by default
+  const slug = text.toLowerCase().replace(/[^\w]+/g, "-").replace(/(^-|-$)/g, "");
+  if (depth === 2) {
+    return `<h2 id="${slug}"><a href="#${slug}" class="glossary-term">${text}<span class="anchor-icon" aria-hidden="true">#</span></a></h2>`;
+  }
+  return `<h${depth}>${text}</h${depth}>`;
+};
+
+const body = glossaryRaw.replace(/^---[\s\S]*?---\n/, "");
+const html = await marked(body, { renderer });
 ---
 
 <Base title="Glossary" description="Definitions of common terms used in OpenCode School.">
@@ -17,10 +31,22 @@ import { readFile } from "node:fs/promises";
     <p class="text-gray-600 dark:text-gray-400 mt-2">Definitions of common terms used in OpenCode School.</p>
   </header>
 
-  <article class="prose dark:prose-invert max-w-none" set:html={await (async () => {
-    const { marked } = await import("marked");
-    const raw = await readFile("lessons/glossary.md", "utf-8");
-    const body = raw.replace(/^---[\s\S]*?---\n/, "");
-    return marked(body);
-  })()} />
+  <article class="prose dark:prose-invert max-w-none" set:html={html} />
+
+  <style is:global>
+    .glossary-term,
+    .glossary-term:hover {
+      text-decoration: none !important;
+      color: inherit !important;
+    }
+    .anchor-icon {
+      margin-left: 0.35em;
+      font-size: 0.65em;
+      color: var(--tw-prose-links);
+      visibility: hidden;
+    }
+    .glossary-term:hover .anchor-icon {
+      visibility: visible;
+    }
+  </style>
 </Base>

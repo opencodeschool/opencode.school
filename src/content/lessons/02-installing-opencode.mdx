@@ -5,50 +5,100 @@ description: "Download and install the OpenCode Desktop app."
 order: 2
 ---
 
-OpenCode can be used in many ways — as a library, a command-line interface, a terminal-based chat app, or an IDE extension. But in OpenCode School, we'll be using **OpenCode Desktop**.
+In this course we'll be using **OpenCode Desktop** — a native app with a [GUI](/glossary#gui) (graphical user interface) you interact with using your mouse and keyboard. If you've used apps like ChatGPT or Claude, this chat-based interface should feel pretty familiar to you.
 
-## Why Desktop?
-
-OpenCode Desktop provides a familiar [GUI](/glossary#gui) (Graphical User Interface) — windows, buttons, and menus that you interact with using your mouse and keyboard. If you've used apps like Slack, Discord, or VS Code, the Desktop app will feel right at home.
-
-It also has features we'll explore later in this course, like **Workspaces** for running multiple sessions in parallel.
-
-OpenCode Desktop is currently in beta, but it's stable enough for daily use and improving rapidly with new releases.
+OpenCode also has a [TUI](/glossary#tui) for terminal-based workflows, a [CLI](/glossary#cli) for one-off commands, and IDE extensions for VS Code, Cursor, Zed, and Windsurf. They all share the same engine and [config](/glossary#config), so what you learn here applies everywhere. But for this course, **Desktop is all you need**.
 
 ## Install OpenCode Desktop
 
-Choose your platform:
+<div id="install-section" class="not-prose">
 
-**macOS (Homebrew)**
+<div id="install-loading" class="my-6 text-sm text-gray-500 dark:text-gray-400">Detecting your operating system...</div>
 
-If you have [Homebrew](https://brew.sh) installed, run:
+<div id="install-macos" class="hidden">
 
-```
-brew install --cask opencode-desktop
-```
+<div class="my-6 space-y-4">
+  <div class="rounded-xl border border-gray-200 dark:border-gray-700/50 p-5">
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Download the .dmg for your Mac:</p>
+    <div class="flex flex-wrap gap-3">
+      <a href="https://opencode.ai/download/stable/darwin-aarch64-dmg" class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors text-sm">Download for Apple Silicon</a>
+      <a href="https://opencode.ai/download/stable/darwin-x64-dmg" class="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-lg transition-colors text-sm">Download for Intel</a>
+    </div>
+    <p class="text-xs text-gray-400 dark:text-gray-500 mt-2">Most Macs from 2021 or later use Apple Silicon (M1, M2, M3, M4). Not sure? Click &#xF8FF; &gt; About This Mac — your chip is listed at the top.</p>
+  </div>
+  <div class="rounded-xl border border-gray-200 dark:border-gray-700/50 p-5">
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Or install with <a href="/glossary#homebrew" class="underline hover:text-gray-700 dark:hover:text-gray-300">Homebrew</a>:</p>
+    <pre class="bg-gray-50 dark:bg-gray-900/80 rounded-lg px-4 py-3 font-mono text-sm text-gray-800 dark:text-gray-200 overflow-x-auto"><code>brew install --cask opencode-desktop</code></pre>
+  </div>
+</div>
 
-Or download the `.dmg` directly from [opencode.ai/download](https://opencode.ai/download). Choose **Apple Silicon** if you have an M1, M2, M3, or M4 chip. Choose **Intel** if you have an older Mac.
+</div>
 
-Not sure which chip you have? Click the Apple menu () > "About This Mac" — it's listed right at the top.
+<div id="install-windows" class="hidden">
 
-**Windows**
+<div class="my-6 space-y-4">
+  <div class="rounded-xl border border-gray-200 dark:border-gray-700/50 p-5">
+    <div class="flex flex-wrap gap-3 mb-3">
+      <a href="https://opencode.ai/download/stable/windows-x64-nsis" class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors text-sm">Download for Windows</a>
+    </div>
+    <p class="text-sm text-gray-500 dark:text-gray-400">Run the installer and follow the on-screen prompts.</p>
+  </div>
+  <div class="rounded-xl border border-gray-200 dark:border-gray-700/50 p-5">
+    <p class="text-sm text-gray-600 dark:text-gray-300 mb-1">Recommended: install WSL</p>
+    <p class="text-sm text-gray-500 dark:text-gray-400">Windows Subsystem for Linux lets you run a full Linux environment inside Windows. It's free, built into Windows 10 and 11, and takes one command to install. OpenCode works best with WSL. See the <a href="https://opencode.ai/docs/windows-wsl" class="underline hover:text-gray-700 dark:hover:text-gray-300">WSL setup guide</a>.</p>
+  </div>
+</div>
 
-Download the Windows installer from [opencode.ai/download](https://opencode.ai/download) and run it. Follow the on-screen prompts to complete the installation.
+</div>
 
-For Windows users, we recommend installing **Windows Subsystem for Linux (WSL)**. WSL lets you run a full Linux environment directly inside Windows. It's free, built into Windows 10 and 11, and takes just one command to install. See [Windows (WSL) documentation](https://opencode.ai/docs/windows-wsl).
+<div id="install-linux" class="hidden">
 
-**Linux**
+<div class="my-6 space-y-4">
+  <div class="rounded-xl border border-gray-200 dark:border-gray-700/50 p-5">
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Choose the package for your distribution:</p>
+    <div class="flex flex-wrap gap-3">
+      <a href="https://opencode.ai/download/stable/linux-x64-deb" class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors text-sm">Download .deb</a>
+      <a href="https://opencode.ai/download/stable/linux-x64-rpm" class="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-lg transition-colors text-sm">Download .rpm</a>
+    </div>
+    <p class="text-xs text-gray-400 dark:text-gray-500 mt-2">.deb for Ubuntu/Debian, .rpm for Fedora/RHEL.</p>
+  </div>
+  <div class="rounded-xl border border-gray-200 dark:border-gray-700/50 p-5">
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Or install with your package manager:</p>
+    <pre class="bg-gray-50 dark:bg-gray-900/80 rounded-lg px-4 py-3 font-mono text-sm text-gray-800 dark:text-gray-200 overflow-x-auto"><code>sudo dpkg -i opencode-desktop_*.deb</code></pre>
+  </div>
+</div>
 
-Download the package for your distribution from [opencode.ai/download](https://opencode.ai/download):
+</div>
 
-- `.deb` for Ubuntu, Debian, and derivatives
-- `.rpm` for Fedora, RHEL, and derivatives
+<div id="install-other" class="hidden">
 
-Install it with your package manager. For example, on Ubuntu:
+<div class="my-6">
+  <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Download OpenCode Desktop for your platform:</p>
+  <div class="space-y-4">
+    <div class="rounded-xl border border-gray-200 dark:border-gray-700/50 p-5">
+      <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">macOS</p>
+      <div class="flex flex-wrap gap-3">
+        <a href="https://opencode.ai/download/stable/darwin-aarch64-dmg" class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors text-sm">Apple Silicon</a>
+        <a href="https://opencode.ai/download/stable/darwin-x64-dmg" class="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-lg transition-colors text-sm">Intel</a>
+      </div>
+    </div>
+    <div class="rounded-xl border border-gray-200 dark:border-gray-700/50 p-5">
+      <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Windows</p>
+      <a href="https://opencode.ai/download/stable/windows-x64-nsis" class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors text-sm">Download</a>
+    </div>
+    <div class="rounded-xl border border-gray-200 dark:border-gray-700/50 p-5">
+      <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Linux</p>
+      <div class="flex flex-wrap gap-3">
+        <a href="https://opencode.ai/download/stable/linux-x64-deb" class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors text-sm">.deb</a>
+        <a href="https://opencode.ai/download/stable/linux-x64-rpm" class="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-lg transition-colors text-sm">.rpm</a>
+      </div>
+    </div>
+  </div>
+</div>
 
-```
-sudo dpkg -i opencode-desktop_*.deb
-```
+</div>
+
+</div>
 
 ## Verify the installation
 
@@ -58,12 +108,18 @@ That's it — OpenCode is installed and ready to go.
 
 If you run into issues, check the [OpenCode troubleshooting guide](https://opencode.ai/docs/troubleshooting/) or ask for help on the [OpenCode Discord](https://opencode.ai/discord).
 
-## Other OpenCode interfaces?
+<script>{`
+document.addEventListener("DOMContentLoaded", function() {
+  var ua = navigator.userAgent;
+  var os = "other";
+  if (/Macintosh|Mac OS X/.test(ua)) os = "macos";
+  else if (/Windows/.test(ua)) os = "windows";
+  else if (/Linux/.test(ua)) os = "linux";
 
-For reference, here are the other ways to use OpenCode. You don't need any of these for this course, but they're good to know about:
+  var loading = document.getElementById("install-loading");
+  if (loading) loading.classList.add("hidden");
 
-- **Terminal (TUI)** — A full chat interface that runs inside your terminal. Popular with developers who prefer keyboard-driven workflows. Install with `curl -fsSL https://opencode.ai/install | bash`.
-- **CLI** — For running one-off commands like `opencode run "explain this function"`. Same installation as the TUI.
-- **IDE extensions** — Available for [VS Code](https://marketplace.visualstudio.com), [Cursor](https://cursor.com), [Zed](https://zed.dev), and [Windsurf](https://windsurf.com/editor). Install from your editor's extension marketplace.
-
-All of these share the same underlying engine and [configuration](/glossary#config), so most of the things you learn in this course apply across interfaces.
+  var section = document.getElementById("install-" + os);
+  if (section) section.classList.remove("hidden");
+});
+`}</script>
