@@ -52,6 +52,10 @@ To learn the Markdown format interactively, check out [Markdown Live Preview](ht
 
 OpenCode has different operating modes. **Build mode** lets the agent make changes to your files. **Plan mode** restricts it to only reading and suggesting — useful for thinking through a problem before committing to changes. Switch between them with the Tab key in the TUI, or through the mode selector in Desktop.
 
+## Ollama
+
+A [CLI](#cli) tool for downloading and running [LLMs](#llm) locally on your computer. It works like a package manager for AI models — run `ollama pull llama3` to download a model and `ollama run llama3` to start chatting with it. OpenCode can connect to Ollama as a local [provider](#provider). See [ollama.com](https://ollama.com/).
+
 ## Model
 
 The AI brain that powers OpenCode. Models are created by companies like Anthropic (Claude), OpenAI (GPT), and Google (Gemini). Different models have different strengths, speeds, and costs. You choose which model to use, and you can switch between them at any time.
