@@ -1,4 +1,6 @@
 ---
+export const prerender = true;
+
 import Base from "../../layouts/Base.astro";
 import { getCollection, render } from "astro:content";
 
@@ -17,6 +19,7 @@ const allLessons = (await getCollection("lessons")).sort((a, b) => a.data.order 
 const currentIndex = allLessons.findIndex((l) => l.data.slug === lesson.data.slug);
 const prev = currentIndex > 0 ? allLessons[currentIndex - 1] : null;
 const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null;
+const isEnrollment = lesson.data.slug === "enrollment";
 ---
 
 <Base title={lesson.data.title} description={lesson.data.description}>
@@ -32,26 +35,112 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
     <p class="text-gray-600 dark:text-gray-400 mt-2">{lesson.data.description}</p>
   </header>
 
+  {!isEnrollment && (
+    <div id="lesson-completed-banner" class="hidden mb-6 px-4 py-3 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-sm text-blue-700 dark:text-blue-300 font-medium">
+      You completed this lesson!
+    </div>
+  )}
+
   <article class="prose dark:prose-invert max-w-none">
     <Content />
   </article>
 
-  <nav class="mt-12 pt-6 border-t border-gray-200 dark:border-gray-800 flex justify-between gap-4">
-    {prev ? (
-      <a
-        href={`/lessons/${prev.data.slug}`}
-        class="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+  <!-- Mark as complete (hidden for enrollment lesson which auto-completes) -->
+  {!isEnrollment && (
+    <div id="lesson-complete-section" class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-800 hidden" data-lesson-slug={lesson.data.slug}>
+      <button
+        id="mark-complete"
+        class="flex items-center gap-3 px-5 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none"
       >
-        &larr; {prev.data.title}
-      </a>
-    ) : <span />}
-    {next ? (
+        <span id="mark-complete-check" class="w-5 h-5 rounded border-2 border-blue-400 flex items-center justify-center text-white text-sm font-bold transition-colors"></span>
+        <span id="mark-complete-label">Mark this lesson as complete</span>
+      </button>
+    </div>
+  )}
+
+  <!-- Next lesson button (shown after lesson is completed) -->
+  {next && (
+    <div id="next-lesson-nav" class="hidden mt-8">
       <a
+        id="next-lesson-link"
         href={`/lessons/${next.data.slug}`}
-        class="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors ml-auto"
+        class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors text-sm"
       >
-        {next.data.title} &rarr;
+        Next lesson: {next.data.title} &rarr;
       </a>
-    ) : <span />}
-  </nav>
+    </div>
+  )}
+
+  <script is:inline define:vars={{ lessonSlug: lesson.data.slug, isEnrollment, nextLessonUrl: next ? `/lessons/${next.data.slug}` : "" }}>
+    (function() {
+      var nextNav = document.getElementById("next-lesson-nav");
+
+      function showNextLesson() {
+        if (nextNav) nextNav.classList.remove("hidden");
+      }
+
+      // Enrollment page handles its own completion; just wire up the next-lesson reveal
+      if (isEnrollment) {
+        if (window.school && window.school.isLessonComplete(lessonSlug)) {
+          showNextLesson();
+        }
+        // The enrollment script calls updateAllCheckmarks after completing,
+        // so hook into that to reveal the next-lesson button
+        var origUpdate = window.school.updateAllCheckmarks.bind(window.school);
+        window.school.updateAllCheckmarks = function() {
+          origUpdate();
+          if (window.school.isLessonComplete(lessonSlug)) {
+            showNextLesson();
+          }
+        };
+        return;
+      }
+
+      var section = document.getElementById("lesson-complete-section");
+      var btn = document.getElementById("mark-complete");
+      var check = document.getElementById("mark-complete-check");
+      var label = document.getElementById("mark-complete-label");
+      var banner = document.getElementById("lesson-completed-banner");
+      if (!section || !btn || !window.school) return;
+
+      // Only show if enrolled
+      if (!window.school.getStudentId()) return;
+      section.classList.remove("hidden");
+
+      function setCompleted() {
+        check.textContent = "\u2713";
+        label.textContent = "Lesson complete";
+        if (banner) banner.classList.remove("hidden");
+        showNextLesson();
+      }
+
+      // Set initial state from cache
+      if (window.school.isLessonComplete(lessonSlug)) {
+        setCompleted();
+      }
+
+      btn.addEventListener("click", async function() {
+        if (window.school.isLessonComplete(lessonSlug)) return;
+        btn.disabled = true;
+        label.textContent = "Saving...";
+        var progress = await window.school.markComplete(lessonSlug);
+        btn.disabled = false;
+        if (progress) {
+          setCompleted();
+          window.school.updateAllCheckmarks();
+        } else {
+          label.textContent = "Mark this lesson as complete";
+        }
+      });
+
+      // Update after progress fetch completes (in case cached state was stale)
+      var origUpdate2 = window.school.updateAllCheckmarks.bind(window.school);
+      window.school.updateAllCheckmarks = function() {
+        origUpdate2();
+        if (window.school.isLessonComplete(lessonSlug)) {
+          setCompleted();
+        }
+      };
+    })();
+  </script>
 </Base>

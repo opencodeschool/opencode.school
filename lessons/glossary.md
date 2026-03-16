@@ -36,6 +36,10 @@ LLMs are trained on vast amounts of text and code from the internet, which is ho
 
 For a deeper understanding of how LLMs work, watch [Intro to Large Language Models](https://www.youtube.com/watch?v=7xTGNNLPyMI) by Andrej Karpathy — a clear, non-technical explainer covering how these models are built, how to think about them, and how to get the most out of them.
 
+## LM Studio
+
+A desktop application for downloading and running [LLMs](#llm) locally on your computer. It provides a [GUI](#gui) for browsing models, managing downloads, and running a local API server that OpenCode can connect to as a [provider](#provider). See [lmstudio.ai](https://lmstudio.ai/).
+
 ## Markdown
 
 A plaintext format preferred by developers for writing content. Unlike formats tied to specific programs (like `.docx` for Microsoft Word or `.pages` for Apple Pages), Markdown is lightweight and not associated with any particular program, company, or technology. Files end in `.md` and use simple characters for formatting: `#` for headings, `**` for bold, `- ` for bullet lists, and `[text](url)` for links.
@@ -51,6 +55,10 @@ To learn the Markdown format interactively, check out [Markdown Live Preview](ht
 ## Mode
 
 OpenCode has different operating modes. **Build mode** lets the agent make changes to your files. **Plan mode** restricts it to only reading and suggesting — useful for thinking through a problem before committing to changes. Switch between them with the Tab key in the TUI, or through the mode selector in Desktop.
+
+## Ollama
+
+A [CLI](#cli) tool for downloading and running [LLMs](#llm) locally on your computer. It works like a package manager for AI models — run `ollama pull llama3` to download a model and `ollama run llama3` to start chatting with it. OpenCode can connect to Ollama as a local [provider](#provider). See [ollama.com](https://ollama.com/).
 
 ## Model
 

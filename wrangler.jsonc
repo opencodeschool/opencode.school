@@ -6,6 +6,12 @@
   "assets": {
     "directory": "./dist"
   },
+  "kv_namespaces": [
+    {
+      "binding": "PROGRESS",
+      "id": "3bd04cd0e35548b181036e6385b5120c"
+    }
+  ],
   "routes": [
     {
       "pattern": "opencode.school",

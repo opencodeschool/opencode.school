@@ -28,6 +28,96 @@ const currentPath = Astro.url.pathname;
         document.documentElement.classList.toggle("dark", e.matches);
       });
     </script>
+    <script is:inline>
+      // Progress tracking API — defined in <head> so page-level scripts can use it
+      window.school = {
+        getStudentId() {
+          return localStorage.getItem("studentId");
+        },
+
+        setStudentId(id) {
+          localStorage.setItem("studentId", id);
+        },
+
+        getCachedProgress() {
+          try {
+            return JSON.parse(localStorage.getItem("progress") || "null");
+          } catch { return null; }
+        },
+
+        setCachedProgress(progress) {
+          localStorage.setItem("progress", JSON.stringify(progress));
+        },
+
+        isLessonComplete(slug) {
+          const progress = this.getCachedProgress();
+          return progress?.completedLessons?.includes(slug) || false;
+        },
+
+        async enroll() {
+          const res = await fetch("/api/enroll", { method: "POST" });
+          if (!res.ok) throw new Error("Enrollment failed");
+          const data = await res.json();
+          this.setStudentId(data.studentId);
+          this.setCachedProgress(data.progress);
+          return data;
+        },
+
+        async fetchProgress() {
+          const studentId = this.getStudentId();
+          if (!studentId) return null;
+          const res = await fetch(`/api/progress/${studentId}`);
+          if (!res.ok) return null;
+          const progress = await res.json();
+          this.setCachedProgress(progress);
+          return progress;
+        },
+
+        async markComplete(lessonSlug) {
+          const studentId = this.getStudentId();
+          if (!studentId) return null;
+          const res = await fetch(`/api/progress/${studentId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ lessonSlug }),
+          });
+          if (!res.ok) return null;
+          const progress = await res.json();
+          this.setCachedProgress(progress);
+          return progress;
+        },
+
+        updateAllCheckmarks() {
+          document.querySelectorAll("[data-lesson-slug]").forEach((el) => {
+            const slug = el.getAttribute("data-lesson-slug");
+            const checkEl = el.querySelector(".lesson-check");
+            const numEl = el.querySelector(".lesson-number");
+            const complete = this.isLessonComplete(slug);
+            if (checkEl) checkEl.textContent = complete ? "\u2713" : "";
+            if (numEl) numEl.style.display = complete ? "none" : "";
+          });
+          // Update sidebar completion circles
+          document.querySelectorAll("[data-sidebar-slug]").forEach((el) => {
+            const slug = el.getAttribute("data-sidebar-slug");
+            const circle = el.querySelector(".sidebar-check");
+            if (circle && this.isLessonComplete(slug)) {
+              circle.textContent = "\u2713";
+              circle.classList.remove("hidden");
+              circle.classList.add("flex");
+            }
+          });
+        },
+
+        updateEnrolledIndicator() {
+          const id = this.getStudentId();
+          const el = document.getElementById("enrolled-indicator");
+          if (el && id) {
+            el.querySelector("[data-student-id]").textContent = id;
+            el.classList.remove("hidden");
+          }
+        },
+      };
+    </script>
   </head>
   <body class="min-h-screen">
     <div class="lg:flex">
@@ -57,19 +147,22 @@ const currentPath = Astro.url.pathname;
             const isActive = currentPath === href || currentPath === `${href}/`;
             const isStub = lesson.body?.trim() === "Coming soon.";
             return (
-              <li>
+              <li data-sidebar-slug={lesson.data.slug}>
                 <a
                   href={href}
                   class:list={[
-                    "block px-3 py-1.5 rounded-md text-sm transition-colors",
+                    "flex items-center justify-between px-3 py-1.5 rounded-md text-sm transition-colors",
                     isActive
                       ? "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300 font-medium"
                       : "text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-900",
                     isStub && "opacity-50",
                   ]}
                 >
-                  <span class="text-gray-400 dark:text-gray-600 mr-1.5">{lesson.data.order}.</span>
-                  {lesson.data.title}
+                  <span>
+                    <span class="text-gray-400 dark:text-gray-600 mr-1.5">{String(lesson.data.order).padStart(2, "0")}.</span>
+                    {lesson.data.title}
+                  </span>
+                  <span class="sidebar-check w-4 h-4 rounded-full bg-blue-600 dark:bg-blue-500 text-white text-[10px] font-bold items-center justify-center shrink-0 ml-2 hidden"></span>
                 </a>
               </li>
             );
@@ -95,6 +188,11 @@ const currentPath = Astro.url.pathname;
         </div>
       </nav>
 
+      <!-- Enrolled indicator (fixed top-right on desktop) -->
+      <div id="enrolled-indicator" class="hidden fixed top-6 right-6 z-40">
+        <span class="text-xs font-mono text-gray-400 dark:text-gray-500">Enrolled as <span data-student-id class="text-gray-500 dark:text-gray-400"></span></span>
+      </div>
+
       <!-- Main content -->
       <main class="flex-1 min-w-0 p-6 lg:p-12 max-w-3xl">
         <slot />
@@ -102,6 +200,7 @@ const currentPath = Astro.url.pathname;
     </div>
 
     <script is:inline>
+      // Mobile menu toggle
       const toggle = document.getElementById("menu-toggle");
       const sidebar = document.getElementById("sidebar");
       if (toggle && sidebar) {
@@ -116,6 +215,29 @@ const currentPath = Astro.url.pathname;
           }
         });
       }
+
+      // Handle ?sid= param: save student ID from URL and clean up
+      (function() {
+        const params = new URLSearchParams(window.location.search);
+        const sid = params.get("sid");
+        if (sid) {
+          window.school.setStudentId(sid);
+          const url = new URL(window.location);
+          url.searchParams.delete("sid");
+          window.history.replaceState({}, "", url.pathname + url.search);
+          window.school.updateEnrolledIndicator();
+          window.school.fetchProgress().then(() => {
+            window.school.updateAllCheckmarks();
+          });
+        } else if (window.school.getStudentId()) {
+          // Show cached state immediately, then refresh from server
+          window.school.updateEnrolledIndicator();
+          window.school.updateAllCheckmarks();
+          window.school.fetchProgress().then(() => {
+            window.school.updateAllCheckmarks();
+          });
+        }
+      })();
     </script>
   </body>
 </html>

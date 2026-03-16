@@ -1,4 +1,6 @@
 ---
+export const prerender = true;
+
 import Base from "../layouts/Base.astro";
 import { getCollection } from "astro:content";
 
@@ -11,35 +13,125 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
     A free, self-paced course for learning <a href="https://opencode.ai" class="text-blue-600 dark:text-blue-400 underline">OpenCode</a>, the open-source AI coding agent.
   </p>
 
-  <h2 class="text-sm font-mono uppercase tracking-wider text-gray-500 dark:text-gray-500 mb-4">Lessons</h2>
+  <!-- Enrolled: lesson list first -->
+  <div id="enrolled-section" class="hidden mb-12">
+    <h2 class="text-sm font-mono uppercase tracking-wider text-gray-500 dark:text-gray-500 mb-4">Lessons</h2>
 
-  <ol class="space-y-3">
-    {lessons.map((lesson) => {
-      const isStub = lesson.body?.trim() === "Coming soon.";
-      return (
-        <li>
-          <a
-            href={`/lessons/${lesson.data.slug}`}
-            class="block p-4 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 transition-colors group"
-          >
-            <div class="flex items-start gap-3">
-              <span class="text-sm font-mono text-gray-400 dark:text-gray-600 mt-0.5 shrink-0">
-                {String(lesson.data.order).padStart(2, "0")}
-              </span>
-              <div class="min-w-0">
-                <h3 class:list={[
-                  "font-medium group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors",
-                  isStub && "text-gray-400 dark:text-gray-600",
-                ]}>
-                  {lesson.data.title}
-                  {isStub && <span class="ml-2 text-xs font-normal text-gray-400 dark:text-gray-600">(coming soon)</span>}
-                </h3>
-                <p class="text-sm text-gray-500 dark:text-gray-500 mt-0.5">{lesson.data.description}</p>
+    <ol class="space-y-3">
+      {lessons.map((lesson) => {
+        const isStub = lesson.body?.trim() === "Coming soon.";
+        return (
+          <li data-lesson-slug={lesson.data.slug}>
+            <a
+              href={`/lessons/${lesson.data.slug}`}
+              class="block p-4 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 transition-colors group"
+            >
+              <div class="flex items-start gap-3">
+                <span class="text-sm font-mono text-gray-400 dark:text-gray-600 mt-0.5 shrink-0 w-6 text-right">
+                  <span class="lesson-check text-green-500 dark:text-green-400 font-bold"></span>
+                  <span class="lesson-number">{String(lesson.data.order).padStart(2, "0")}</span>
+                </span>
+                <div class="min-w-0">
+                  <h3 class:list={[
+                    "font-medium group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors",
+                    isStub && "text-gray-400 dark:text-gray-600",
+                  ]}>
+                    {lesson.data.title}
+                    {isStub && <span class="ml-2 text-xs font-normal text-gray-400 dark:text-gray-600">(coming soon)</span>}
+                  </h3>
+                  <p class="text-sm text-gray-500 dark:text-gray-500 mt-0.5">{lesson.data.description}</p>
+                </div>
               </div>
-            </div>
-          </a>
-        </li>
-      );
-    })}
-  </ol>
+            </a>
+          </li>
+        );
+      })}
+    </ol>
+  </div>
+
+  <!-- Not enrolled: big CTA -->
+  <div id="not-enrolled-section" class="mb-12">
+    <a
+      href="/lessons/enrollment"
+      class="inline-block px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-mono text-lg rounded-lg transition-colors"
+    >
+      Enroll in OpenCode School
+    </a>
+  </div>
+
+  <!-- Orientation content (always visible, less prominent for enrolled users) -->
+  <div class="prose dark:prose-invert max-w-none">
+    <h2>What is OpenCode?</h2>
+
+    <p>
+      <a href="https://opencode.ai">OpenCode</a> is a free, open-source AI coding agent that you install on your personal computer. The primary interface is a chat window, much like ChatGPT or Claude, where you have a back and forth dialogue with an AI model. But instead of just chatting, OpenCode can read and write files on your computer, write code, run commands, and interact with other applications.
+    </p>
+
+    <p>
+      Despite the name, OpenCode is not just a tool for writing software. You can use it to automate any task on your computer, from managing files to controlling other applications. It's like having an assistant that can understand your intentions, help you brainstorm, do deep research, and build creative things.
+    </p>
+
+    <p>OpenCode works with multiple AI model providers, including:</p>
+
+    <ul>
+      <li><a href="https://anthropic.com">Anthropic</a> (Claude)</li>
+      <li><a href="https://openai.com">OpenAI</a> (GPT)</li>
+      <li><a href="https://deepmind.google/technologies/gemini/">Google</a> (Gemini)</li>
+      <li><a href="https://opencode.ai/docs/providers/">And 75+ more</a></li>
+    </ul>
+
+    <p>You can also run open-source models locally on your own machine using tools like <a href="https://ollama.com">Ollama</a>, <a href="https://lmstudio.ai">LM Studio</a>, or <a href="https://github.com/ggml-org/llama.cpp">llama.cpp</a> — no cloud account needed.</p>
+
+    <h2>Who is this for?</h2>
+
+    <p>
+      This course is for anyone who wants to expand their creative potential with AI. Whether you're a student, a hobbyist, a professional developer, or just curious about AI, OpenCode can help you do more with less effort.
+    </p>
+
+    <p>
+      This course is for <strong>beginners</strong> who are new to AI coding agents. You don't need to be a programmer, and you don't need any experience with the terminal. We'll be using the OpenCode Desktop app, which provides a familiar graphical interface.
+    </p>
+
+    <p>
+      This course is also for <strong>experienced developers</strong>. It'll get you set up with a good foundation for using OpenCode effectively, and you'll learn some tips and tricks for getting the most out of it.
+    </p>
+
+    <h2>What you'll learn</h2>
+
+    <p>By the end of this course, you'll know how to:</p>
+
+    <ul>
+      <li>Install and configure OpenCode</li>
+      <li>Use AI models to help you write and edit code</li>
+      <li>Control what OpenCode can and can't do on your machine</li>
+      <li>Connect external tools and services</li>
+      <li>Run multiple sessions in parallel</li>
+      <li>Build websites, games, and other creative projects!</li>
+    </ul>
+
+    <h2>How it works</h2>
+
+    <p>Work through the lessons in order. Each one builds on the previous. Some lessons involve pasting prompts into OpenCode and letting it do the work for you. Progress is tracked through the website and synced with your OpenCode app.</p>
+  </div>
+
+  <script is:inline>
+    // Toggle homepage sections based on enrollment state
+    if (window.school && window.school.getStudentId()) {
+      var enrolled = document.getElementById("enrolled-section");
+      var notEnrolled = document.getElementById("not-enrolled-section");
+      if (enrolled) enrolled.classList.remove("hidden");
+      if (notEnrolled) notEnrolled.classList.add("hidden");
+
+      // Show checkmarks for completed lessons
+      document.querySelectorAll("[data-lesson-slug]").forEach(function(el) {
+        var slug = el.getAttribute("data-lesson-slug");
+        var checkEl = el.querySelector(".lesson-check");
+        var numEl = el.querySelector(".lesson-number");
+        if (window.school.isLessonComplete(slug)) {
+          if (checkEl) checkEl.textContent = "\u2713";
+          if (numEl) numEl.style.display = "none";
+        }
+      });
+    }
+  </script>
 </Base>

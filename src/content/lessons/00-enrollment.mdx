@@ -1,0 +1,179 @@
+---
+title: "Enrollment"
+slug: enrollment
+description: "Get your student ID and start tracking your progress."
+order: 0
+---
+
+<div id="enrollment-area">
+
+<div id="not-enrolled">
+
+Click the button below to generate your student ID — a unique identifier that tracks your progress through the course.
+
+<button id="enroll-button" class="mt-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-mono text-sm rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">Generate my student ID</button>
+
+<p id="enroll-error" class="mt-2 text-red-500 text-sm hidden">Something went wrong. Please try again.</p>
+
+</div>
+
+<div id="enrolled" class="hidden">
+
+<div id="student-id-card" class="my-8 rounded-2xl overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700/50">
+  <div class="bg-blue-600 dark:bg-blue-700 px-5 py-2">
+    <p class="text-lg font-mono uppercase tracking-[0.25em] text-blue-100 text-center">HELLO! My OpenCode Student ID is</p>
+  </div>
+  <div class="bg-gray-50 dark:bg-gray-900/80 px-6 py-4">
+    <p id="student-id-display" class="text-3xl md:text-4xl font-mono font-bold text-gray-800 dark:text-gray-100 tracking-tight text-center"></p>
+  </div>
+</div>
+
+<p id="enrolled-message" class="text-lg"><span class="font-bold">You're enrolled!</span> We'll use this to track your progress as you complete each lesson. Your **progress is stored locally in your web browser**. OpenCode School does not require an account, and does not track any personally identifying information.</p>
+
+</div>
+
+</div>
+
+<script>{`
+document.addEventListener("DOMContentLoaded", function() {
+  var enrollBtn = document.getElementById("enroll-button");
+  var enrollError = document.getElementById("enroll-error");
+  var notEnrolled = document.getElementById("not-enrolled");
+  var enrolled = document.getElementById("enrolled");
+  var display = document.getElementById("student-id-display");
+
+  if (!enrollBtn || !window.school) return;
+
+  var chars = "abcdefghijklmnopqrstuvwxyz";
+  var digits = "0123456789";
+
+  function randomChar(real) {
+    if (real === "-") return "-";
+    if (real >= "0" && real <= "9") return digits[Math.floor(Math.random() * digits.length)];
+    return chars[Math.floor(Math.random() * chars.length)];
+  }
+
+  function scramble(target) {
+    var result = "";
+    for (var i = 0; i < target.length; i++) {
+      result += randomChar(target[i]);
+    }
+    return result;
+  }
+
+  function fireConfetti() {
+    var duration = 2000;
+    var end = Date.now() + duration;
+    var colors = ["#3b82f6", "#60a5fa", "#2563eb", "#818cf8", "#6366f1"];
+
+    (function frame() {
+      window.confetti({
+        particleCount: 3,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+        colors: colors
+      });
+      window.confetti({
+        particleCount: 3,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+        colors: colors
+      });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    })();
+  }
+
+  function cipherReveal(target, callback) {
+    var resolved = 0;
+    var current = scramble(target);
+    display.textContent = current;
+
+    var scrambleInterval = setInterval(function() {
+      var next = "";
+      for (var i = 0; i < target.length; i++) {
+        if (i < resolved) {
+          next += target[i];
+        } else if (target[i] === "-") {
+          next += "-";
+        } else {
+          next += randomChar(target[i]);
+        }
+      }
+      current = next;
+      display.textContent = current;
+    }, 30);
+
+    setTimeout(function() {
+      var resolveInterval = setInterval(function() {
+        if (resolved >= target.length) {
+          clearInterval(scrambleInterval);
+          clearInterval(resolveInterval);
+          display.textContent = target;
+          if (callback) callback();
+          return;
+        }
+        if (target[resolved] === "-") {
+          resolved++;
+        }
+        resolved++;
+      }, 140);
+    }, 600);
+  }
+
+  function showEnrolled(studentId, animate) {
+    notEnrolled.classList.add("hidden");
+    enrolled.classList.remove("hidden");
+
+    // Hide the lesson description and header prose since we show our own enrolled message
+    var article = document.querySelector("article.prose");
+    if (article) {
+      // Hide the intro paragraph that's part of the prose wrapper
+      var proseChildren = article.querySelectorAll(":scope > p");
+      proseChildren.forEach(function(p) {
+        if (p.closest("#enrollment-area")) return;
+        p.classList.add("hidden");
+      });
+    }
+
+    if (animate) {
+      cipherReveal(studentId, function() {
+        fireConfetti();
+        // Auto-complete the enrollment lesson
+        window.school.markComplete("enrollment").then(function() {
+          window.school.updateAllCheckmarks();
+          // Update the enrolled-as indicator in the layout
+          if (typeof window.school.updateEnrolledIndicator === "function") {
+            window.school.updateEnrolledIndicator();
+          }
+        });
+      });
+    } else {
+      display.textContent = studentId;
+    }
+  }
+
+  var existingId = window.school.getStudentId();
+  if (existingId) {
+    showEnrolled(existingId, false);
+  }
+
+  enrollBtn.addEventListener("click", async function() {
+    enrollBtn.disabled = true;
+    enrollBtn.textContent = "Generating...";
+    enrollError.classList.add("hidden");
+
+    try {
+      var data = await window.school.enroll();
+      showEnrolled(data.studentId, true);
+    } catch (e) {
+      enrollError.classList.remove("hidden");
+      enrollBtn.disabled = false;
+      enrollBtn.textContent = "Generate my student ID";
+    }
+  });
+});
+`}</script>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
