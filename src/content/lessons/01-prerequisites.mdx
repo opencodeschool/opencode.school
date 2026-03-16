@@ -5,35 +5,149 @@ description: "What you need before getting started with OpenCode."
 order: 1
 ---
 
-Before we install anything, let's make sure you have what you need:
+Before we install anything, let's make sure you have what you need. Your browser can detect most of this automatically:
 
-- A new-ish computer running macOS, Windows, or Linux
-- A reliable internet connection
-- A text editor for viewing and editing configuration files
+<div id="system-check" class="my-8 rounded-2xl border border-gray-200 dark:border-gray-700/50 overflow-hidden not-prose">
+  <div class="px-6 py-4 bg-gray-50 dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-700/50">
+    <p class="text-sm font-mono uppercase tracking-[0.15em] text-gray-500 dark:text-gray-400">System Check</p>
+  </div>
+  <div class="divide-y divide-gray-100 dark:divide-gray-800">
+    <div class="flex items-center justify-between px-6 py-4" id="check-os">
+      <span class="text-base text-gray-600 dark:text-gray-300">Operating system</span>
+      <span class="flex items-center gap-3 text-base font-mono">
+        <span class="check-value"><span class="spinner"></span></span>
+        <span class="check-icon w-5 text-right text-lg"></span>
+      </span>
+    </div>
+    <div class="flex items-center justify-between px-6 py-4" id="check-cpu">
+      <span class="text-base text-gray-600 dark:text-gray-300">CPU cores</span>
+      <span class="flex items-center gap-3 text-base font-mono">
+        <span class="check-value"><span class="spinner"></span></span>
+        <span class="check-icon w-5 text-right text-lg"></span>
+      </span>
+    </div>
+    <div class="flex items-center justify-between px-6 py-4" id="check-memory">
+      <span class="text-base text-gray-600 dark:text-gray-300">Memory</span>
+      <span class="flex items-center gap-3 text-base font-mono">
+        <span class="check-value"><span class="spinner"></span></span>
+        <span class="check-icon w-5 text-right text-lg"></span>
+      </span>
+    </div>
+    <div class="flex items-center justify-between px-6 py-4" id="check-internet">
+      <span class="text-base text-gray-600 dark:text-gray-300">Internet</span>
+      <span class="flex items-center gap-3 text-base font-mono">
+        <span class="check-value"><span class="spinner"></span></span>
+        <span class="check-icon w-5 text-right text-lg"></span>
+      </span>
+    </div>
+  </div>
+</div>
 
-## A new-ish computer
+## A computer
 
-OpenCode Desktop runs on **macOS**, **Windows**, and **Linux**. Any modern computer from the last 5-6 years should work fine. OpenCode lets your run AI models that are hosted in the cloud, so you don't need a powerful machine — just something that can run a web browser and connect to the internet. You can also configure OpenCode to use models running locally on your own machine using tools like Ollama and LM Studio, but that's optional and not required for completing the OpenCode School curriculum.
+OpenCode runs on **macOS**, **Windows**, and **Linux**. Any computer from the last 5-6 years should work fine. OpenCode lets you run AI models hosted in the cloud, so you don't need a powerful machine — just something that can run a web browser and connect to the internet.
 
-## Text editor
+You can also configure OpenCode to use models running locally on your own machine using tools like [Ollama](https://ollama.com) and [LM Studio](https://lmstudio.ai), but that's optional and not required for completing the OpenCode School curriculum.
 
-You'll need a text editor for viewing and editing OpenCode's configuration files. A text editor is a program for writing and editing plain text files. It doesn't have to be anything fancy — just something that can open `.txt` or `.md` files.
+## A text editor
 
-Here are few recommendations, all of which are freely available:
-
-- [VS Code](https://marketplace.visualstudio.com) - the world's most popular code editor, with a huge ecosystem of extensions and features. Great for both beginners and experienced developers.
-- [Cursor](https://cursor.com) - A fork of VS Code with built-in AI features and a more streamlined interface. 
-- [Zed](https://zed.dev) - A new editor built for speed and simplicity, with a focus on real-time collaboration. 
-- [Windsurf](https://windsurf.com/editor) - A lightweight editor with built-in AI code generation and autocompletion.
-
-If you don't want to install anything extra, you can use the text editor that comes with your computer:
-
-- **macOS**: TextEdit (in your Applications folder). Go to TextEdit > Settings and select "Plain Text" as the default format — otherwise it will try to save files as rich text.
-- **Windows**: Notepad (search for it in the Start menu).
-- **Linux**: Varies by distribution — gedit (GNOME), Kate (KDE), mousepad (XFCE), or `nano` in the terminal.
-
-OpenCode itself will handle most file creation and editing. The text editor is mainly for when you want to manually inspect or tweak [config](/glossary#config) files.
+You'll need a [text editor](/glossary#text-editor) for viewing and editing OpenCode's configuration files. OpenCode itself handles most file creation and editing — the text editor is mainly for when you want to manually inspect or tweak things.
 
 ## That's it!
 
 No special software to install yet, no accounts to create. If you have a computer with an internet connection and a text editor, you're ready for the next lesson.
+
+<script>{`
+document.addEventListener("DOMContentLoaded", function() {
+  var CHECK = '<span class="text-green-600 dark:text-green-400">\\u2713</span>';
+  var WARN = '<span class="text-yellow-500 dark:text-yellow-400">!</span>';
+  var DASH = '<span class="text-gray-300 dark:text-gray-600">\\u2014</span>';
+
+  function setCheck(id, value, icon) {
+    var row = document.getElementById(id);
+    if (!row) return;
+    var val = row.querySelector(".check-value");
+    var ico = row.querySelector(".check-icon");
+    if (val) val.textContent = value;
+    if (ico) ico.innerHTML = icon;
+  }
+
+  function delay(ms) {
+    return new Promise(function(r) { setTimeout(r, ms); });
+  }
+
+  // Detect OS from user agent
+  function detectOS() {
+    var ua = navigator.userAgent;
+    if (/Macintosh|Mac OS X/.test(ua)) return "macOS";
+    if (/Windows/.test(ua)) return "Windows";
+    if (/Linux/.test(ua)) return "Linux";
+    if (/CrOS/.test(ua)) return "ChromeOS";
+    return "Unknown";
+  }
+
+  // Measure connectivity: try navigator.connection first, fall back to fetch timing
+  async function measureConnectivity() {
+    // Try Network Information API (Chromium only)
+    var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (conn && conn.rtt !== undefined && conn.rtt > 0) {
+      var rtt = conn.rtt;
+      var label = "Connected, ~" + rtt + "ms latency";
+      var icon = rtt < 300 ? CHECK : WARN;
+      return { label: label, icon: icon };
+    }
+
+    // Fallback: time a small fetch
+    if (!navigator.onLine) {
+      return { label: "Offline", icon: WARN };
+    }
+
+    try {
+      var start = performance.now();
+      await fetch("/api/enroll", { method: "HEAD", cache: "no-store" }).catch(function() {
+        // HEAD might 405, that's fine — we only need the round trip
+      });
+      var elapsed = Math.round(performance.now() - start);
+      var label2 = "Connected, ~" + elapsed + "ms latency";
+      var icon2 = elapsed < 500 ? CHECK : WARN;
+      return { label: label2, icon: icon2 };
+    } catch (e) {
+      return { label: navigator.onLine ? "Connected" : "Offline", icon: navigator.onLine ? CHECK : WARN };
+    }
+  }
+
+  // Run all checks with staggered reveal
+  async function runChecks() {
+    // OS
+    await delay(300);
+    var os = detectOS();
+    var supportedOS = ["macOS", "Windows", "Linux"];
+    setCheck("check-os", os, supportedOS.indexOf(os) !== -1 ? CHECK : WARN);
+
+    // CPU
+    await delay(400);
+    var cores = navigator.hardwareConcurrency;
+    if (cores) {
+      setCheck("check-cpu", cores + " cores", cores >= 2 ? CHECK : WARN);
+    } else {
+      setCheck("check-cpu", "Unable to detect", DASH);
+    }
+
+    // Memory
+    await delay(400);
+    var mem = navigator.deviceMemory;
+    if (mem) {
+      setCheck("check-memory", mem >= 1 ? mem + " GB" : mem * 1024 + " MB", mem >= 4 ? CHECK : WARN);
+    } else {
+      setCheck("check-memory", "Unable to detect", DASH);
+    }
+
+    // Internet
+    await delay(300);
+    var result = await measureConnectivity();
+    setCheck("check-internet", result.label, result.icon);
+  }
+
+  runChecks();
+});
+`}</script>
