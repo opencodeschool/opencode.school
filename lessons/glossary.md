@@ -36,6 +36,10 @@ LLMs are trained on vast amounts of text and code from the internet, which is ho
 
 For a deeper understanding of how LLMs work, watch [Intro to Large Language Models](https://www.youtube.com/watch?v=7xTGNNLPyMI) by Andrej Karpathy — a clear, non-technical explainer covering how these models are built, how to think about them, and how to get the most out of them.
 
+## LM Studio
+
+A desktop application for downloading and running [LLMs](#llm) locally on your computer. It provides a [GUI](#gui) for browsing models, managing downloads, and running a local API server that OpenCode can connect to as a [provider](#provider). See [lmstudio.ai](https://lmstudio.ai/).
+
 ## Markdown
 
 A plaintext format preferred by developers for writing content. Unlike formats tied to specific programs (like `.docx` for Microsoft Word or `.pages` for Apple Pages), Markdown is lightweight and not associated with any particular program, company, or technology. Files end in `.md` and use simple characters for formatting: `#` for headings, `**` for bold, `- ` for bullet lists, and `[text](url)` for links.
