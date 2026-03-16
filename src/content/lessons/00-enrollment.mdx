@@ -5,11 +5,11 @@ description: "Get your student ID and start tracking your progress."
 order: 0
 ---
 
-Let's get you set up. Click the button below to generate your student ID — a unique identifier that tracks your progress through the course.
-
 <div id="enrollment-area">
 
 <div id="not-enrolled">
+
+Click the button below to generate your student ID — a unique identifier that tracks your progress through the course.
 
 <button id="enroll-button" class="mt-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-mono text-sm rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">Generate my student ID</button>
 
@@ -19,22 +19,20 @@ Let's get you set up. Click the button below to generate your student ID — a u
 
 <div id="enrolled" class="hidden">
 
-<div id="student-id-card" class="my-6 px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800">
-  <p class="text-xs font-mono uppercase tracking-wider text-gray-400 dark:text-gray-600 mb-1">Student ID</p>
-  <p id="student-id-display" class="text-2xl font-mono font-bold text-gray-900 dark:text-gray-100"></p>
+<div id="student-id-card" class="my-8 rounded-2xl overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700/50">
+  <div class="bg-blue-600 dark:bg-blue-700 px-5 py-2">
+    <p class="text-lg font-mono uppercase tracking-[0.25em] text-blue-100 text-center">HELLO! My OpenCode Student ID is</p>
+  </div>
+  <div class="bg-gray-50 dark:bg-gray-900/80 px-6 py-4">
+    <p id="student-id-display" class="text-3xl md:text-4xl font-mono font-bold text-gray-800 dark:text-gray-100 tracking-tight text-center"></p>
+  </div>
 </div>
 
-You're enrolled. Your progress will be saved as you work through the lessons.
-
-Later, once you have OpenCode installed, you'll use this student ID to sync your progress between the website and the app. For now, just keep going — the next lesson covers what you'll need before installing OpenCode.
+<p id="enrolled-message" class="text-lg"><span class="font-bold">You're enrolled!</span> We'll use this to track your progress as you complete each lesson. Your **progress is stored locally in your web browser**. OpenCode School does not require an account, and does not track any personally identifying information.</p>
 
 </div>
 
 </div>
-
-## Already have a student ID?
-
-If you enrolled from OpenCode and were given a link like `https://opencode.school?sid=curious-hacker-2019`, just visit that URL and your progress will be linked automatically.
 
 <script>{`
 document.addEventListener("DOMContentLoaded", function() {
@@ -63,6 +61,30 @@ document.addEventListener("DOMContentLoaded", function() {
     return result;
   }
 
+  function fireConfetti() {
+    var duration = 2000;
+    var end = Date.now() + duration;
+    var colors = ["#3b82f6", "#60a5fa", "#2563eb", "#818cf8", "#6366f1"];
+
+    (function frame() {
+      window.confetti({
+        particleCount: 3,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+        colors: colors
+      });
+      window.confetti({
+        particleCount: 3,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+        colors: colors
+      });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    })();
+  }
+
   function cipherReveal(target, callback) {
     var resolved = 0;
     var current = scramble(target);
@@ -83,7 +105,6 @@ document.addEventListener("DOMContentLoaded", function() {
       display.textContent = current;
     }, 30);
 
-    // Scramble for a beat before characters start locking in
     setTimeout(function() {
       var resolveInterval = setInterval(function() {
         if (resolved >= target.length) {
@@ -104,10 +125,29 @@ document.addEventListener("DOMContentLoaded", function() {
   function showEnrolled(studentId, animate) {
     notEnrolled.classList.add("hidden");
     enrolled.classList.remove("hidden");
+
+    // Hide the lesson description and header prose since we show our own enrolled message
+    var article = document.querySelector("article.prose");
+    if (article) {
+      // Hide the intro paragraph that's part of the prose wrapper
+      var proseChildren = article.querySelectorAll(":scope > p");
+      proseChildren.forEach(function(p) {
+        if (p.closest("#enrollment-area")) return;
+        p.classList.add("hidden");
+      });
+    }
+
     if (animate) {
       cipherReveal(studentId, function() {
-        var completeSection = document.getElementById("lesson-complete-section");
-        if (completeSection) completeSection.classList.remove("hidden");
+        fireConfetti();
+        // Auto-complete the enrollment lesson
+        window.school.markComplete("enrollment").then(function() {
+          window.school.updateAllCheckmarks();
+          // Update the enrolled-as indicator in the layout
+          if (typeof window.school.updateEnrolledIndicator === "function") {
+            window.school.updateEnrolledIndicator();
+          }
+        });
       });
     } else {
       display.textContent = studentId;
@@ -135,3 +175,5 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 });
 `}</script>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>

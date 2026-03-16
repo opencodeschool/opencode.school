@@ -107,6 +107,15 @@ const currentPath = Astro.url.pathname;
             }
           });
         },
+
+        updateEnrolledIndicator() {
+          const id = this.getStudentId();
+          const el = document.getElementById("enrolled-indicator");
+          if (el && id) {
+            el.querySelector("[data-student-id]").textContent = id;
+            el.classList.remove("hidden");
+          }
+        },
       };
     </script>
   </head>
@@ -179,6 +188,11 @@ const currentPath = Astro.url.pathname;
         </div>
       </nav>
 
+      <!-- Enrolled indicator (fixed top-right on desktop) -->
+      <div id="enrolled-indicator" class="hidden fixed top-6 right-6 z-40">
+        <span class="text-xs font-mono text-gray-400 dark:text-gray-500">Enrolled as <span data-student-id class="text-gray-500 dark:text-gray-400"></span></span>
+      </div>
+
       <!-- Main content -->
       <main class="flex-1 min-w-0 p-6 lg:p-12 max-w-3xl">
         <slot />
@@ -211,11 +225,13 @@ const currentPath = Astro.url.pathname;
           const url = new URL(window.location);
           url.searchParams.delete("sid");
           window.history.replaceState({}, "", url.pathname + url.search);
+          window.school.updateEnrolledIndicator();
           window.school.fetchProgress().then(() => {
             window.school.updateAllCheckmarks();
           });
         } else if (window.school.getStudentId()) {
           // Show cached state immediately, then refresh from server
+          window.school.updateEnrolledIndicator();
           window.school.updateAllCheckmarks();
           window.school.fetchProgress().then(() => {
             window.school.updateAllCheckmarks();
