@@ -1,0 +1,29 @@
+# OpenCode School
+
+> OpenCode School is an interactive course that teaches people how to use OpenCode. Students enroll on the website, get a student ID, then use OpenCode Desktop to work through lessons. An API is available for agents to fetch lesson content, acceptance criteria, and student progress.
+
+When a student gives you their student ID, use the API to fetch their progress and the lesson they want to work on. Each lesson has acceptance criteria that describe what "done" looks like. When the criteria are met, mark the lesson complete via the API.
+
+## API
+
+- [OpenAPI specification](https://opencode.school/api/openapi.json): Machine-readable spec describing all endpoints
+- [All lessons](https://opencode.school/api/lessons): GET — JSON array of all lessons with content, acceptance criteria, and agent instructions
+- [Single lesson](https://opencode.school/api/lessons/{slug}): GET — A single lesson by slug
+- [Enroll](https://opencode.school/api/enroll): POST — Generate a student ID and create a progress record
+- [Get progress](https://opencode.school/api/progress/{studentId}): GET — Fetch a student's completed lessons
+- [Mark complete](https://opencode.school/api/progress/{studentId}): PUT — Mark a lesson complete (body: `{"lessonSlug": "..."}`)
+
+## Lessons
+
+- [Enrollment](https://opencode.school/api/lessons/enrollment): Get a student ID and start tracking progress
+- [Prerequisites](https://opencode.school/api/lessons/prerequisites): System requirements check
+- [Installation](https://opencode.school/api/lessons/installing-opencode): Install OpenCode Desktop
+- [Configuration](https://opencode.school/api/lessons/configuration): Create a global config file
+- [Permissions](https://opencode.school/api/lessons/permissions): Set up granular permission rules
+- [AGENTS.md](https://opencode.school/api/lessons/agents-md): Write custom agent instructions
+- [Models](https://opencode.school/api/lessons/models): Choose and configure AI models
+- [MCP Servers](https://opencode.school/api/lessons/mcp-servers): Connect to external tools and services
+- [Skills](https://opencode.school/api/lessons/skills): Create reusable agent behaviors
+- [Modes](https://opencode.school/api/lessons/modes): Switch between Plan and Build mode
+- [Not Just for Coding](https://opencode.school/api/lessons/not-just-for-coding): Use OpenCode for non-coding tasks
+- [Workspaces](https://opencode.school/api/lessons/workspaces): Run multiple sessions in parallel

@@ -3,11 +3,18 @@ title: "Configuration"
 slug: configuration
 description: "Create a global configuration file for OpenCode."
 order: 3
+acceptanceCriteria: "The file ~/.config/opencode/opencode.jsonc exists and contains valid JSONC with a \"$schema\" key pointing to \"https://opencode.ai/config.json\" and a \"permission\" object with \"*\" set to \"allow\"."
 ---
 
-To get the most out of OpenCode, you'll want to create a global configuration file. This file applies to every OpenCode session across every project on your machine. It includes settings like which AI [model](/glossary#model) to use, what [permissions](/glossary#permissions) to grant, and how the [agent](/glossary#agent) should behave.
+import AgentPrompt from '../../components/AgentPrompt.astro'
 
-You'll tweak this file over time to make OpenCode work exactly the way you want.
+The boring setup stuff is behind you. From here on, you'll use OpenCode itself to work through the lessons.
+
+Each lesson has a prompt you can copy and paste into OpenCode. The prompt includes your student ID and a link to this site, which gives OpenCode everything it needs to teach the lesson and track your progress.
+
+First up: a global configuration file. This file applies to every OpenCode session across every project on your machine. It includes settings like which AI [model](/glossary#model) to use, what [permissions](/glossary#permissions) to grant, and how the [agent](/glossary#agent) should behave. You'll tweak it over time to make OpenCode work exactly the way you want.
+
+<AgentPrompt title="Configuration" />
 
 ## Where does the config file live?
 
@@ -54,19 +61,6 @@ JSON is strict — no comments allowed, and no trailing commas. This can be anno
 OpenCode's config files use the `.jsonc` extension to signal that comments are allowed. If your text editor supports JSONC (VS Code does out of the box), you'll get syntax highlighting and error checking for free.
 
 ## Create your config file
-
-Open OpenCode Desktop and paste the following message:
-
-```
-Create my global OpenCode config file at ~/.config/opencode/opencode.jsonc with the following content:
-
-{
-  "$schema": "https://opencode.ai/config.json",
-  "permission": {
-    "*": "allow"
-  }
-}
-```
 
 OpenCode will create the directory and file for you. **If you see any confirmation prompts, choose "Allow Once."** You may see a couple of prompts during this step — approve each one.
 

@@ -1,0 +1,48 @@
+---
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<div class="agent-prompt-card hidden mb-8" data-lesson-title={title}>
+  <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Copy the prompt below and paste it into OpenCode to work on this lesson:</p>
+  <div class="relative">
+    <pre class="agent-prompt-text bg-gray-50 dark:bg-gray-900/80 border border-gray-200 dark:border-gray-700/50 rounded-lg px-4 py-3 font-mono text-base text-gray-800 dark:text-gray-200 overflow-x-auto whitespace-pre-wrap"></pre>
+    <button
+      class="agent-prompt-copy absolute top-2 right-2 px-2.5 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+    >
+      Copy
+    </button>
+  </div>
+</div>
+
+<script is:inline>
+  (function() {
+    if (!window.school) return;
+    var studentId = window.school.getStudentId();
+    if (!studentId) return;
+
+    var cards = document.querySelectorAll(".agent-prompt-card");
+    cards.forEach(function(card) {
+      var lessonTitle = card.getAttribute("data-lesson-title");
+      var promptText = card.querySelector(".agent-prompt-text");
+      var copyBtn = card.querySelector(".agent-prompt-copy");
+      if (!promptText) return;
+
+      var prompt = "I'm enrolled in https://opencode.school\n\nMy student ID is " + studentId + "\n\nLet's work on the " + lessonTitle + " lesson together!";
+      promptText.textContent = prompt;
+      card.classList.remove("hidden");
+
+      if (copyBtn) {
+        copyBtn.addEventListener("click", function() {
+          navigator.clipboard.writeText(prompt).then(function() {
+            copyBtn.textContent = "Copied!";
+            setTimeout(function() { copyBtn.textContent = "Copy"; }, 2000);
+          });
+        });
+      }
+    });
+  })();
+</script>

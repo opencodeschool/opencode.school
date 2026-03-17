@@ -1,0 +1,227 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OpenCode School API",
+    "description": "API for fetching lesson content, enrolling students, and tracking progress through OpenCode School.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://opencode.school"
+    }
+  ],
+  "paths": {
+    "/api/lessons": {
+      "get": {
+        "summary": "List all lessons",
+        "description": "Returns all lessons sorted by order, including content (as prose markdown), acceptance criteria, and optional agent instructions.",
+        "responses": {
+          "200": {
+            "description": "Array of all lessons",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Lesson" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/lessons/{slug}": {
+      "get": {
+        "summary": "Get a single lesson",
+        "description": "Returns a single lesson by slug, including content (as prose markdown), acceptance criteria, and optional agent instructions.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "example": "configuration"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lesson found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Lesson" }
+              }
+            }
+          },
+          "404": {
+            "description": "Lesson not found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/enroll": {
+      "post": {
+        "summary": "Enroll a new student",
+        "description": "Generates a unique student ID (format: adjective-noun-nnnn) and creates an empty progress record.",
+        "responses": {
+          "201": {
+            "description": "Student enrolled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "studentId": {
+                      "type": "string",
+                      "example": "analytical-pilgrim-5076"
+                    },
+                    "progress": { "$ref": "#/components/schemas/Progress" }
+                  },
+                  "required": ["studentId", "progress"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/progress/{studentId}": {
+      "get": {
+        "summary": "Get student progress",
+        "description": "Returns the student's progress, including which lessons they have completed.",
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "example": "analytical-pilgrim-5076"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Progress found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Progress" }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid student ID format",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "404": {
+            "description": "Student not found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Mark a lesson as complete",
+        "description": "Marks a lesson as complete for the given student. Idempotent — marking an already-completed lesson has no effect.",
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "example": "analytical-pilgrim-5076"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "lessonSlug": {
+                    "type": "string",
+                    "example": "configuration"
+                  }
+                },
+                "required": ["lessonSlug"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Progress updated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Progress" }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "404": {
+            "description": "Student not found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Lesson": {
+        "type": "object",
+        "properties": {
+          "order": { "type": "integer", "example": 3 },
+          "slug": { "type": "string", "example": "configuration" },
+          "title": { "type": "string", "example": "Configuration" },
+          "description": { "type": "string", "example": "Create a global configuration file for OpenCode." },
+          "acceptanceCriteria": { "type": "string", "example": "The file ~/.config/opencode/opencode.jsonc exists and contains valid JSONC." },
+          "agentInstructions": { "type": ["string", "null"], "example": null },
+          "content": { "type": "string", "description": "Lesson content as prose markdown (HTML and scripts stripped)." }
+        },
+        "required": ["order", "slug", "title", "description", "acceptanceCriteria", "content"]
+      },
+      "Progress": {
+        "type": "object",
+        "properties": {
+          "completedLessons": {
+            "type": "array",
+            "items": { "type": "string" },
+            "example": ["enrollment", "prerequisites"]
+          },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        },
+        "required": ["completedLessons", "createdAt", "updatedAt"]
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": { "type": "string" }
+        },
+        "required": ["error"]
+      }
+    }
+  }
+}

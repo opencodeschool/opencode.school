@@ -3,7 +3,10 @@ title: "AGENTS.md"
 slug: agents-md
 description: "Write custom instructions that OpenCode follows in every session."
 order: 5
+acceptanceCriteria: "The file ~/.config/opencode/AGENTS.md exists and contains at least one meaningful custom instruction for the agent (not just a placeholder or empty file)."
 ---
+
+import AgentPrompt from '../../components/AgentPrompt.astro'
 
 Every time OpenCode starts a new [session](/glossary#session), it looks for a file called `AGENTS.md` and reads whatever instructions you've written there. Think of it as a set of standing orders for your AI assistant — preferences, rules, and context that apply to everything it does.
 
@@ -20,11 +23,7 @@ In this lesson, we're creating the global one.
 
 ## Create your AGENTS.md
 
-Open OpenCode Desktop and paste:
-
-```
-Create my global AGENTS.md file at ~/.config/opencode/AGENTS.md with sensible starter content for a beginner. Include rules about being concise, explaining what you're doing before making changes, and asking for confirmation before deleting files.
-```
+<AgentPrompt title="AGENTS.md" />
 
 OpenCode will create the file and populate it with starter content. Approve any permission prompts that appear.
 

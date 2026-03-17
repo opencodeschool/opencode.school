@@ -69,12 +69,18 @@ opencode.school/
       index.astro                # Homepage with lesson listing + completion state
       404.astro                  # 404 page
       glossary.astro             # Glossary page
-      lessons/[slug].astro       # Dynamic lesson page with mark-complete checkbox
+      lessons/[slug].astro       # Dynamic lesson page with mark-complete + agent prompt
       api/
         enroll.ts                # POST /api/enroll
+        lessons/
+          index.ts               # GET /api/lessons (all lessons as JSON)
+          [slug].ts              # GET /api/lessons/:slug (single lesson as JSON)
         progress/[studentId].ts  # GET + PUT /api/progress/:studentId
     styles/main.css              # Tailwind CSS source
-  public/                        # Static assets
+  public/
+    llms.txt                     # Agent discovery document (llms.txt spec)
+    api/
+      openapi.json               # OpenAPI 3.1 spec for all API endpoints
   lessons/glossary.md            # Glossary content (standalone, not in collection)
   script/
     build                        # npx astro build
@@ -87,6 +93,7 @@ opencode.school/
   wrangler.jsonc
   package.json
   tsconfig.json
+  AGENTS.md                      # Agent instructions for maintaining this project
   human-plan.md                  # Original project brief (historical)
   agent-plan.md                  # This file (living technical reference)
 ```
@@ -108,15 +115,27 @@ opencode.school/
 | 10 | not-just-for-coding  | Not Just for Coding | Stub   |
 | 11 | workspaces           | Workspaces          | Stub   |
 
-## Progress tracking API
+## API
 
 ### Endpoints
 
 | Route                        | Method | Description                                        |
 | ---------------------------- | ------ | -------------------------------------------------- |
+| `/api/lessons`               | GET    | All lessons as JSON (content + acceptance criteria) |
+| `/api/lessons/:slug`         | GET    | Single lesson by slug                              |
 | `/api/enroll`                | POST   | Generate student ID, create empty progress in KV   |
 | `/api/progress/:studentId`   | GET    | Fetch progress (404 if student not found)          |
 | `/api/progress/:studentId`   | PUT    | Mark a lesson complete (additive, idempotent)      |
+
+### Agent discovery
+
+Agents discover the API via `llms.txt` at the site root, which points to the OpenAPI spec at `/api/openapi.json`. The flow:
+
+1. Agent fetches `https://opencode.school/llms.txt`
+2. Reads the API overview and endpoint URLs
+3. Fetches lesson content + acceptance criteria via `GET /api/lessons/:slug`
+4. Checks student progress via `GET /api/progress/:studentId`
+5. Marks lessons complete via `PUT /api/progress/:studentId`
 
 All endpoints return JSON with CORS headers. No authentication — student IDs are unguessable enough for low-stakes progress data.
 
