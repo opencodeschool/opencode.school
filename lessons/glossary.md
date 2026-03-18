@@ -24,6 +24,10 @@ A slash-prefixed action you can run inside OpenCode, like `/models` to switch AI
 
 Short for configuration. A file (usually `opencode.jsonc`) where you define preferences for how OpenCode behaves — which [model](#model) to use, what [permissions](#permissions) to grant, which [MCP servers](#mcp) to connect, and more. Config files can be global (applying to all sessions) or per-project.
 
+## context window
+
+The amount of text a [model](#model) can "see" at once during a conversation. Measured in tokens (roughly ¾ of a word). A model with a 128K context window can work with about 128,000 tokens of combined input and output — including your messages, file contents, tool results, and the model's own responses. Larger context windows let the model handle bigger codebases and longer conversations without losing track of earlier details.
+
 ## GUI
 
 **Graphical User Interface.** A visual interface with windows, buttons, and menus that you interact with using a mouse and keyboard. OpenCode Desktop is a GUI. Compare with [TUI](#tui) and [CLI](#cli).
