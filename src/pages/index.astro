@@ -31,7 +31,7 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
   <div id="enrolled-section" class="hidden mb-12">
     <h2 class="text-sm font-mono uppercase tracking-wider text-gray-500 dark:text-gray-500 mb-4">Lessons</h2>
 
-    <ol class="divide-y divide-gray-200 dark:divide-gray-800">
+    <ol class="divide-y divide-gray-200 dark:divide-stone-800">
       {lessons.map((lesson) => {
         const isStub = lesson.body?.trim() === "Coming soon.";
         const href = `/lessons/${lesson.data.slug}`;
@@ -43,10 +43,10 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
                 class="lesson-link group flex min-w-0 items-center gap-3"
               >
                 <span
-                  class="lesson-status flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-gray-300 bg-gray-100/70 text-white dark:border-gray-700 dark:bg-gray-900/70"
+                  class="lesson-status flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-gray-300 bg-gray-100/70 text-white dark:border-stone-700 dark:bg-stone-900/70"
                   aria-hidden="true"
                 >
-                  <span class="lesson-status-dot h-2 w-2 rounded-full bg-gray-400 dark:bg-gray-500"></span>
+                  <span class="lesson-status-dot h-2 w-2 rounded-full bg-gray-400 dark:bg-stone-500"></span>
                   <span class="lesson-check hidden h-full w-full items-center justify-center text-xs font-bold leading-none">&#10003;</span>
                 </span>
                 <div class="min-w-0">
@@ -76,37 +76,39 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
   <!-- Not enrolled: enrollment widget -->
   <div id="not-enrolled-section" class="mb-12">
     <div id="enroll-step-button">
-      <p class="text-sm text-gray-500 dark:text-gray-500 mb-4">
-        Free forever. No account required. No personal data collected — your progress is stored locally in your browser.
-      </p>
       <button
         type="button"
         id="enroll-button"
-        class="theme-button cursor-pointer rounded-lg px-8 py-4 font-mono text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        class="theme-button w-full cursor-pointer rounded-lg px-8 py-4 font-mono text-lg disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Enroll in OpenCode School
       </button>
+      <p class="text-sm text-gray-500 dark:text-stone-500 mt-3 text-center">
+        Free forever. No account required. No personal data collected.
+      </p>
     </div>
 
     <div id="enroll-step-color" class="hidden">
-      <p id="color-picker-copy" class="text-sm text-gray-600 dark:text-gray-400 mb-4">Choose a color for your student ID card and site theme.</p>
-      <div id="color-picker" class="grid grid-cols-4 gap-2 sm:grid-cols-8 not-prose">
-        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="blue"    aria-label="Blue"    title="Blue"    style="background:#2563eb"></button>
-        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="indigo"  aria-label="Indigo"  title="Indigo"  style="background:#4f46e5"></button>
-        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="violet"  aria-label="Violet"  title="Violet"  style="background:#7c3aed"></button>
-        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="purple"  aria-label="Purple"  title="Purple"  style="background:#9333ea"></button>
-        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="fuchsia" aria-label="Fuchsia" title="Fuchsia" style="background:#c026d3"></button>
-        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="rose"    aria-label="Rose"    title="Rose"    style="background:#e11d48"></button>
-        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="red"     aria-label="Red"     title="Red"     style="background:#dc2626"></button>
-        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="orange"  aria-label="Orange"  title="Orange"  style="background:#ea580c"></button>
-        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="amber"   aria-label="Amber"   title="Amber"   style="background:#b45309"></button>
-        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="lime"    aria-label="Lime"    title="Lime"    style="background:#4d7c0f"></button>
-        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="green"   aria-label="Green"   title="Green"   style="background:#15803d"></button>
-        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="emerald" aria-label="Emerald" title="Emerald" style="background:#059669"></button>
-        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="teal"    aria-label="Teal"    title="Teal"    style="background:#0f766e"></button>
-        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="cyan"    aria-label="Cyan"    title="Cyan"    style="background:#0e7490"></button>
-        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="sky"     aria-label="Sky"     title="Sky"     style="background:#0284c7"></button>
-        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="slate"   aria-label="Slate"   title="Slate"   style="background:#475569"></button>
+      <p id="color-picker-copy" class="text-sm text-gray-600 dark:text-stone-400 mb-4">Choose a color for your student ID card and site theme.</p>
+      <div id="color-picker" class="grid grid-cols-6 gap-2 not-prose">
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="red"     aria-label="Red"     title="Red"     style="background:#dc2626;--i:0"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="orange"  aria-label="Orange"  title="Orange"  style="background:#ea580c;--i:1"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="amber"   aria-label="Amber"   title="Amber"   style="background:#b45309;--i:2"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="yellow"  aria-label="Yellow"  title="Yellow"  style="background:#ca8a04;--i:3"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="lime"    aria-label="Lime"    title="Lime"    style="background:#4d7c0f;--i:4"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="green"   aria-label="Green"   title="Green"   style="background:#15803d;--i:5"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="emerald" aria-label="Emerald" title="Emerald" style="background:#059669;--i:6"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="teal"    aria-label="Teal"    title="Teal"    style="background:#0f766e;--i:7"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="cyan"    aria-label="Cyan"    title="Cyan"    style="background:#0e7490;--i:8"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="sky"     aria-label="Sky"     title="Sky"     style="background:#0284c7;--i:9"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="blue"    aria-label="Blue"    title="Blue"    style="background:#2563eb;--i:10"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="indigo"  aria-label="Indigo"  title="Indigo"  style="background:#4f46e5;--i:11"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="violet"  aria-label="Violet"  title="Violet"  style="background:#7c3aed;--i:12"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="purple"  aria-label="Purple"  title="Purple"  style="background:#9333ea;--i:13"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="fuchsia" aria-label="Fuchsia" title="Fuchsia" style="background:#c026d3;--i:14"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="pink"    aria-label="Pink"    title="Pink"    style="background:#db2777;--i:15"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="rose"    aria-label="Rose"    title="Rose"    style="background:#e11d48;--i:16"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="slate"   aria-label="Slate"   title="Slate"   style="background:#475569;--i:17"></button>
       </div>
       <p id="enroll-error" class="mt-2 text-red-500 text-sm hidden">Something went wrong. Please try again.</p>
     </div>
@@ -124,16 +126,7 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
       Despite the name, OpenCode is not just a tool for writing software. You can use it to automate any task on your computer, from managing files to controlling other applications. It's like having an assistant that can understand your intentions, help you brainstorm, do deep research, and build creative things.
     </p>
 
-    <p>OpenCode works with multiple AI model providers, including:</p>
-
-    <ul>
-      <li><a href="https://anthropic.com">Anthropic</a> (Claude)</li>
-      <li><a href="https://openai.com">OpenAI</a> (GPT)</li>
-      <li><a href="https://deepmind.google/technologies/gemini/">Google</a> (Gemini)</li>
-      <li><a href="https://opencode.ai/docs/providers/">And 75+ more</a></li>
-    </ul>
-
-    <p>You can also run open-source models locally on your own machine using tools like <a href="https://ollama.com">Ollama</a>, <a href="https://lmstudio.ai">LM Studio</a>, or <a href="https://github.com/ggml-org/llama.cpp">llama.cpp</a> — no cloud account needed.</p>
+    <p>Unlike proprietary tools like Claude Code and OpenAI Codex, OpenCode works with <a href="https://opencode.ai/docs/providers/">75+ AI model providers</a>, including <a href="https://anthropic.com">Anthropic</a> (Claude), <a href="https://openai.com">OpenAI</a> (GPT), and <a href="https://deepmind.google/technologies/gemini/">Google</a> (Gemini). You can also run open-source models locally on your own machine using tools like <a href="https://ollama.com">Ollama</a>, <a href="https://lmstudio.ai">LM Studio</a>, or <a href="https://github.com/ggml-org/llama.cpp">llama.cpp</a> — no cloud account needed.</p>
 
     <h2>Who is this for?</h2>
 
@@ -300,12 +293,19 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
         setSelectedTheme(selectedTheme);
       }
 
-      // Step 1: click Enroll button → show color picker
+      // Step 1: click Enroll button → show color picker with staggered animation
       if (enrollBtn) {
         enrollBtn.addEventListener("click", function() {
           stepButton.classList.add("hidden");
           stepColor.classList.remove("hidden");
           setSelectedTheme(selectedTheme);
+          // Trigger entrance animation on each swatch
+          colorOptions.forEach(function(opt) {
+            opt.classList.remove("swatch-animate");
+            // Force reflow so re-adding the class replays the animation
+            void opt.offsetWidth;
+            opt.classList.add("swatch-animate");
+          });
         });
       }
 
