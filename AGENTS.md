@@ -42,6 +42,10 @@ All endpoints return JSON with CORS headers. No authentication required.
 
 The lessons API returns prose-only markdown (HTML, scripts, and interactive components stripped). The stripping logic is in `src/lib/mdx-to-prose.ts`. If you add new interactive HTML patterns to lesson MDX files, check that the stripping function handles them correctly.
 
+## Styles
+
+Use Tailwind's `stone` palette for all dark mode colors (backgrounds, borders, text). Do not use `gray` for dark mode. Light mode may continue to use `gray`.
+
 ## Scripts
 
 - `script/dev` — start the dev server

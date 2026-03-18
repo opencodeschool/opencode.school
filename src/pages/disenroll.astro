@@ -1,0 +1,17 @@
+---
+export const prerender = true;
+
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Disenroll">
+  <script is:inline>
+    localStorage.removeItem("studentId");
+    localStorage.removeItem("themeColor");
+    localStorage.removeItem("progress");
+    window.location.replace("/");
+  </script>
+  <noscript>
+    <p>JavaScript is required to disenroll. Please enable it and try again.</p>
+  </noscript>
+</Base>

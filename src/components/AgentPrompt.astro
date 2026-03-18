@@ -7,15 +7,20 @@ const { title } = Astro.props;
 ---
 
 <div class="agent-prompt-card hidden mb-8" data-lesson-title={title}>
-  <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Copy the prompt below and paste it into OpenCode to work on this lesson:</p>
-  <div class="relative">
-    <pre class="agent-prompt-text bg-gray-50 dark:bg-gray-900/80 border border-gray-200 dark:border-gray-700/50 rounded-lg px-4 py-3 font-mono text-base text-gray-800 dark:text-gray-200 overflow-x-auto whitespace-pre-wrap"></pre>
+  <p class="text-sm text-gray-500 dark:text-stone-400 mb-2 font-mono uppercase tracking-wider text-xs">
+    Prompt for OpenCode
+  </p>
+  <div class="agent-prompt-box relative rounded-lg overflow-hidden">
+    <pre class="agent-prompt-text px-5 py-4 font-mono text-sm text-gray-800 dark:text-stone-200 overflow-x-auto whitespace-pre-wrap leading-relaxed"></pre>
     <button
-      class="agent-prompt-copy absolute top-2 right-2 px-2.5 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+      class="agent-prompt-copy absolute top-2.5 right-2.5 px-2.5 py-1 text-xs font-mono font-medium rounded transition-colors cursor-pointer theme-button"
     >
       Copy
     </button>
   </div>
+  <p class="agent-prompt-confirm hidden mt-5 text-sm font-mono text-gray-500 dark:text-stone-400">
+    Copied! Now go paste that into OpenCode...
+  </p>
 </div>
 
 <script is:inline>
@@ -29,6 +34,7 @@ const { title } = Astro.props;
       var lessonTitle = card.getAttribute("data-lesson-title");
       var promptText = card.querySelector(".agent-prompt-text");
       var copyBtn = card.querySelector(".agent-prompt-copy");
+      var confirm = card.querySelector(".agent-prompt-confirm");
       if (!promptText) return;
 
       var prompt = "I'm enrolled in https://opencode.school\n\nMy student ID is " + studentId + "\n\nLet's work on the " + lessonTitle + " lesson together!";
@@ -38,8 +44,7 @@ const { title } = Astro.props;
       if (copyBtn) {
         copyBtn.addEventListener("click", function() {
           navigator.clipboard.writeText(prompt).then(function() {
-            copyBtn.textContent = "Copied!";
-            setTimeout(function() { copyBtn.textContent = "Copy"; }, 2000);
+            if (confirm) confirm.classList.remove("hidden");
           });
         });
       }

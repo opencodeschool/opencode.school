@@ -31,7 +31,7 @@
 
 @layer base {
   body {
-    @apply bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100;
+    @apply bg-white text-gray-900 dark:bg-stone-900 dark:text-stone-400;
   }
 
   /* Prose overrides for dark mode */
@@ -45,20 +45,31 @@
   }
 
   .dark .prose {
-    --tw-prose-body: theme(--color-gray-300);
-    --tw-prose-headings: theme(--color-gray-100);
+    --tw-prose-body: theme(--color-stone-400);
+    --tw-prose-headings: theme(--color-stone-300);
     --tw-prose-links: var(--theme-link-dark);
-    --tw-prose-code: theme(--color-gray-200);
-    --tw-prose-pre-bg: theme(--color-gray-900);
-    --tw-prose-pre-code: theme(--color-gray-200);
-    --tw-prose-bold: theme(--color-gray-100);
-    --tw-prose-counters: theme(--color-gray-400);
-    --tw-prose-bullets: theme(--color-gray-500);
-    --tw-prose-hr: theme(--color-gray-700);
-    --tw-prose-quotes: theme(--color-gray-300);
-    --tw-prose-quote-borders: theme(--color-gray-600);
-    --tw-prose-th-borders: theme(--color-gray-600);
-    --tw-prose-td-borders: theme(--color-gray-700);
+    --tw-prose-code: theme(--color-stone-300);
+    --tw-prose-pre-bg: theme(--color-stone-800);
+    --tw-prose-pre-code: theme(--color-stone-300);
+    --tw-prose-bold: theme(--color-stone-300);
+    --tw-prose-counters: theme(--color-stone-400);
+    --tw-prose-bullets: theme(--color-stone-500);
+    --tw-prose-hr: theme(--color-stone-700);
+    --tw-prose-quotes: theme(--color-stone-300);
+    --tw-prose-quote-borders: theme(--color-stone-600);
+    --tw-prose-th-borders: theme(--color-stone-600);
+    --tw-prose-td-borders: theme(--color-stone-700);
+  }
+
+  /* Ensure prose code blocks and inline code stay stone-toned in dark mode */
+  .dark .prose pre {
+    background-color: theme(--color-stone-800);
+    color: theme(--color-stone-300);
+  }
+
+  .dark .prose code {
+    background-color: theme(--color-stone-800);
+    color: theme(--color-stone-300);
   }
 }
 
@@ -77,7 +88,7 @@
 }
 
 .dark .spinner {
-  border-color: theme(--color-gray-700);
+  border-color: theme(--color-stone-700);
   border-top-color: var(--theme-link-dark);
 }
 
@@ -179,6 +190,33 @@
   border-color: var(--theme-solid) !important;
   background: var(--theme-solid) !important;
 }
+
+.agent-prompt-card .agent-prompt-box {
+  border: 2px solid var(--theme-solid);
+  border-left: 6px solid var(--theme-solid);
+  background: color-mix(in srgb, var(--theme-soft-bg) 40%, white);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-solid) 12%, transparent),
+              0 4px 16px color-mix(in srgb, var(--theme-solid) 15%, transparent);
+}
+
+.agent-prompt-card .agent-prompt-box pre {
+  background: color-mix(in srgb, var(--theme-soft-bg) 25%, white);
+  color: theme(--color-gray-800);
+}
+
+.dark .agent-prompt-card .agent-prompt-box {
+  border: 2px solid color-mix(in srgb, var(--theme-link-dark) 60%, transparent);
+  border-left: 6px solid var(--theme-link-dark);
+  background: theme(--color-stone-950);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-link-dark) 18%, transparent),
+              0 4px 20px color-mix(in srgb, var(--theme-link-dark) 20%, transparent);
+}
+
+.dark .agent-prompt-card .agent-prompt-box pre {
+  background: theme(--color-stone-950);
+  color: theme(--color-stone-300);
+}
+
 
 .enrollment-color-option {
   transition: transform 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
