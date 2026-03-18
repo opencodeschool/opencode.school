@@ -8,7 +8,7 @@ This project serves two audiences: human students (via the website) and AI agent
 
 - `public/llms.txt` — plain-text overview of the site and API for LLM agents. Points to the OpenAPI spec and lists all lesson API URLs. This is the first thing an agent reads when visiting the site.
 - `public/api/openapi.json` — OpenAPI 3.1 spec describing all API endpoints, request/response schemas, and examples.
-- `src/pages/api/lessons/index.ts` and `src/pages/api/lessons/[slug].ts` — the actual API endpoints that serve lesson content, acceptance criteria, and agent instructions as JSON.
+- `src/pages/api/lessons/index.ts` and `src/pages/api/lessons/[slug].ts` — the actual API endpoints that serve lesson content and agent instructions as JSON.
 
 When adding or removing API endpoints or lessons, update all three of these in the same commit:
 
@@ -16,15 +16,14 @@ When adding or removing API endpoints or lessons, update all three of these in t
 2. Update `public/api/openapi.json` with the new endpoint schema
 3. Update `public/llms.txt` if the new endpoint or lesson should be listed
 
-## Lesson content and acceptance criteria
+## Lesson content
 
 Each lesson is an MDX file in `src/content/lessons/`. The frontmatter schema (defined in `src/content.config.ts`) includes:
 
 - `title`, `slug`, `description`, `order` — standard metadata
-- `acceptanceCriteria` (required) — what "done" looks like, used by agents to evaluate completion
-- `agentInstructions` (optional) — extra guidance for agents on how to handle this lesson
+- `agentInstructions` (required) — describes what "done" looks like and how to verify it; used by agents to evaluate and mark completion
 
-When editing lessons, keep `acceptanceCriteria` accurate. It should describe a verifiable end state, not a process.
+When editing lessons, keep `agentInstructions` accurate. It should describe both the verifiable end state and the steps an agent should take to confirm it.
 
 ## API endpoints
 

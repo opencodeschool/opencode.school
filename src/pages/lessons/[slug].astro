@@ -34,7 +34,7 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
   </header>
 
   <div id="lesson-completed-banner" class="theme-banner hidden mb-6 rounded-lg px-4 py-3 text-sm font-medium">
-    You completed this lesson!
+    <span id="lesson-completed-text">You completed this lesson!</span>
   </div>
 
   <article class="prose dark:prose-invert max-w-none">
@@ -67,6 +67,7 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
       var btn = document.getElementById("lesson-action-btn");
       var label = document.getElementById("lesson-action-label");
       var banner = document.getElementById("lesson-completed-banner");
+      var bannerText = document.getElementById("lesson-completed-text");
       if (!action || !btn || !window.school) return;
 
       // Only show if enrolled
@@ -79,8 +80,25 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
       var nextUrl = btn.getAttribute("data-next-url");
       var originalLabel = label.textContent;
 
+      function formatBannerText(completion) {
+        var text = "You completed this lesson!";
+        if (completion && completion.completedAt) {
+          var date = new Date(completion.completedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+          var via = completion.source === "agent" ? "via OpenCode" : "in the browser";
+          text = "You completed this lesson on " + date + " " + via + ".";
+        }
+        return text;
+      }
+
+      function showBanner() {
+        if (!banner) return;
+        var completion = window.school.getLessonCompletion(lessonSlug);
+        if (bannerText) bannerText.textContent = formatBannerText(completion);
+        banner.classList.remove("hidden");
+      }
+
       function setCompleted() {
-        if (banner) banner.classList.remove("hidden");
+        showBanner();
         if (nextUrl) {
           window.location.href = nextUrl;
         } else {
@@ -91,7 +109,7 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
 
       // If already complete, show the banner and make the button navigate directly
       if (window.school.isLessonComplete(lessonSlug)) {
-        if (banner) banner.classList.remove("hidden");
+        showBanner();
         if (nextUrl) {
           btn.addEventListener("click", function() { window.location.href = nextUrl; });
         } else {
@@ -118,7 +136,7 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
       window.school.updateAllCheckmarks = function() {
         origUpdate();
         if (window.school.isLessonComplete(lessonSlug)) {
-          if (banner) banner.classList.remove("hidden");
+          showBanner();
         }
       };
     })();

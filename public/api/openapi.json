@@ -151,6 +151,12 @@
                   "lessonSlug": {
                     "type": "string",
                     "example": "configuration"
+                  },
+                  "source": {
+                    "type": "string",
+                    "enum": ["browser", "agent"],
+                    "description": "Who marked the lesson complete. Omit or use \"browser\" for student-initiated completions; use \"agent\" when an AI agent marks it complete on the student's behalf.",
+                    "example": "agent"
                   }
                 },
                 "required": ["lessonSlug"]
@@ -196,19 +202,27 @@
           "slug": { "type": "string", "example": "configuration" },
           "title": { "type": "string", "example": "Configuration" },
           "description": { "type": "string", "example": "Create a global configuration file for OpenCode." },
-          "acceptanceCriteria": { "type": "string", "example": "The file ~/.config/opencode/opencode.jsonc exists and contains valid JSONC." },
-          "agentInstructions": { "type": ["string", "null"], "example": null },
+          "agentInstructions": { "type": "string", "example": "Verify completion by reading ~/.config/opencode/opencode.jsonc and confirming it contains the expected keys." },
           "content": { "type": "string", "description": "Lesson content as prose markdown (HTML and scripts stripped)." }
         },
-        "required": ["order", "slug", "title", "description", "acceptanceCriteria", "content"]
+        "required": ["order", "slug", "title", "description", "agentInstructions", "content"]
+      },
+      "CompletedLesson": {
+        "type": "object",
+        "properties": {
+          "slug": { "type": "string", "example": "configuration" },
+          "completedAt": { "type": "string", "format": "date-time" },
+          "source": { "type": "string", "enum": ["browser", "agent"] }
+        },
+        "required": ["slug", "completedAt", "source"]
       },
       "Progress": {
         "type": "object",
         "properties": {
           "completedLessons": {
             "type": "array",
-            "items": { "type": "string" },
-            "example": ["prerequisites"]
+            "items": { "$ref": "#/components/schemas/CompletedLesson" },
+            "example": [{ "slug": "prerequisites", "completedAt": "2026-03-17T12:00:00Z", "source": "browser" }]
           },
           "createdAt": { "type": "string", "format": "date-time" },
           "updatedAt": { "type": "string", "format": "date-time" }

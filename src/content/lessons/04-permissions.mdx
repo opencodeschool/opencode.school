@@ -3,7 +3,7 @@ title: "Permissions"
 slug: permissions
 description: "Control what OpenCode can and can't do without asking."
 order: 4
-acceptanceCriteria: "The global config file ~/.config/opencode/opencode.jsonc has a \"permission\" object with at least two granular permission rules (not just the wildcard \"*\": \"allow\"). For example, separate rules for file reads, file writes, and shell commands."
+agentInstructions: "Verify completion by reading ~/.config/opencode/opencode.jsonc and confirming the \"permission\" object has at least two granular rules beyond a bare wildcard (e.g. separate rules for file reads, file writes, and shell commands)."
 ---
 
 import AgentPrompt from '../../components/AgentPrompt.astro'

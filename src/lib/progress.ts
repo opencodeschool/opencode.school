@@ -1,7 +1,35 @@
+export type CompletionSource = "browser" | "agent";
+
+export interface CompletedLesson {
+	slug: string;
+	completedAt: string;
+	source: CompletionSource;
+}
+
 export interface StudentProgress {
-	completedLessons: string[];
+	completedLessons: CompletedLesson[];
 	createdAt: string;
 	updatedAt: string;
+}
+
+// Legacy records stored completedLessons as string[]. Normalize on read.
+function normalizeProgress(raw: {
+	completedLessons: (string | CompletedLesson)[];
+	createdAt: string;
+	updatedAt: string;
+}): StudentProgress {
+	return {
+		...raw,
+		completedLessons: raw.completedLessons.map((entry) =>
+			typeof entry === "string"
+				? {
+						slug: entry,
+						completedAt: raw.updatedAt,
+						source: "browser" as CompletionSource,
+					}
+				: entry,
+		),
+	};
 }
 
 function kvKey(studentId: string): string {
@@ -13,7 +41,12 @@ export async function getProgress(
 	kv: KVNamespace,
 	studentId: string,
 ): Promise<StudentProgress | null> {
-	return kv.get<StudentProgress>(kvKey(studentId), "json");
+	const raw = await kv.get<{
+		completedLessons: (string | CompletedLesson)[];
+		createdAt: string;
+		updatedAt: string;
+	}>(kvKey(studentId), "json");
+	return raw ? normalizeProgress(raw) : null;
 }
 
 /** Create a new student record in KV. Returns the initial progress object. */
@@ -32,19 +65,24 @@ export async function createStudent(
 }
 
 /**
- * Mark a lesson as complete for a student. Idempotent — adding an already-completed
+ * Mark a lesson as complete for a student. Idempotent — marking an already-completed
  * lesson is a no-op. Returns the updated progress, or null if the student doesn't exist.
  */
 export async function markLessonComplete(
 	kv: KVNamespace,
 	studentId: string,
 	lessonSlug: string,
+	source: CompletionSource = "browser",
 ): Promise<StudentProgress | null> {
 	const progress = await getProgress(kv, studentId);
 	if (!progress) return null;
 
-	if (!progress.completedLessons.includes(lessonSlug)) {
-		progress.completedLessons.push(lessonSlug);
+	if (!progress.completedLessons.some((l) => l.slug === lessonSlug)) {
+		progress.completedLessons.push({
+			slug: lessonSlug,
+			completedAt: new Date().toISOString(),
+			source,
+		});
 	}
 	progress.updatedAt = new Date().toISOString();
 	await kv.put(kvKey(studentId), JSON.stringify(progress));

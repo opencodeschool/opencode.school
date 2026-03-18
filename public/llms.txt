@@ -2,7 +2,7 @@
 
 > OpenCode School is an interactive course that teaches people how to use OpenCode. Students enroll on the homepage (https://opencode.school), get a student ID, then use OpenCode Desktop to work through lessons. An API is available for agents to fetch lesson content, acceptance criteria, and student progress.
 
-When a student gives you their student ID, use the API to fetch their progress and the lesson they want to work on. Each lesson has acceptance criteria that describe what "done" looks like. When the criteria are met, mark the lesson complete via the API.
+When a student gives you their student ID, use the API to fetch their progress and the lesson they want to work on. Each lesson has `agentInstructions` describing what "done" looks like and how to verify it — follow them. When the criteria are met, mark the lesson complete with `PUT /api/progress/{studentId}` using body `{"lessonSlug": "...", "source": "agent"}` before telling the student.
 
 ## API
 
@@ -11,7 +11,7 @@ When a student gives you their student ID, use the API to fetch their progress a
 - [Single lesson](https://opencode.school/api/lessons/{slug}): GET - A single lesson by slug
 - [Enroll](https://opencode.school/api/enroll): POST - Generate a student ID and create a progress record
 - [Get progress](https://opencode.school/api/progress/{studentId}): GET - Fetch a student's completed lessons
-- [Mark complete](https://opencode.school/api/progress/{studentId}): PUT - Mark a lesson complete (body: `{"lessonSlug": "..."}`)
+- [Mark complete](https://opencode.school/api/progress/{studentId}): PUT - Mark a lesson complete (body: `{"lessonSlug": "...", "source": "agent"}`)
 
 ## Lessons
 

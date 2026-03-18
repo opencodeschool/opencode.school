@@ -1,6 +1,10 @@
 import { env } from "cloudflare:workers";
 import type { APIRoute } from "astro";
-import { getProgress, markLessonComplete } from "../../../lib/progress";
+import {
+	type CompletionSource,
+	getProgress,
+	markLessonComplete,
+} from "../../../lib/progress";
 import { isValidStudentId } from "../../../lib/student-id";
 
 const corsHeaders = {
@@ -49,7 +53,7 @@ export const PUT: APIRoute = async ({ params, request }) => {
 		return badRequest("Invalid student ID format");
 	}
 
-	let body: { lessonSlug?: string };
+	let body: { lessonSlug?: string; source?: string };
 	try {
 		body = await request.json();
 	} catch {
@@ -60,10 +64,14 @@ export const PUT: APIRoute = async ({ params, request }) => {
 		return badRequest('Missing or invalid "lessonSlug" field');
 	}
 
+	const source: CompletionSource =
+		body.source === "agent" ? "agent" : "browser";
+
 	const progress = await markLessonComplete(
 		env.PROGRESS,
 		studentId,
 		body.lessonSlug,
+		source,
 	);
 	if (!progress) {
 		return notFound("Student not found");

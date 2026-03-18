@@ -8,8 +8,7 @@ const lessons = defineCollection({
 		slug: z.string(),
 		description: z.string(),
 		order: z.number(),
-		acceptanceCriteria: z.string(),
-		agentInstructions: z.string().optional(),
+		agentInstructions: z.string(),
 	}),
 });
 

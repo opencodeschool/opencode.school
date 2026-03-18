@@ -31,8 +31,7 @@ export const GET: APIRoute = async ({ params }) => {
 		slug: lesson.data.slug,
 		title: lesson.data.title,
 		description: lesson.data.description,
-		acceptanceCriteria: lesson.data.acceptanceCriteria,
-		agentInstructions: lesson.data.agentInstructions || null,
+		agentInstructions: lesson.data.agentInstructions,
 		content: mdxToProse(lesson.body),
 	};
 

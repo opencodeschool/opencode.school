@@ -328,7 +328,14 @@ const currentPath = Astro.url.pathname;
 
         isLessonComplete(slug) {
           const progress = this.getCachedProgress();
-          return progress?.completedLessons?.includes(slug) || false;
+          return progress?.completedLessons?.some((l) => (typeof l === "string" ? l : l.slug) === slug) || false;
+        },
+
+        getLessonCompletion(slug) {
+          const progress = this.getCachedProgress();
+          const entry = progress?.completedLessons?.find((l) => (typeof l === "string" ? l : l.slug) === slug);
+          if (!entry) return null;
+          return typeof entry === "string" ? { slug: entry, completedAt: null, source: "browser" } : entry;
         },
 
         getVisitedLessons() {
@@ -374,7 +381,7 @@ const currentPath = Astro.url.pathname;
           const res = await fetch(`/api/progress/${studentId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ lessonSlug }),
+            body: JSON.stringify({ lessonSlug, source: "browser" }),
           });
           if (!res.ok) return null;
           const progress = await res.json();
