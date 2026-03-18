@@ -21,6 +21,7 @@
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.2.1",
     "tailwindcss": "^4.2.1",
+    "vitest": "^4.1.0",
     "wrangler": "^4.73.0"
   }
 }
