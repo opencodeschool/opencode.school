@@ -4,8 +4,9 @@ import { defineMiddleware } from "astro:middleware";
 // No browser sends "text/markdown" in Accept — it's a reliable agent signal.
 export const onRequest = defineMiddleware(async ({ request, url }, next) => {
 	if (request.headers.get("Accept")?.includes("text/markdown")) {
-		// Homepage → serve llms.txt instead of the HTML page
-		if (url.pathname === "/") return fetch(new URL("/llms.txt", url));
+		// Homepage → redirect to the llms.txt API route
+		if (url.pathname === "/")
+			return Response.redirect(new URL("/llms.txt", url), 302);
 
 		// Lesson page → redirect to the JSON API endpoint
 		const m = url.pathname.match(/^\/lessons\/([^/]+)\/?$/);
