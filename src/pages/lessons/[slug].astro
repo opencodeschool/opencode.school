@@ -37,6 +37,10 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
     <span id="lesson-completed-text">You completed this lesson!</span>
   </div>
 
+  <div id="lesson-enroll-nudge" class="hidden mb-8 rounded-lg border border-gray-200 dark:border-stone-700 px-4 py-3 text-sm text-gray-600 dark:text-stone-400">
+    <a href="/" class="font-medium text-gray-900 dark:text-stone-100 underline underline-offset-2">Enroll for free</a> to track your progress through the course.
+  </div>
+
   <article class="prose dark:prose-invert max-w-none">
     <Content />
   </article>
@@ -68,10 +72,15 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
       var label = document.getElementById("lesson-action-label");
       var banner = document.getElementById("lesson-completed-banner");
       var bannerText = document.getElementById("lesson-completed-text");
+      var nudge = document.getElementById("lesson-enroll-nudge");
       if (!action || !btn || !window.school) return;
 
-      // Only show if enrolled
-      if (!window.school.getStudentId()) return;
+      // Show enroll nudge to unenrolled visitors, hide it once enrolled
+      if (!window.school.getStudentId()) {
+        if (nudge) nudge.classList.remove("hidden");
+        return;
+      }
+      if (nudge) nudge.classList.add("hidden");
       action.classList.remove("hidden");
 
       // Record that this lesson has been visited
@@ -135,6 +144,7 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
       var origUpdate = window.school.updateAllCheckmarks.bind(window.school);
       window.school.updateAllCheckmarks = function() {
         origUpdate();
+        if (nudge && window.school.getStudentId()) nudge.classList.add("hidden");
         if (window.school.isLessonComplete(lessonSlug)) {
           showBanner();
         }
