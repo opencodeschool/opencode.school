@@ -10,7 +10,7 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
 <Base title="Home">
 
   <!-- Student ID card: always at top, shown once enrolled -->
-  <div id="student-id-card" class="hidden mb-8" style="max-width:420px">
+  <div id="student-id-card" class="hidden mb-8 relative" style="max-width:420px; z-index:100">
     <div class="theme-card-band rounded-2xl overflow-hidden shadow-2xl" style="aspect-ratio:85.6/54">
       <div class="flex flex-col justify-between h-full px-7 py-5">
         <p class="text-xs font-mono uppercase tracking-[0.3em] opacity-80">OpenCode Student ID</p>
@@ -197,16 +197,17 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
       }
 
       function fireConfetti() {
-        var duration = 4500;
-        var end = Date.now() + duration;
         var palettes = window.school.getThemePalettes();
         var palette = palettes[window.school.getThemeColor()] || palettes.blue;
         var colors = [palette.solid, palette.solidHover, palette.linkDark, palette.softText, palette.softTextDark];
 
-        (function frame() {
-          window.confetti({ particleCount: 6, angle: 270, spread: 80, startVelocity: 35, gravity: 1.2, origin: { x: Math.random(), y: 0 }, colors: colors });
-          if (Date.now() < end) requestAnimationFrame(frame);
-        })();
+        var rect = idCard.getBoundingClientRect();
+        var originX = (rect.left + rect.width / 2) / window.innerWidth;
+        var originY = (rect.top + rect.height / 2) / window.innerHeight;
+
+        for (var angle = 0; angle < 360; angle += 30) {
+          window.confetti({ particleCount: 12, angle: angle, spread: 40, startVelocity: 45, gravity: 1, origin: { x: originX, y: originY }, colors: colors, zIndex: 50, ticks: 120 });
+        }
       }
 
       function cipherReveal(target, callback) {
