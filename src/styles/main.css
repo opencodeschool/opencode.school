@@ -9,6 +9,20 @@
     Menlo, Monaco, Consolas, monospace;
 }
 
+:root {
+  --theme-solid: #2563eb;
+  --theme-solid-hover: #1d4ed8;
+  --theme-link: #2563eb;
+  --theme-link-dark: #60a5fa;
+  --theme-soft-bg: #eff6ff;
+  --theme-soft-border: #bfdbfe;
+  --theme-soft-text: #1d4ed8;
+  --theme-soft-bg-dark: rgba(37, 99, 235, 0.18);
+  --theme-soft-border-dark: rgba(96, 165, 250, 0.35);
+  --theme-soft-text-dark: #93c5fd;
+  --theme-card-text: #dbeafe;
+}
+
 /*
   Light/dark mode via OS preference.
   We add .dark to <html> via a tiny inline script so Tailwind's
@@ -24,7 +38,7 @@
   .prose {
     --tw-prose-body: theme(--color-gray-700);
     --tw-prose-headings: theme(--color-gray-900);
-    --tw-prose-links: theme(--color-blue-600);
+    --tw-prose-links: var(--theme-link);
     --tw-prose-code: theme(--color-gray-800);
     --tw-prose-pre-bg: theme(--color-gray-50);
     --tw-prose-pre-code: theme(--color-gray-800);
@@ -33,7 +47,7 @@
   .dark .prose {
     --tw-prose-body: theme(--color-gray-300);
     --tw-prose-headings: theme(--color-gray-100);
-    --tw-prose-links: theme(--color-blue-400);
+    --tw-prose-links: var(--theme-link-dark);
     --tw-prose-code: theme(--color-gray-200);
     --tw-prose-pre-bg: theme(--color-gray-900);
     --tw-prose-pre-code: theme(--color-gray-200);
@@ -57,12 +71,124 @@
   width: 18px;
   height: 18px;
   border: 2px solid theme(--color-gray-200);
-  border-top-color: theme(--color-blue-500);
+  border-top-color: var(--theme-solid);
   border-radius: 50%;
   animation: spin-slow 0.6s linear infinite;
 }
 
 .dark .spinner {
   border-color: theme(--color-gray-700);
-  border-top-color: theme(--color-blue-400);
+  border-top-color: var(--theme-link-dark);
+}
+
+.theme-link {
+  color: var(--theme-link);
+  transition: color 150ms ease;
+}
+
+.theme-link:hover {
+  color: var(--theme-solid-hover);
+}
+
+.dark .theme-link {
+  color: var(--theme-link-dark);
+}
+
+.dark .theme-link:hover {
+  color: var(--theme-soft-text-dark);
+}
+
+.theme-button {
+  background: var(--theme-solid);
+  color: white;
+  transition: background-color 150ms ease;
+}
+
+.theme-button:hover {
+  background: var(--theme-solid-hover);
+}
+
+.theme-panel {
+  border: 1px solid var(--theme-soft-border);
+  background: color-mix(in srgb, var(--theme-soft-bg) 88%, white);
+}
+
+.dark .theme-panel {
+  border-color: var(--theme-soft-border-dark);
+  background: var(--theme-soft-bg-dark);
+}
+
+.theme-kicker {
+  color: var(--theme-soft-text);
+}
+
+.dark .theme-kicker {
+  color: var(--theme-soft-text-dark);
+}
+
+.theme-banner {
+  background: var(--theme-soft-bg);
+  color: var(--theme-soft-text);
+}
+
+.dark .theme-banner {
+  background: var(--theme-soft-bg-dark);
+  color: var(--theme-soft-text-dark);
+}
+
+.theme-active-nav {
+  background: var(--theme-soft-bg);
+  color: var(--theme-soft-text);
+}
+
+.dark .theme-active-nav {
+  background: var(--theme-soft-bg-dark);
+  color: var(--theme-soft-text-dark);
+}
+
+.theme-solid-bg {
+  background: var(--theme-solid);
+}
+
+.theme-card-band {
+  background: var(--theme-solid);
+  color: var(--theme-card-text);
+}
+
+.lesson-link:hover .lesson-title {
+  color: var(--theme-link);
+}
+
+.dark .lesson-link:hover .lesson-title {
+  color: var(--theme-link-dark);
+}
+
+.lesson-row--next {
+  border: 1px solid var(--theme-soft-border);
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--theme-soft-bg) 92%, white);
+  padding-inline: 1rem;
+}
+
+.dark .lesson-row--next {
+  border-color: var(--theme-soft-border-dark);
+  background: var(--theme-soft-bg-dark);
+}
+
+.lesson-status--complete {
+  border-color: var(--theme-solid) !important;
+  background: var(--theme-solid) !important;
+}
+
+.enrollment-color-option {
+  transition: transform 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.enrollment-color-option:hover {
+  transform: translateY(-1px);
+}
+
+.enrollment-color-option.is-selected {
+  border-color: var(--theme-solid);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-solid) 22%, transparent);
 }

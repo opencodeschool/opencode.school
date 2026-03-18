@@ -1,10 +1,10 @@
 ---
 title: "Enrollment"
 slug: enrollment
-description: "Get your student ID and start tracking your progress."
+description: "Get your student ID, pick a theme color, and start tracking your progress."
 order: 0
-acceptanceCriteria: "Student has a student ID stored in localStorage and a corresponding progress record exists on the server."
-agentInstructions: "This lesson is completed automatically via the website. Direct the student to visit https://opencode.school/lessons/enrollment and click the 'Generate my student ID' button. Do not attempt to complete this lesson programmatically."
+acceptanceCriteria: "Student has a student ID stored in localStorage, a theme color preference stored in localStorage, and a corresponding progress record exists on the server."
+agentInstructions: "This lesson is completed automatically via the website. Direct the student to visit https://opencode.school/lessons/enrollment, click the 'Generate my student ID' button, choose a color, and let the website finish enrollment. Do not attempt to complete this lesson programmatically."
 ---
 
 <div id="enrollment-area">
@@ -13,7 +13,28 @@ agentInstructions: "This lesson is completed automatically via the website. Dire
 
 Click the button below to generate your student ID — a unique identifier that tracks your progress through the course.
 
-<button id="enroll-button" class="mt-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-mono text-sm rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">Generate my student ID</button>
+<button type="button" id="enroll-button" class="theme-button mt-2 cursor-pointer rounded-lg px-6 py-3 font-mono text-sm disabled:opacity-50 disabled:cursor-not-allowed">Generate my student ID</button>
+
+<p id="color-picker-copy" class="mt-4 text-sm text-gray-600 dark:text-gray-400 hidden">Choose a color for your student ID card and site theme.</p>
+
+<div id="color-picker" class="mt-4 hidden grid grid-cols-4 gap-3 sm:grid-cols-8 not-prose">
+  <button type="button" class="enrollment-color-option h-12 w-12 rounded-full border border-gray-200 bg-white p-1.5 shadow-sm dark:border-gray-700 dark:bg-gray-900" data-theme-color="blue" aria-label="Blue" title="Blue"><span class="block h-full w-full rounded-full" style="background:#2563eb"></span></button>
+  <button type="button" class="enrollment-color-option h-12 w-12 rounded-full border border-gray-200 bg-white p-1.5 shadow-sm dark:border-gray-700 dark:bg-gray-900" data-theme-color="indigo" aria-label="Indigo" title="Indigo"><span class="block h-full w-full rounded-full" style="background:#4f46e5"></span></button>
+  <button type="button" class="enrollment-color-option h-12 w-12 rounded-full border border-gray-200 bg-white p-1.5 shadow-sm dark:border-gray-700 dark:bg-gray-900" data-theme-color="violet" aria-label="Violet" title="Violet"><span class="block h-full w-full rounded-full" style="background:#7c3aed"></span></button>
+  <button type="button" class="enrollment-color-option h-12 w-12 rounded-full border border-gray-200 bg-white p-1.5 shadow-sm dark:border-gray-700 dark:bg-gray-900" data-theme-color="purple" aria-label="Purple" title="Purple"><span class="block h-full w-full rounded-full" style="background:#9333ea"></span></button>
+  <button type="button" class="enrollment-color-option h-12 w-12 rounded-full border border-gray-200 bg-white p-1.5 shadow-sm dark:border-gray-700 dark:bg-gray-900" data-theme-color="fuchsia" aria-label="Fuchsia" title="Fuchsia"><span class="block h-full w-full rounded-full" style="background:#c026d3"></span></button>
+  <button type="button" class="enrollment-color-option h-12 w-12 rounded-full border border-gray-200 bg-white p-1.5 shadow-sm dark:border-gray-700 dark:bg-gray-900" data-theme-color="rose" aria-label="Rose" title="Rose"><span class="block h-full w-full rounded-full" style="background:#e11d48"></span></button>
+  <button type="button" class="enrollment-color-option h-12 w-12 rounded-full border border-gray-200 bg-white p-1.5 shadow-sm dark:border-gray-700 dark:bg-gray-900" data-theme-color="red" aria-label="Red" title="Red"><span class="block h-full w-full rounded-full" style="background:#dc2626"></span></button>
+  <button type="button" class="enrollment-color-option h-12 w-12 rounded-full border border-gray-200 bg-white p-1.5 shadow-sm dark:border-gray-700 dark:bg-gray-900" data-theme-color="orange" aria-label="Orange" title="Orange"><span class="block h-full w-full rounded-full" style="background:#ea580c"></span></button>
+  <button type="button" class="enrollment-color-option h-12 w-12 rounded-full border border-gray-200 bg-white p-1.5 shadow-sm dark:border-gray-700 dark:bg-gray-900" data-theme-color="amber" aria-label="Amber" title="Amber"><span class="block h-full w-full rounded-full" style="background:#b45309"></span></button>
+  <button type="button" class="enrollment-color-option h-12 w-12 rounded-full border border-gray-200 bg-white p-1.5 shadow-sm dark:border-gray-700 dark:bg-gray-900" data-theme-color="lime" aria-label="Lime" title="Lime"><span class="block h-full w-full rounded-full" style="background:#4d7c0f"></span></button>
+  <button type="button" class="enrollment-color-option h-12 w-12 rounded-full border border-gray-200 bg-white p-1.5 shadow-sm dark:border-gray-700 dark:bg-gray-900" data-theme-color="green" aria-label="Green" title="Green"><span class="block h-full w-full rounded-full" style="background:#15803d"></span></button>
+  <button type="button" class="enrollment-color-option h-12 w-12 rounded-full border border-gray-200 bg-white p-1.5 shadow-sm dark:border-gray-700 dark:bg-gray-900" data-theme-color="emerald" aria-label="Emerald" title="Emerald"><span class="block h-full w-full rounded-full" style="background:#059669"></span></button>
+  <button type="button" class="enrollment-color-option h-12 w-12 rounded-full border border-gray-200 bg-white p-1.5 shadow-sm dark:border-gray-700 dark:bg-gray-900" data-theme-color="teal" aria-label="Teal" title="Teal"><span class="block h-full w-full rounded-full" style="background:#0f766e"></span></button>
+  <button type="button" class="enrollment-color-option h-12 w-12 rounded-full border border-gray-200 bg-white p-1.5 shadow-sm dark:border-gray-700 dark:bg-gray-900" data-theme-color="cyan" aria-label="Cyan" title="Cyan"><span class="block h-full w-full rounded-full" style="background:#0e7490"></span></button>
+  <button type="button" class="enrollment-color-option h-12 w-12 rounded-full border border-gray-200 bg-white p-1.5 shadow-sm dark:border-gray-700 dark:bg-gray-900" data-theme-color="sky" aria-label="Sky" title="Sky"><span class="block h-full w-full rounded-full" style="background:#0284c7"></span></button>
+  <button type="button" class="enrollment-color-option h-12 w-12 rounded-full border border-gray-200 bg-white p-1.5 shadow-sm dark:border-gray-700 dark:bg-gray-900" data-theme-color="slate" aria-label="Slate" title="Slate"><span class="block h-full w-full rounded-full" style="background:#475569"></span></button>
+</div>
 
 <p id="enroll-error" class="mt-2 text-red-500 text-sm hidden">Something went wrong. Please try again.</p>
 
@@ -22,8 +43,8 @@ Click the button below to generate your student ID — a unique identifier that 
 <div id="enrolled" class="hidden">
 
 <div id="student-id-card" class="my-8 rounded-2xl overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700/50">
-  <div class="bg-blue-600 dark:bg-blue-700 px-5 py-2">
-    <p class="text-lg font-mono uppercase tracking-[0.25em] text-blue-100 text-center">HELLO! My OpenCode Student ID is</p>
+  <div class="theme-card-band px-5 py-2">
+    <p class="text-lg font-mono uppercase tracking-[0.25em] text-center">HELLO! My OpenCode Student ID is</p>
   </div>
   <div class="bg-gray-50 dark:bg-gray-900/80 px-6 py-4">
     <p id="student-id-display" class="text-3xl md:text-4xl font-mono font-bold text-gray-800 dark:text-gray-100 tracking-tight text-center"></p>
@@ -39,12 +60,18 @@ Click the button below to generate your student ID — a unique identifier that 
 <script>{`
 document.addEventListener("DOMContentLoaded", function() {
   var enrollBtn = document.getElementById("enroll-button");
+  var colorPickerCopy = document.getElementById("color-picker-copy");
+  var colorPicker = document.getElementById("color-picker");
   var enrollError = document.getElementById("enroll-error");
   var notEnrolled = document.getElementById("not-enrolled");
   var enrolled = document.getElementById("enrolled");
   var display = document.getElementById("student-id-display");
+  var colorOptions = Array.prototype.slice.call(document.querySelectorAll(".enrollment-color-option[data-theme-color]"));
 
   if (!enrollBtn || !window.school) return;
+
+  var selectedTheme = window.school.getThemeColor();
+  var isSubmitting = false;
 
   var chars = "abcdefghijklmnopqrstuvwxyz";
   var digits = "0123456789";
@@ -66,21 +93,16 @@ document.addEventListener("DOMContentLoaded", function() {
   function fireConfetti() {
     var duration = 2000;
     var end = Date.now() + duration;
-    var colors = ["#3b82f6", "#60a5fa", "#2563eb", "#818cf8", "#6366f1"];
+    var palettes = window.school.getThemePalettes();
+    var palette = palettes[window.school.getThemeColor()] || palettes.blue;
+    var colors = [palette.solid, palette.solidHover, palette.linkDark, palette.softText, palette.softTextDark];
 
     (function frame() {
       window.confetti({
-        particleCount: 3,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0 },
-        colors: colors
-      });
-      window.confetti({
-        particleCount: 3,
-        angle: 120,
-        spread: 55,
-        origin: { x: 1 },
+        particleCount: 6,
+        angle: 90,
+        spread: 80,
+        origin: { x: 0.5, y: 0 },
         colors: colors
       });
       if (Date.now() < end) requestAnimationFrame(frame);
@@ -156,24 +178,58 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
+  function setSelectedTheme(themeName) {
+    selectedTheme = window.school.setThemeColor(themeName);
+    colorOptions.forEach(function(option) {
+      option.classList.toggle("is-selected", option.getAttribute("data-theme-color") === selectedTheme);
+    });
+  }
+
+  function setPickerState(message, disabled) {
+    if (colorPickerCopy && message) colorPickerCopy.textContent = message;
+    colorOptions.forEach(function(option) {
+      option.disabled = disabled;
+      option.classList.toggle("opacity-60", disabled);
+      option.classList.toggle("cursor-not-allowed", disabled);
+    });
+  }
+
+  function revealColorPicker() {
+    enrollBtn.classList.add("hidden");
+    if (colorPickerCopy) colorPickerCopy.classList.remove("hidden");
+    if (colorPicker) colorPicker.classList.remove("hidden");
+    setSelectedTheme(selectedTheme);
+  }
+
   var existingId = window.school.getStudentId();
   if (existingId) {
     showEnrolled(existingId, false);
+  } else {
+    setSelectedTheme(selectedTheme);
   }
 
-  enrollBtn.addEventListener("click", async function() {
-    enrollBtn.disabled = true;
-    enrollBtn.textContent = "Generating...";
-    enrollError.classList.add("hidden");
+  enrollBtn.addEventListener("click", function() {
+    revealColorPicker();
+  });
 
-    try {
-      var data = await window.school.enroll();
-      showEnrolled(data.studentId, true);
-    } catch (e) {
-      enrollError.classList.remove("hidden");
-      enrollBtn.disabled = false;
-      enrollBtn.textContent = "Generate my student ID";
-    }
+  colorOptions.forEach(function(option) {
+    option.addEventListener("click", async function() {
+      if (isSubmitting) return;
+
+      isSubmitting = true;
+      enrollError.classList.add("hidden");
+      setSelectedTheme(option.getAttribute("data-theme-color"));
+      setPickerState("Generating your student ID...", true);
+
+      try {
+        var data = await window.school.enroll();
+        showEnrolled(data.studentId, true);
+      } catch (e) {
+        enrollError.classList.remove("hidden");
+        setPickerState("Choose a color for your student ID card and site theme.", false);
+        isSubmitting = false;
+      }
+    });
   });
 });
 `}</script>
