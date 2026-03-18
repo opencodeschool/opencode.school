@@ -73,6 +73,9 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
       if (!window.school.getStudentId()) return;
       action.classList.remove("hidden");
 
+      // Record that this lesson has been visited
+      window.school.markLessonVisited(lessonSlug);
+
       var nextUrl = btn.getAttribute("data-next-url");
       var originalLabel = label.textContent;
 

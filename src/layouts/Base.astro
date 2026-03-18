@@ -331,6 +331,24 @@ const currentPath = Astro.url.pathname;
           return progress?.completedLessons?.includes(slug) || false;
         },
 
+        getVisitedLessons() {
+          try {
+            return JSON.parse(localStorage.getItem("visitedLessons") || "[]");
+          } catch { return []; }
+        },
+
+        isLessonVisited(slug) {
+          return this.getVisitedLessons().includes(slug);
+        },
+
+        markLessonVisited(slug) {
+          const visited = this.getVisitedLessons();
+          if (!visited.includes(slug)) {
+            visited.push(slug);
+            localStorage.setItem("visitedLessons", JSON.stringify(visited));
+          }
+        },
+
         async enroll() {
           const res = await fetch("/api/enroll", { method: "POST" });
           if (!res.ok) throw new Error("Enrollment failed");
@@ -388,6 +406,7 @@ const currentPath = Astro.url.pathname;
             if (ctaEl) {
               ctaEl.classList.toggle("hidden", !isNext);
               ctaEl.classList.toggle("inline-block", isNext);
+              if (isNext) ctaEl.textContent = this.isLessonVisited(slug) ? "Continue" : "Start";
             }
             if (statusEl) {
               statusEl.classList.toggle("lesson-status--complete", complete);

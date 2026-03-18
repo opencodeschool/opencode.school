@@ -198,15 +198,21 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
       }
 
       function fireConfetti() {
-        var duration = 2500;
+        var duration = 4500;
         var end = Date.now() + duration;
         var palettes = window.school.getThemePalettes();
         var palette = palettes[window.school.getThemeColor()] || palettes.blue;
         var colors = [palette.solid, palette.solidHover, palette.linkDark, palette.softText, palette.softTextDark];
 
         (function frame() {
-          window.confetti({ particleCount: 4, angle: 60,  spread: 55, origin: { x: 0, y: 0 }, colors: colors });
-          window.confetti({ particleCount: 4, angle: 120, spread: 55, origin: { x: 1, y: 0 }, colors: colors });
+          // Top-left → center
+          window.confetti({ particleCount: 10, angle: 315,  spread: 70, startVelocity: 55, gravity: 0.8, origin: { x: 0, y: 0 }, colors: colors });
+          // Top-right → center
+          window.confetti({ particleCount: 10, angle: 225, spread: 70, startVelocity: 55, gravity: 0.8, origin: { x: 1, y: 0 }, colors: colors });
+          // Bottom-left → center
+          window.confetti({ particleCount: 10, angle: 45,  spread: 70, startVelocity: 55, gravity: 0.8, origin: { x: 0, y: 1 }, colors: colors });
+          // Bottom-right → center
+          window.confetti({ particleCount: 10, angle: 135, spread: 70, startVelocity: 55, gravity: 0.8, origin: { x: 1, y: 1 }, colors: colors });
           if (Date.now() < end) requestAnimationFrame(frame);
         })();
       }

@@ -18,28 +18,28 @@ Before we install anything, let's make sure you have what you need. Your browser
       <span class="text-base text-gray-600 dark:text-stone-300">Operating system</span>
       <span class="flex items-center gap-3 text-base font-mono">
         <span class="check-value"><span class="spinner"></span></span>
-        <span class="check-icon w-5 text-right text-lg"></span>
+        <span class="check-icon w-5 flex items-center justify-center"></span>
       </span>
     </div>
     <div class="flex items-center justify-between px-6 py-4" id="check-cpu">
       <span class="text-base text-gray-600 dark:text-stone-300">CPU cores</span>
       <span class="flex items-center gap-3 text-base font-mono">
         <span class="check-value"><span class="spinner"></span></span>
-        <span class="check-icon w-5 text-right text-lg"></span>
+        <span class="check-icon w-5 flex items-center justify-center"></span>
       </span>
     </div>
     <div class="flex items-center justify-between px-6 py-4" id="check-memory">
       <span class="text-base text-gray-600 dark:text-stone-300">Memory</span>
       <span class="flex items-center gap-3 text-base font-mono">
         <span class="check-value"><span class="spinner"></span></span>
-        <span class="check-icon w-5 text-right text-lg"></span>
+        <span class="check-icon w-5 flex items-center justify-center"></span>
       </span>
     </div>
     <div class="flex items-center justify-between px-6 py-4" id="check-internet">
       <span class="text-base text-gray-600 dark:text-stone-300">Internet</span>
       <span class="flex items-center gap-3 text-base font-mono">
         <span class="check-value"><span class="spinner"></span></span>
-        <span class="check-icon w-5 text-right text-lg"></span>
+        <span class="check-icon w-5 flex items-center justify-center"></span>
       </span>
     </div>
   </div>
@@ -61,7 +61,7 @@ No special software to install yet, no accounts to create. If you have a compute
 
 <script>{`
 document.addEventListener("DOMContentLoaded", function() {
-  var CHECK = '<span class="text-green-600 dark:text-green-400">\\u2713</span>';
+  var CHECK = '<span class="theme-solid-bg inline-flex w-5 h-5 rounded-full text-white text-[11px] font-bold items-center justify-center">\\u2713</span>';
   var WARN = '<span class="text-yellow-500 dark:text-yellow-400">!</span>';
   var DASH = '<span class="text-gray-300 dark:text-stone-600">\\u2014</span>';
 
