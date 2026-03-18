@@ -26,6 +26,6 @@
 		}
 	},
 	"files": {
-		"includes": ["src/**/*.ts", "astro.config.mjs"]
+		"includes": ["src/**/*.ts", "astro.config.mjs", "vitest.config.ts"]
 	}
 }
