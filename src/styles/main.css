@@ -218,12 +218,29 @@
 }
 
 
+@keyframes swatch-in {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .enrollment-color-option {
+  opacity: 0;
   transition: transform 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
 }
 
+.enrollment-color-option.swatch-animate {
+  animation: swatch-in 220ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: calc(var(--i) * 35ms);
+}
+
 .enrollment-color-option:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px) scale(1.04);
 }
 
 .enrollment-color-option.is-selected {
