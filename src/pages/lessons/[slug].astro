@@ -36,7 +36,7 @@ const isEnrollment = lesson.data.slug === "enrollment";
   </header>
 
   {!isEnrollment && (
-    <div id="lesson-completed-banner" class="hidden mb-6 px-4 py-3 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-sm text-blue-700 dark:text-blue-300 font-medium">
+    <div id="lesson-completed-banner" class="theme-banner hidden mb-6 rounded-lg px-4 py-3 text-sm font-medium">
       You completed this lesson!
     </div>
   )}
@@ -52,14 +52,14 @@ const isEnrollment = lesson.data.slug === "enrollment";
         <button
           id="lesson-action-btn"
           data-next-url={`/lessons/${next.data.slug}`}
-          class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none"
+          class="theme-button inline-flex cursor-pointer items-center gap-2 rounded-lg px-6 py-3 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed select-none"
         >
           <span id="lesson-action-label">Next lesson: {next.data.title} &rarr;</span>
         </button>
       ) : (
         <button
           id="lesson-action-btn"
-          class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none"
+          class="theme-button inline-flex cursor-pointer items-center gap-2 rounded-lg px-6 py-3 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed select-none"
         >
           <span id="lesson-action-label">Mark this lesson as complete</span>
         </button>
@@ -72,7 +72,7 @@ const isEnrollment = lesson.data.slug === "enrollment";
     <div id="next-lesson-nav" class="hidden mt-8">
       <a
         href={`/lessons/${next.data.slug}`}
-        class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors text-sm"
+        class="theme-button inline-flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-medium"
       >
         Next lesson: {next.data.title} &rarr;
       </a>

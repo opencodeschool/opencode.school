@@ -21,6 +21,241 @@ const currentPath = Astro.url.pathname;
     <meta name="description" content={description} />
     <title>{title} - OpenCode School</title>
     <script is:inline>
+      window.__schoolThemePalettes = {
+        blue: {
+          solid: "#2563eb",
+          solidHover: "#1d4ed8",
+          link: "#2563eb",
+          linkDark: "#60a5fa",
+          softBg: "#eff6ff",
+          softBorder: "#bfdbfe",
+          softText: "#1d4ed8",
+          softBgDark: "rgba(37, 99, 235, 0.18)",
+          softBorderDark: "rgba(96, 165, 250, 0.35)",
+          softTextDark: "#93c5fd",
+          cardText: "#dbeafe",
+        },
+        indigo: {
+          solid: "#4f46e5",
+          solidHover: "#4338ca",
+          link: "#4338ca",
+          linkDark: "#a5b4fc",
+          softBg: "#eef2ff",
+          softBorder: "#c7d2fe",
+          softText: "#4338ca",
+          softBgDark: "rgba(79, 70, 229, 0.18)",
+          softBorderDark: "rgba(165, 180, 252, 0.35)",
+          softTextDark: "#c7d2fe",
+          cardText: "#e0e7ff",
+        },
+        violet: {
+          solid: "#7c3aed",
+          solidHover: "#6d28d9",
+          link: "#6d28d9",
+          linkDark: "#c4b5fd",
+          softBg: "#f5f3ff",
+          softBorder: "#ddd6fe",
+          softText: "#6d28d9",
+          softBgDark: "rgba(124, 58, 237, 0.18)",
+          softBorderDark: "rgba(196, 181, 253, 0.35)",
+          softTextDark: "#ddd6fe",
+          cardText: "#ede9fe",
+        },
+        purple: {
+          solid: "#9333ea",
+          solidHover: "#7e22ce",
+          link: "#7e22ce",
+          linkDark: "#d8b4fe",
+          softBg: "#faf5ff",
+          softBorder: "#e9d5ff",
+          softText: "#7e22ce",
+          softBgDark: "rgba(147, 51, 234, 0.18)",
+          softBorderDark: "rgba(216, 180, 254, 0.35)",
+          softTextDark: "#e9d5ff",
+          cardText: "#f3e8ff",
+        },
+        fuchsia: {
+          solid: "#c026d3",
+          solidHover: "#a21caf",
+          link: "#a21caf",
+          linkDark: "#f0abfc",
+          softBg: "#fdf4ff",
+          softBorder: "#f5d0fe",
+          softText: "#a21caf",
+          softBgDark: "rgba(192, 38, 211, 0.18)",
+          softBorderDark: "rgba(240, 171, 252, 0.35)",
+          softTextDark: "#f5d0fe",
+          cardText: "#fae8ff",
+        },
+        rose: {
+          solid: "#e11d48",
+          solidHover: "#be123c",
+          link: "#be123c",
+          linkDark: "#fda4af",
+          softBg: "#fff1f2",
+          softBorder: "#fecdd3",
+          softText: "#be123c",
+          softBgDark: "rgba(225, 29, 72, 0.18)",
+          softBorderDark: "rgba(251, 113, 133, 0.35)",
+          softTextDark: "#fda4af",
+          cardText: "#ffe4e6",
+        },
+        red: {
+          solid: "#dc2626",
+          solidHover: "#b91c1c",
+          link: "#b91c1c",
+          linkDark: "#fca5a5",
+          softBg: "#fef2f2",
+          softBorder: "#fecaca",
+          softText: "#b91c1c",
+          softBgDark: "rgba(220, 38, 38, 0.18)",
+          softBorderDark: "rgba(248, 113, 113, 0.35)",
+          softTextDark: "#fca5a5",
+          cardText: "#fee2e2",
+        },
+        orange: {
+          solid: "#ea580c",
+          solidHover: "#c2410c",
+          link: "#c2410c",
+          linkDark: "#fdba74",
+          softBg: "#fff7ed",
+          softBorder: "#fed7aa",
+          softText: "#c2410c",
+          softBgDark: "rgba(234, 88, 12, 0.18)",
+          softBorderDark: "rgba(251, 146, 60, 0.35)",
+          softTextDark: "#fdba74",
+          cardText: "#ffedd5",
+        },
+        amber: {
+          solid: "#b45309",
+          solidHover: "#92400e",
+          link: "#92400e",
+          linkDark: "#fcd34d",
+          softBg: "#fffbeb",
+          softBorder: "#fde68a",
+          softText: "#92400e",
+          softBgDark: "rgba(180, 83, 9, 0.18)",
+          softBorderDark: "rgba(251, 191, 36, 0.35)",
+          softTextDark: "#fcd34d",
+          cardText: "#fef3c7",
+        },
+        lime: {
+          solid: "#4d7c0f",
+          solidHover: "#3f6212",
+          link: "#4d7c0f",
+          linkDark: "#bef264",
+          softBg: "#f7fee7",
+          softBorder: "#d9f99d",
+          softText: "#4d7c0f",
+          softBgDark: "rgba(77, 124, 15, 0.18)",
+          softBorderDark: "rgba(132, 204, 22, 0.35)",
+          softTextDark: "#bef264",
+          cardText: "#ecfccb",
+        },
+        green: {
+          solid: "#15803d",
+          solidHover: "#166534",
+          link: "#166534",
+          linkDark: "#86efac",
+          softBg: "#f0fdf4",
+          softBorder: "#bbf7d0",
+          softText: "#166534",
+          softBgDark: "rgba(21, 128, 61, 0.18)",
+          softBorderDark: "rgba(74, 222, 128, 0.35)",
+          softTextDark: "#86efac",
+          cardText: "#dcfce7",
+        },
+        emerald: {
+          solid: "#059669",
+          solidHover: "#047857",
+          link: "#047857",
+          linkDark: "#6ee7b7",
+          softBg: "#ecfdf5",
+          softBorder: "#a7f3d0",
+          softText: "#047857",
+          softBgDark: "rgba(5, 150, 105, 0.18)",
+          softBorderDark: "rgba(110, 231, 183, 0.35)",
+          softTextDark: "#a7f3d0",
+          cardText: "#d1fae5",
+        },
+        teal: {
+          solid: "#0f766e",
+          solidHover: "#115e59",
+          link: "#0f766e",
+          linkDark: "#5eead4",
+          softBg: "#f0fdfa",
+          softBorder: "#99f6e4",
+          softText: "#115e59",
+          softBgDark: "rgba(15, 118, 110, 0.2)",
+          softBorderDark: "rgba(94, 234, 212, 0.35)",
+          softTextDark: "#99f6e4",
+          cardText: "#ccfbf1",
+        },
+        cyan: {
+          solid: "#0e7490",
+          solidHover: "#155e75",
+          link: "#155e75",
+          linkDark: "#67e8f9",
+          softBg: "#ecfeff",
+          softBorder: "#a5f3fc",
+          softText: "#155e75",
+          softBgDark: "rgba(14, 116, 144, 0.2)",
+          softBorderDark: "rgba(103, 232, 249, 0.35)",
+          softTextDark: "#a5f3fc",
+          cardText: "#cffafe",
+        },
+        sky: {
+          solid: "#0284c7",
+          solidHover: "#0369a1",
+          link: "#0369a1",
+          linkDark: "#7dd3fc",
+          softBg: "#f0f9ff",
+          softBorder: "#bae6fd",
+          softText: "#0369a1",
+          softBgDark: "rgba(2, 132, 199, 0.18)",
+          softBorderDark: "rgba(56, 189, 248, 0.35)",
+          softTextDark: "#bae6fd",
+          cardText: "#e0f2fe",
+        },
+        slate: {
+          solid: "#475569",
+          solidHover: "#334155",
+          link: "#334155",
+          linkDark: "#cbd5e1",
+          softBg: "#f8fafc",
+          softBorder: "#cbd5e1",
+          softText: "#334155",
+          softBgDark: "rgba(71, 85, 105, 0.3)",
+          softBorderDark: "rgba(148, 163, 184, 0.35)",
+          softTextDark: "#cbd5e1",
+          cardText: "#e2e8f0",
+        },
+      };
+
+      window.__applySchoolTheme = function(themeName) {
+        var palette = window.__schoolThemePalettes[themeName] || window.__schoolThemePalettes.blue;
+        var root = document.documentElement;
+        root.style.setProperty("--theme-solid", palette.solid);
+        root.style.setProperty("--theme-solid-hover", palette.solidHover);
+        root.style.setProperty("--theme-link", palette.link);
+        root.style.setProperty("--theme-link-dark", palette.linkDark);
+        root.style.setProperty("--theme-soft-bg", palette.softBg);
+        root.style.setProperty("--theme-soft-border", palette.softBorder);
+        root.style.setProperty("--theme-soft-text", palette.softText);
+        root.style.setProperty("--theme-soft-bg-dark", palette.softBgDark);
+        root.style.setProperty("--theme-soft-border-dark", palette.softBorderDark);
+        root.style.setProperty("--theme-soft-text-dark", palette.softTextDark);
+        root.style.setProperty("--theme-card-text", palette.cardText);
+        root.dataset.themeColor = window.__schoolThemePalettes[themeName] ? themeName : "blue";
+      };
+
+      try {
+        window.__applySchoolTheme(localStorage.getItem("themeColor") || "blue");
+      } catch {
+        window.__applySchoolTheme("blue");
+      }
+    </script>
+    <script is:inline>
       if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
         document.documentElement.classList.add("dark");
       }
@@ -37,6 +272,22 @@ const currentPath = Astro.url.pathname;
 
         setStudentId(id) {
           localStorage.setItem("studentId", id);
+        },
+
+        getThemeColor() {
+          return localStorage.getItem("themeColor") || "blue";
+        },
+
+        getThemePalettes() {
+          return window.__schoolThemePalettes;
+        },
+
+        setThemeColor(themeName) {
+          const palettes = this.getThemePalettes();
+          const nextTheme = palettes[themeName] ? themeName : "blue";
+          localStorage.setItem("themeColor", nextTheme);
+          window.__applySchoolTheme(nextTheme);
+          return nextTheme;
         },
 
         getCachedProgress() {
@@ -88,22 +339,48 @@ const currentPath = Astro.url.pathname;
         },
 
         updateAllCheckmarks() {
+          let nextIncompleteSet = false;
           document.querySelectorAll("[data-lesson-slug]").forEach((el) => {
             const slug = el.getAttribute("data-lesson-slug");
+            const isStub = el.getAttribute("data-lesson-stub") === "true";
+            const rowEl = el.querySelector(".lesson-row");
+            const linkEl = el.querySelector(".lesson-link");
+            const ctaEl = el.querySelector(".lesson-cta");
+            const statusEl = el.querySelector(".lesson-status");
             const checkEl = el.querySelector(".lesson-check");
-            const numEl = el.querySelector(".lesson-number");
+            const dotEl = el.querySelector(".lesson-status-dot");
             const complete = this.isLessonComplete(slug);
-            if (checkEl) checkEl.textContent = complete ? "\u2713" : "";
-            if (numEl) numEl.style.display = complete ? "none" : "";
+            const isNext = !complete && !isStub && !nextIncompleteSet;
+            if (isNext) nextIncompleteSet = true;
+
+            if (rowEl) {
+              rowEl.classList.toggle("lesson-row--next", isNext);
+            }
+            if (linkEl) {
+              linkEl.classList.toggle("sm:flex-1", isNext);
+            }
+            if (ctaEl) {
+              ctaEl.classList.toggle("hidden", !isNext);
+              ctaEl.classList.toggle("inline-block", isNext);
+            }
+            if (statusEl) {
+              statusEl.classList.toggle("lesson-status--complete", complete);
+            }
+            if (checkEl) {
+              checkEl.classList.toggle("hidden", !complete);
+              checkEl.classList.toggle("flex", complete);
+            }
+            if (dotEl) dotEl.classList.toggle("hidden", complete);
           });
           // Update sidebar completion circles
           document.querySelectorAll("[data-sidebar-slug]").forEach((el) => {
             const slug = el.getAttribute("data-sidebar-slug");
             const circle = el.querySelector(".sidebar-check");
-            if (circle && this.isLessonComplete(slug)) {
-              circle.textContent = "\u2713";
-              circle.classList.remove("hidden");
-              circle.classList.add("flex");
+            if (circle) {
+              const complete = this.isLessonComplete(slug);
+              circle.textContent = complete ? "\u2713" : "";
+              circle.classList.toggle("hidden", !complete);
+              circle.classList.toggle("flex", complete);
             }
           });
         },
@@ -153,7 +430,7 @@ const currentPath = Astro.url.pathname;
                   class:list={[
                     "flex items-center justify-between px-3 py-1.5 rounded-md text-sm transition-colors",
                     isActive
-                      ? "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300 font-medium"
+                      ? "theme-active-nav font-medium"
                       : "text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-900",
                     isStub && "opacity-50",
                   ]}
@@ -162,7 +439,7 @@ const currentPath = Astro.url.pathname;
                     <span class="text-gray-400 dark:text-gray-600 mr-1.5">{String(lesson.data.order).padStart(2, "0")}.</span>
                     {lesson.data.title}
                   </span>
-                  <span class="sidebar-check w-4 h-4 rounded-full bg-blue-600 dark:bg-blue-500 text-white text-[10px] font-bold items-center justify-center shrink-0 ml-2 hidden"></span>
+                  <span class="sidebar-check theme-solid-bg w-4 h-4 rounded-full text-white text-[10px] font-bold items-center justify-center shrink-0 ml-2 hidden"></span>
                 </a>
               </li>
             );
@@ -174,7 +451,7 @@ const currentPath = Astro.url.pathname;
             class:list={[
               "block px-3 py-1.5 rounded-md text-sm transition-colors",
               currentPath === "/glossary" || currentPath === "/glossary/"
-                ? "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300 font-medium"
+                ? "theme-active-nav font-medium"
                 : "text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-900",
             ]}
           >
