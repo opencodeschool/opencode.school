@@ -204,14 +204,7 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
         var colors = [palette.solid, palette.solidHover, palette.linkDark, palette.softText, palette.softTextDark];
 
         (function frame() {
-          // Top-left → center
-          window.confetti({ particleCount: 10, angle: 315,  spread: 70, startVelocity: 55, gravity: 0.8, origin: { x: 0, y: 0 }, colors: colors });
-          // Top-right → center
-          window.confetti({ particleCount: 10, angle: 225, spread: 70, startVelocity: 55, gravity: 0.8, origin: { x: 1, y: 0 }, colors: colors });
-          // Bottom-left → center
-          window.confetti({ particleCount: 10, angle: 45,  spread: 70, startVelocity: 55, gravity: 0.8, origin: { x: 0, y: 1 }, colors: colors });
-          // Bottom-right → center
-          window.confetti({ particleCount: 10, angle: 135, spread: 70, startVelocity: 55, gravity: 0.8, origin: { x: 1, y: 1 }, colors: colors });
+          window.confetti({ particleCount: 6, angle: 270, spread: 80, startVelocity: 35, gravity: 1.2, origin: { x: Math.random(), y: 0 }, colors: colors });
           if (Date.now() < end) requestAnimationFrame(frame);
         })();
       }
