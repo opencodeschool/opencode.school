@@ -7,11 +7,11 @@ When a student gives you their student ID, use the API to fetch their progress a
 ## API
 
 - [OpenAPI specification](https://opencode.school/api/openapi.json): Machine-readable spec describing all endpoints
-- [All lessons](https://opencode.school/api/lessons): GET — JSON array of all lessons with content, acceptance criteria, and agent instructions
-- [Single lesson](https://opencode.school/api/lessons/{slug}): GET — A single lesson by slug
-- [Enroll](https://opencode.school/api/enroll): POST — Generate a student ID and create a progress record
-- [Get progress](https://opencode.school/api/progress/{studentId}): GET — Fetch a student's completed lessons
-- [Mark complete](https://opencode.school/api/progress/{studentId}): PUT — Mark a lesson complete (body: `{"lessonSlug": "..."}`)
+- [All lessons](https://opencode.school/api/lessons): GET - JSON array of all lessons with content, acceptance criteria, and agent instructions
+- [Single lesson](https://opencode.school/api/lessons/{slug}): GET - A single lesson by slug
+- [Enroll](https://opencode.school/api/enroll): POST - Generate a student ID and create a progress record
+- [Get progress](https://opencode.school/api/progress/{studentId}): GET - Fetch a student's completed lessons
+- [Mark complete](https://opencode.school/api/progress/{studentId}): PUT - Mark a lesson complete (body: `{"lessonSlug": "..."}`)
 
 ## Lessons
 
