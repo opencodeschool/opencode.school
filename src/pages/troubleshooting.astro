@@ -1,0 +1,73 @@
+---
+export const prerender = true;
+
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Troubleshooting" description="Tips for solving problems with OpenCode and this course.">
+  <div class="mb-6">
+    <a href="/" class="text-sm text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+      &larr; All lessons
+    </a>
+  </div>
+
+  <header class="mb-8">
+    <h1 class="text-3xl font-bold">Troubleshooting</h1>
+    <p class="text-gray-600 dark:text-stone-400 mt-2">Tips for solving problems with OpenCode and this course.</p>
+  </header>
+
+  <article class="prose dark:prose-invert max-w-none">
+    <h2>How to disenroll</h2>
+    <p>
+      If you want to start fresh or clear your enrollment from this browser,
+      visit the <a href="/disenroll">disenroll page</a>. This removes your
+      student ID, progress, and theme color from your browser's local storage.
+    </p>
+    <p>
+      Note that disenrolling only clears data in your current browser. There is
+      no account to delete on the server side — your progress record is just a
+      small anonymous entry keyed to your student ID.
+    </p>
+
+    <h2>Using OpenCode to solve problems</h2>
+    <p>
+      When you run into trouble — whether it's an error message you don't
+      understand, a lesson that isn't working, or something broken in your own
+      project — try asking OpenCode to help you figure it out. That's what it's
+      for.
+    </p>
+    <p>Here are some things OpenCode can do to help you debug:</p>
+    <ul>
+      <li>Read error messages and explain what they mean</li>
+      <li>Search your codebase for relevant files and functions</li>
+      <li>Run commands and inspect the output</li>
+      <li>Check logs, config files, and environment variables</li>
+      <li>Suggest fixes and apply them directly</li>
+    </ul>
+    <p>
+      Instead of trying to solve everything yourself, describe the problem to
+      OpenCode and let it investigate. You can paste in an error message, point
+      it at a file, or just say "something is broken" and let it look around.
+    </p>
+
+    <h2>Digging into the OpenCode source</h2>
+    <p>
+      OpenCode is open source. If you want to understand how a feature works,
+      track down a bug, or just learn by reading real code, you can clone the
+      repo:
+    </p>
+    <pre><code>git clone https://github.com/anomalyco/opencode.git</code></pre>
+    <p>
+      The codebase is primarily Go and TypeScript. Reading the source is one of
+      the best ways to build a deeper understanding of how OpenCode works under
+      the hood — how it manages sessions, talks to LLM providers, runs tools,
+      and more.
+    </p>
+    <p>
+      You can also use OpenCode itself to explore the repo. Clone it, open it in
+      OpenCode, and ask questions like "how does the permission system work?" or
+      "where are MCP connections managed?" It's a great way to learn a codebase
+      you didn't write.
+    </p>
+  </article>
+</Base>
