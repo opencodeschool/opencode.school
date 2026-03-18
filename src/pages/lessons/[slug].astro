@@ -17,9 +17,7 @@ const { Content } = await render(lesson);
 
 const allLessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b.data.order);
 const currentIndex = allLessons.findIndex((l) => l.data.slug === lesson.data.slug);
-const prev = currentIndex > 0 ? allLessons[currentIndex - 1] : null;
 const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null;
-const isEnrollment = lesson.data.slug === "enrollment";
 ---
 
 <Base title={lesson.data.title} description={lesson.data.description}>
@@ -35,72 +33,36 @@ const isEnrollment = lesson.data.slug === "enrollment";
     <p class="text-gray-600 dark:text-gray-400 mt-2">{lesson.data.description}</p>
   </header>
 
-  {!isEnrollment && (
-    <div id="lesson-completed-banner" class="theme-banner hidden mb-6 rounded-lg px-4 py-3 text-sm font-medium">
-      You completed this lesson!
-    </div>
-  )}
+  <div id="lesson-completed-banner" class="theme-banner hidden mb-6 rounded-lg px-4 py-3 text-sm font-medium">
+    You completed this lesson!
+  </div>
 
   <article class="prose dark:prose-invert max-w-none">
     <Content />
   </article>
 
   <!-- Lesson action: combined mark-complete + next-lesson button -->
-  {!isEnrollment && (
-    <div id="lesson-action" class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-800 hidden">
-      {next ? (
-        <button
-          id="lesson-action-btn"
-          data-next-url={`/lessons/${next.data.slug}`}
-          class="theme-button inline-flex cursor-pointer items-center gap-2 rounded-lg px-6 py-3 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed select-none"
-        >
-          <span id="lesson-action-label">Next lesson: {next.data.title} &rarr;</span>
-        </button>
-      ) : (
-        <button
-          id="lesson-action-btn"
-          class="theme-button inline-flex cursor-pointer items-center gap-2 rounded-lg px-6 py-3 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed select-none"
-        >
-          <span id="lesson-action-label">Mark this lesson as complete</span>
-        </button>
-      )}
-    </div>
-  )}
-
-  <!-- Next lesson button for enrollment page (shown after auto-complete) -->
-  {isEnrollment && next && (
-    <div id="next-lesson-nav" class="hidden mt-8">
-      <a
-        href={`/lessons/${next.data.slug}`}
-        class="theme-button inline-flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-medium"
+  <div id="lesson-action" class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-800 hidden">
+    {next ? (
+      <button
+        id="lesson-action-btn"
+        data-next-url={`/lessons/${next.data.slug}`}
+        class="theme-button flex w-full justify-center cursor-pointer items-center gap-2 rounded-lg px-6 py-4 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed select-none"
       >
-        Next lesson: {next.data.title} &rarr;
-      </a>
-    </div>
-  )}
+        <span id="lesson-action-label">Next lesson: {next.data.title} &rarr;</span>
+      </button>
+    ) : (
+      <button
+        id="lesson-action-btn"
+        class="theme-button flex w-full justify-center cursor-pointer items-center gap-2 rounded-lg px-6 py-4 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed select-none"
+      >
+        <span id="lesson-action-label">Mark this lesson as complete</span>
+      </button>
+    )}
+  </div>
 
-  <script is:inline define:vars={{ lessonSlug: lesson.data.slug, isEnrollment }}>
+  <script is:inline define:vars={{ lessonSlug: lesson.data.slug }}>
     (function() {
-      // Enrollment page: just wire up the next-lesson reveal via updateAllCheckmarks
-      if (isEnrollment) {
-        var nextNav = document.getElementById("next-lesson-nav");
-        function showNextLesson() {
-          if (nextNav) nextNav.classList.remove("hidden");
-        }
-        if (window.school && window.school.isLessonComplete(lessonSlug)) {
-          showNextLesson();
-        }
-        var origUpdate = window.school.updateAllCheckmarks.bind(window.school);
-        window.school.updateAllCheckmarks = function() {
-          origUpdate();
-          if (window.school.isLessonComplete(lessonSlug)) {
-            showNextLesson();
-          }
-        };
-        return;
-      }
-
-      // Regular lessons: combined action button
       var action = document.getElementById("lesson-action");
       var btn = document.getElementById("lesson-action-btn");
       var label = document.getElementById("lesson-action-label");
@@ -117,7 +79,6 @@ const isEnrollment = lesson.data.slug === "enrollment";
       function setCompleted() {
         if (banner) banner.classList.remove("hidden");
         if (nextUrl) {
-          // Already shows "Next lesson: X" — just navigate
           window.location.href = nextUrl;
         } else {
           label.textContent = "Lesson complete!";
@@ -129,7 +90,6 @@ const isEnrollment = lesson.data.slug === "enrollment";
       if (window.school.isLessonComplete(lessonSlug)) {
         if (banner) banner.classList.remove("hidden");
         if (nextUrl) {
-          // Turn it into a plain link
           btn.addEventListener("click", function() { window.location.href = nextUrl; });
         } else {
           label.textContent = "Lesson complete!";
@@ -151,9 +111,9 @@ const isEnrollment = lesson.data.slug === "enrollment";
       }
 
       // Update after progress fetch completes (in case cached state was stale)
-      var origUpdate2 = window.school.updateAllCheckmarks.bind(window.school);
+      var origUpdate = window.school.updateAllCheckmarks.bind(window.school);
       window.school.updateAllCheckmarks = function() {
-        origUpdate2();
+        origUpdate();
         if (window.school.isLessonComplete(lessonSlug)) {
           if (banner) banner.classList.remove("hidden");
         }

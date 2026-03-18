@@ -8,12 +8,26 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
 ---
 
 <Base title="Home">
-  <h1 class="text-3xl font-bold font-mono mb-2">OpenCode School</h1>
-  <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
-    A free, self-paced course for learning <a href="https://opencode.ai" class="theme-link underline">OpenCode</a>, the open-source AI coding agent.
-  </p>
 
-  <!-- Enrolled: lesson list first -->
+  <!-- Student ID card: always at top, shown once enrolled -->
+  <div id="student-id-card" class="hidden mb-8" style="max-width:420px">
+    <div class="theme-card-band rounded-2xl overflow-hidden shadow-2xl" style="aspect-ratio:85.6/54">
+      <div class="flex flex-col justify-between h-full px-7 py-5">
+        <p class="text-xs font-mono uppercase tracking-[0.3em] opacity-80">OpenCode Student ID</p>
+        <p id="student-id-display" class="text-2xl font-mono font-bold tracking-tight"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page header: hidden once enrolled -->
+  <div id="page-header" class="mb-8">
+    <h1 class="text-3xl font-bold font-mono mb-2">OpenCode School</h1>
+    <p class="text-lg text-gray-600 dark:text-gray-400">
+      A free, self-paced course for learning <a href="https://opencode.ai" class="theme-link underline">OpenCode</a>, the open-source AI coding agent.
+    </p>
+  </div>
+
+  <!-- Enrolled: lesson list -->
   <div id="enrolled-section" class="hidden mb-12">
     <h2 class="text-sm font-mono uppercase tracking-wider text-gray-500 dark:text-gray-500 mb-4">Lessons</h2>
 
@@ -59,17 +73,46 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
     </ol>
   </div>
 
-  <!-- Not enrolled: top CTA -->
+  <!-- Not enrolled: enrollment widget -->
   <div id="not-enrolled-section" class="mb-12">
-    <a
-      href="/lessons/enrollment"
-      class="theme-button inline-block rounded-lg px-8 py-4 font-mono text-lg"
-    >
-      Enroll in OpenCode School
-    </a>
+    <div id="enroll-step-button">
+      <p class="text-sm text-gray-500 dark:text-gray-500 mb-4">
+        Free forever. No account required. No personal data collected — your progress is stored locally in your browser.
+      </p>
+      <button
+        type="button"
+        id="enroll-button"
+        class="theme-button cursor-pointer rounded-lg px-8 py-4 font-mono text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        Enroll in OpenCode School
+      </button>
+    </div>
+
+    <div id="enroll-step-color" class="hidden">
+      <p id="color-picker-copy" class="text-sm text-gray-600 dark:text-gray-400 mb-4">Choose a color for your student ID card and site theme.</p>
+      <div id="color-picker" class="grid grid-cols-4 gap-2 sm:grid-cols-8 not-prose">
+        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="blue"    aria-label="Blue"    title="Blue"    style="background:#2563eb"></button>
+        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="indigo"  aria-label="Indigo"  title="Indigo"  style="background:#4f46e5"></button>
+        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="violet"  aria-label="Violet"  title="Violet"  style="background:#7c3aed"></button>
+        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="purple"  aria-label="Purple"  title="Purple"  style="background:#9333ea"></button>
+        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="fuchsia" aria-label="Fuchsia" title="Fuchsia" style="background:#c026d3"></button>
+        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="rose"    aria-label="Rose"    title="Rose"    style="background:#e11d48"></button>
+        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="red"     aria-label="Red"     title="Red"     style="background:#dc2626"></button>
+        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="orange"  aria-label="Orange"  title="Orange"  style="background:#ea580c"></button>
+        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="amber"   aria-label="Amber"   title="Amber"   style="background:#b45309"></button>
+        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="lime"    aria-label="Lime"    title="Lime"    style="background:#4d7c0f"></button>
+        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="green"   aria-label="Green"   title="Green"   style="background:#15803d"></button>
+        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="emerald" aria-label="Emerald" title="Emerald" style="background:#059669"></button>
+        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="teal"    aria-label="Teal"    title="Teal"    style="background:#0f766e"></button>
+        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="cyan"    aria-label="Cyan"    title="Cyan"    style="background:#0e7490"></button>
+        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="sky"     aria-label="Sky"     title="Sky"     style="background:#0284c7"></button>
+        <button type="button" class="enrollment-color-option h-14 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="slate"   aria-label="Slate"   title="Slate"   style="background:#475569"></button>
+      </div>
+      <p id="enroll-error" class="mt-2 text-red-500 text-sm hidden">Something went wrong. Please try again.</p>
+    </div>
   </div>
 
-  <!-- Orientation content (always visible, less prominent for enrolled users) -->
+  <!-- Orientation content (always visible) -->
   <div class="prose dark:prose-invert max-w-none">
     <h2>What is OpenCode?</h2>
 
@@ -124,29 +167,166 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
     <p>Work through the lessons in order. Each one builds on the previous. Some lessons involve pasting prompts into OpenCode and letting it do the work for you. Progress is tracked through the website and synced with your OpenCode app.</p>
   </div>
 
-  <div id="bottom-cta" class="theme-panel mt-12 rounded-2xl p-6">
-    <p class="theme-kicker text-sm font-mono uppercase tracking-[0.2em]">Ready to start?</p>
-    <h2 class="mt-2 text-2xl font-bold font-mono text-gray-900 dark:text-gray-100">Enroll in OpenCode School</h2>
-    <p class="mt-3 text-gray-600 dark:text-gray-400">
-      Pick up where you left off, track your progress, and work through the lessons in order.
-    </p>
-    <a
-      href="/lessons/enrollment"
-      class="theme-button mt-5 inline-block rounded-lg px-6 py-3 font-mono"
-    >
-      Start the course
-    </a>
-  </div>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <script is:inline>
-    // Toggle homepage sections based on enrollment state
-    if (window.school && window.school.getStudentId()) {
-      var enrolled = document.getElementById("enrolled-section");
-      var notEnrolled = document.getElementById("not-enrolled-section");
-      var bottomCta = document.getElementById("bottom-cta");
-      if (enrolled) enrolled.classList.remove("hidden");
-      if (notEnrolled) notEnrolled.classList.add("hidden");
-      if (bottomCta) bottomCta.classList.add("hidden");
-    }
+    (function() {
+      var idCard          = document.getElementById("student-id-card");
+      var pageHeader      = document.getElementById("page-header");
+      var stepButton      = document.getElementById("enroll-step-button");
+      var stepColor       = document.getElementById("enroll-step-color");
+      var enrollBtn       = document.getElementById("enroll-button");
+      var colorPickerCopy = document.getElementById("color-picker-copy");
+      var enrollError     = document.getElementById("enroll-error");
+      var display         = document.getElementById("student-id-display");
+      var notEnrolledSection = document.getElementById("not-enrolled-section");
+      var enrolledSection    = document.getElementById("enrolled-section");
+
+      var colorOptions = Array.prototype.slice.call(
+        document.querySelectorAll(".enrollment-color-option[data-theme-color]")
+      );
+
+      var selectedTheme = window.school.getThemeColor();
+      var isSubmitting = false;
+
+      var chars  = "abcdefghijklmnopqrstuvwxyz";
+      var digits = "0123456789";
+
+      function randomChar(real) {
+        if (real === "-") return "-";
+        if (real >= "0" && real <= "9") return digits[Math.floor(Math.random() * digits.length)];
+        return chars[Math.floor(Math.random() * chars.length)];
+      }
+
+      function scramble(target) {
+        var result = "";
+        for (var i = 0; i < target.length; i++) result += randomChar(target[i]);
+        return result;
+      }
+
+      function fireConfetti() {
+        var duration = 2500;
+        var end = Date.now() + duration;
+        var palettes = window.school.getThemePalettes();
+        var palette = palettes[window.school.getThemeColor()] || palettes.blue;
+        var colors = [palette.solid, palette.solidHover, palette.linkDark, palette.softText, palette.softTextDark];
+
+        (function frame() {
+          window.confetti({ particleCount: 4, angle: 60,  spread: 55, origin: { x: 0, y: 0 }, colors: colors });
+          window.confetti({ particleCount: 4, angle: 120, spread: 55, origin: { x: 1, y: 0 }, colors: colors });
+          if (Date.now() < end) requestAnimationFrame(frame);
+        })();
+      }
+
+      function cipherReveal(target, callback) {
+        var resolved = 0;
+        display.textContent = scramble(target);
+
+        var scrambleInterval = setInterval(function() {
+          var next = "";
+          for (var i = 0; i < target.length; i++) {
+            if (i < resolved)           next += target[i];
+            else if (target[i] === "-") next += "-";
+            else                        next += randomChar(target[i]);
+          }
+          display.textContent = next;
+        }, 30);
+
+        setTimeout(function() {
+          var resolveInterval = setInterval(function() {
+            if (resolved >= target.length) {
+              clearInterval(scrambleInterval);
+              clearInterval(resolveInterval);
+              display.textContent = target;
+              if (callback) callback();
+              return;
+            }
+            if (target[resolved] === "-") resolved++;
+            resolved++;
+          }, 140);
+        }, 600);
+      }
+
+      function revealIdCard(studentId) {
+        display.textContent = studentId;
+        idCard.classList.remove("hidden");
+        pageHeader.classList.add("hidden");
+      }
+
+      function showEnrolled(studentId, animate) {
+        notEnrolledSection.classList.add("hidden");
+        enrolledSection.classList.remove("hidden");
+        pageHeader.classList.add("hidden");
+        display.textContent = studentId;
+        idCard.classList.remove("hidden");
+
+        if (animate) {
+          // Re-run cipher reveal on the card at top
+          cipherReveal(studentId, function() {
+            fireConfetti();
+            window.school.markComplete("enrollment").then(function() {
+              window.school.updateAllCheckmarks();
+              if (typeof window.school.updateEnrolledIndicator === "function") {
+                window.school.updateEnrolledIndicator();
+              }
+            });
+          });
+        }
+      }
+
+      function setSelectedTheme(themeName) {
+        selectedTheme = window.school.setThemeColor(themeName);
+        colorOptions.forEach(function(opt) {
+          var isSelected = opt.getAttribute("data-theme-color") === selectedTheme;
+          opt.style.outline = isSelected ? "2px solid var(--theme-solid)" : "none";
+          opt.style.outlineOffset = "2px";
+        });
+      }
+
+      function setPickerState(message, disabled) {
+        if (colorPickerCopy && message) colorPickerCopy.textContent = message;
+        colorOptions.forEach(function(opt) {
+          opt.disabled = disabled;
+          opt.classList.toggle("opacity-60", disabled);
+          opt.classList.toggle("cursor-not-allowed", disabled);
+        });
+      }
+
+      // On page load: if already enrolled, show card + lesson list
+      var existingId = window.school.getStudentId();
+      if (existingId) {
+        showEnrolled(existingId, false);
+      } else {
+        setSelectedTheme(selectedTheme);
+      }
+
+      // Step 1: click Enroll button → show color picker
+      if (enrollBtn) {
+        enrollBtn.addEventListener("click", function() {
+          stepButton.classList.add("hidden");
+          stepColor.classList.remove("hidden");
+          setSelectedTheme(selectedTheme);
+        });
+      }
+
+      // Step 2: click a color → enroll + animate
+      colorOptions.forEach(function(opt) {
+        opt.addEventListener("click", async function() {
+          if (isSubmitting) return;
+          isSubmitting = true;
+          enrollError.classList.add("hidden");
+          setSelectedTheme(opt.getAttribute("data-theme-color"));
+          setPickerState("Generating your student ID...", true);
+          try {
+            var data = await window.school.enroll();
+            showEnrolled(data.studentId, true);
+          } catch (e) {
+            enrollError.classList.remove("hidden");
+            setPickerState("Choose a color for your student ID card and site theme.", false);
+            isSubmitting = false;
+          }
+        });
+      });
+    })();
   </script>
 </Base>

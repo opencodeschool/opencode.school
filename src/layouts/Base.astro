@@ -399,11 +399,11 @@ const currentPath = Astro.url.pathname;
   <body class="min-h-screen">
     <div class="lg:flex">
       <!-- Mobile header -->
-      <header class="lg:hidden flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
+      <header class="lg:hidden flex items-center justify-between p-4 border-b border-gray-200 dark:border-stone-800">
         <a href="/" class="font-mono font-bold text-lg">OpenCode School</a>
         <button
           id="menu-toggle"
-          class="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+          class="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-stone-800"
           aria-label="Toggle navigation"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -415,9 +415,9 @@ const currentPath = Astro.url.pathname;
       <!-- Sidebar -->
       <nav
         id="sidebar"
-        class="hidden lg:block w-72 shrink-0 border-r border-gray-200 dark:border-gray-800 h-screen sticky top-0 overflow-y-auto p-6"
+        class="hidden lg:block w-72 shrink-0 border-r border-gray-200 dark:border-stone-800 h-screen sticky top-0 overflow-y-auto p-6"
       >
-        <a href="/" class="block font-mono font-bold text-lg mb-6">OpenCode School</a>
+        <a href="/" class="block font-mono font-bold text-xl mb-6 px-3">OpenCode School</a>
         <ol class="space-y-1">
           {lessons.map((lesson) => {
             const href = `/lessons/${lesson.data.slug}`;
@@ -431,12 +431,12 @@ const currentPath = Astro.url.pathname;
                     "flex items-center justify-between px-3 py-1.5 rounded-md text-sm transition-colors",
                     isActive
                       ? "theme-active-nav font-medium"
-                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-900",
+                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-stone-400 dark:hover:text-stone-200 dark:hover:bg-stone-800",
                     isStub && "opacity-50",
                   ]}
                 >
                   <span>
-                    <span class="text-gray-400 dark:text-gray-600 mr-1.5">{String(lesson.data.order).padStart(2, "0")}.</span>
+                    <span class="text-gray-400 dark:text-stone-600 mr-1.5">{String(lesson.data.order).padStart(2, "0")}.</span>
                     {lesson.data.title}
                   </span>
                   <span class="sidebar-check theme-solid-bg w-4 h-4 rounded-full text-white text-[10px] font-bold items-center justify-center shrink-0 ml-2 hidden"></span>
@@ -445,21 +445,21 @@ const currentPath = Astro.url.pathname;
             );
           })}
         </ol>
-        <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-800">
+        <div class="mt-6 pt-4 border-t border-gray-200 dark:border-stone-800">
           <a
             href="/glossary"
             class:list={[
               "block px-3 py-1.5 rounded-md text-sm transition-colors",
               currentPath === "/glossary" || currentPath === "/glossary/"
                 ? "theme-active-nav font-medium"
-                : "text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-900",
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-stone-400 dark:hover:text-stone-200 dark:hover:bg-stone-800",
             ]}
           >
             Glossary
           </a>
         </div>
-        <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-800 text-xs text-gray-400 dark:text-gray-600">
-          <a href="https://github.com/zeke/opencode.school" class="hover:text-gray-600 dark:hover:text-gray-400">
+        <div class="mt-6 pt-4 border-t border-gray-200 dark:border-stone-800 text-xs text-gray-400 dark:text-stone-600">
+          <a href="https://github.com/zeke/opencode.school" class="hover:text-gray-600 dark:hover:text-stone-400">
             GitHub
           </a>
         </div>
@@ -467,7 +467,7 @@ const currentPath = Astro.url.pathname;
 
       <!-- Enrolled indicator (fixed top-right on desktop) -->
       <div id="enrolled-indicator" class="hidden fixed top-6 right-6 z-40">
-        <span class="text-xs font-mono text-gray-400 dark:text-gray-500">Enrolled as <span data-student-id class="text-gray-500 dark:text-gray-400"></span></span>
+        <span class="text-xs font-mono text-gray-400 dark:text-stone-500">Enrolled as <span data-student-id class="text-gray-500 dark:text-stone-400"></span></span>
       </div>
 
       <!-- Main content -->
@@ -484,10 +484,10 @@ const currentPath = Astro.url.pathname;
         toggle.addEventListener("click", () => {
           sidebar.classList.toggle("hidden");
           if (!sidebar.classList.contains("hidden")) {
-            sidebar.classList.add("fixed", "inset-0", "z-50", "bg-white", "dark:bg-gray-950");
+            sidebar.classList.add("fixed", "inset-0", "z-50", "bg-white", "dark:bg-stone-900");
             sidebar.classList.remove("lg:block");
           } else {
-            sidebar.classList.remove("fixed", "inset-0", "z-50", "bg-white", "dark:bg-gray-950");
+            sidebar.classList.remove("fixed", "inset-0", "z-50", "bg-white", "dark:bg-stone-900");
             sidebar.classList.add("lg:block");
           }
         });

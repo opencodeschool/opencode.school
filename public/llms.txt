@@ -1,6 +1,6 @@
 # OpenCode School
 
-> OpenCode School is an interactive course that teaches people how to use OpenCode. Students enroll on the website, get a student ID, then use OpenCode Desktop to work through lessons. An API is available for agents to fetch lesson content, acceptance criteria, and student progress.
+> OpenCode School is an interactive course that teaches people how to use OpenCode. Students enroll on the homepage (https://opencode.school), get a student ID, then use OpenCode Desktop to work through lessons. An API is available for agents to fetch lesson content, acceptance criteria, and student progress.
 
 When a student gives you their student ID, use the API to fetch their progress and the lesson they want to work on. Each lesson has acceptance criteria that describe what "done" looks like. When the criteria are met, mark the lesson complete via the API.
 
@@ -15,7 +15,6 @@ When a student gives you their student ID, use the API to fetch their progress a
 
 ## Lessons
 
-- [Enrollment](https://opencode.school/api/lessons/enrollment): Get a student ID and start tracking progress
 - [Prerequisites](https://opencode.school/api/lessons/prerequisites): System requirements check
 - [Installation](https://opencode.school/api/lessons/installing-opencode): Install OpenCode Desktop
 - [Configuration](https://opencode.school/api/lessons/configuration): Create a global config file

@@ -208,7 +208,7 @@
           "completedLessons": {
             "type": "array",
             "items": { "type": "string" },
-            "example": ["enrollment", "prerequisites"]
+            "example": ["prerequisites"]
           },
           "createdAt": { "type": "string", "format": "date-time" },
           "updatedAt": { "type": "string", "format": "date-time" }
