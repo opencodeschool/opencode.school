@@ -11,7 +11,7 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
 
   <!-- Student ID card: always at top, shown once enrolled -->
   <div id="student-id-card" class="hidden mb-8 relative" style="max-width:420px; z-index:100">
-    <div class="theme-card-band rounded-2xl overflow-hidden shadow-2xl" style="aspect-ratio:85.6/54">
+    <div class="theme-card-band rounded-2xl overflow-hidden" style="aspect-ratio:85.6/54">
       <div class="flex flex-col justify-between h-full px-7 py-5">
         <p class="text-xs font-mono uppercase tracking-[0.3em] opacity-80">OpenCode Student ID</p>
         <p id="student-id-display" class="text-2xl font-mono font-bold tracking-tight"></p>
@@ -159,7 +159,7 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
     <p>Work through the lessons in order. Each one builds on the previous. Some lessons involve pasting prompts into OpenCode and letting it do the work for you. Progress is tracked through the website and synced with your OpenCode app.</p>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script is:inline src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <script is:inline>
     (function() {
