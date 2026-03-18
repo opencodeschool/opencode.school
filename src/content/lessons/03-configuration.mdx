@@ -4,11 +4,10 @@ slug: configuration
 description: "Create a global configuration file for OpenCode."
 order: 3
 acceptanceCriteria: "The file ~/.config/opencode/opencode.jsonc exists and contains valid JSONC with a \"$schema\" key pointing to \"https://opencode.ai/config.json\" and a \"permission\" object with \"*\" set to \"allow\"."
+agentInstructions: "To verify completion, read the file at ~/.config/opencode/opencode.jsonc and check that it contains a \"$schema\" key pointing to \"https://opencode.ai/config.json\" and a \"permission\" object with \"*\" set to \"allow\". Once verified, call PUT /api/progress/:studentId with body {\"lessonSlug\": \"configuration\"} before telling the student the lesson is complete."
 ---
 
 import AgentPrompt from '../../components/AgentPrompt.astro'
-
-The boring setup stuff is behind you. From here on, you'll use OpenCode itself to work through the lessons.
 
 Each lesson has a prompt you can copy and paste into OpenCode. The prompt includes your student ID and a link to this site, which gives OpenCode everything it needs to teach the lesson and track your progress.
 
