@@ -7,6 +7,11 @@ export default defineConfig({
 	output: "server",
 	adapter: cloudflare(),
 	integrations: [mdx()],
+	markdown: {
+		shikiConfig: {
+			theme: "vesper",
+		},
+	},
 	security: {
 		checkOrigin: false,
 	},
