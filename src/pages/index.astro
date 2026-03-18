@@ -7,7 +7,7 @@ import { getCollection } from "astro:content";
 const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b.data.order);
 ---
 
-<Base title="Home">
+<Base>
 
   <!-- Student ID card: always at top, shown once enrolled -->
   <div id="student-id-card" class="hidden mb-8 relative" style="max-width:420px; z-index:100">

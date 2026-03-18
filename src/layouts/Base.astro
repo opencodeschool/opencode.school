@@ -3,11 +3,12 @@ import "../styles/main.css";
 import { getCollection } from "astro:content";
 
 interface Props {
-  title: string;
+  title?: string;
   description?: string;
 }
 
 const { title, description = "Learn to use OpenCode, the free and open-source AI coding agent." } = Astro.props;
+const pageTitle = title ? `${title} | OpenCode School` : "OpenCode School";
 
 const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b.data.order);
 const currentPath = Astro.url.pathname;
@@ -19,7 +20,7 @@ const currentPath = Astro.url.pathname;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <title>{title} - OpenCode School</title>
+    <title>{pageTitle}</title>
     <script is:inline>
       window.__schoolThemePalettes = {
         blue: {
