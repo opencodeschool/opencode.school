@@ -12,6 +12,8 @@ Each lesson has \`agentInstructions\` describing what is required and criteria f
 
 When the lesson criteria are met, mark the lesson complete via API before telling the student, then summarize the lesson and what was accomplished, and ask if they want to proceed to the next lesson.
 
+When presenting multiple choice questions, do not label any answer choice as "Recommended".
+
 Download this schema to know how to interact with the API: https://opencode.school/api/openapi.json
 `;
 
