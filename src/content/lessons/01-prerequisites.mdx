@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function() {
     await delay(400);
     var cores = navigator.hardwareConcurrency;
     if (cores) {
-      setCheck("check-cpu", cores + " cores", cores >= 2 ? CHECK : WARN);
+      setCheck("check-cpu", "\u2265" + cores + " cores", cores >= 2 ? CHECK : WARN);
     } else {
       setCheck("check-cpu", "Unable to detect", DASH);
     }
@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", function() {
     await delay(400);
     var mem = navigator.deviceMemory;
     if (mem) {
-      setCheck("check-memory", mem >= 1 ? mem + " GB" : mem * 1024 + " MB", mem >= 4 ? CHECK : WARN);
+      setCheck("check-memory", mem >= 1 ? "\u2265" + mem + " GB" : "\u2265" + (mem * 1024) + " MB", mem >= 4 ? CHECK : WARN);
     } else {
       setCheck("check-memory", "Unable to detect", DASH);
     }
