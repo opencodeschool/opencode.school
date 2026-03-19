@@ -4,11 +4,7 @@ A free, self-paced course for learning [OpenCode](https://opencode.ai), the open
 
 https://opencode.school
 
-## Stack
-
-- [Astro](https://astro.build) — static site framework
-- [Cloudflare Workers](https://workers.cloudflare.com) — hosting
-- [Cloudflare KV](https://developers.cloudflare.com/kv/) — student progress storage
+See [AGENTS.md](AGENTS.md) for architecture details and AI agent instructions.
 
 ## Development
 

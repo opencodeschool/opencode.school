@@ -2,6 +2,12 @@
 
 OpenCode School (opencode.school) is an interactive course that teaches people how to use OpenCode. Built with Astro 6, deployed to Cloudflare Workers, with student progress tracked via Cloudflare KV.
 
+## Stack
+
+- [Astro](https://astro.build) — static site framework
+- [Cloudflare Workers](https://workers.cloudflare.com) — hosting
+- [Cloudflare KV](https://developers.cloudflare.com/kv/) — student progress storage
+
 ## Agent-facing files
 
 This project serves two audiences: human students (via the website) and AI agents (via the API and discovery files). Three files work together to make the API discoverable:
