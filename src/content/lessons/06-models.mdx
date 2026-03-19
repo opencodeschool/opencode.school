@@ -3,12 +3,14 @@ title: "Models"
 slug: models
 description: "Choose and configure AI models in OpenCode."
 order: 6
-agentInstructions: "Use the question tool to quiz the student with four multiple-choice questions, one at a time. (1) Where is your current model shown in OpenCode? (correct: just below the text input), (2) How do you change models? (correct: click the model name or type /models), (3) What is one limitation of the free built-in models? (correct: they lack features like vision / image support), (4) What is one advantage of OpenCode Go over the free models? (correct: it includes models with vision support, like Kimi K2.5). Present each question with four plausible options. If the student gets one wrong, explain the correct answer in a friendly way and move on to the next question. After all four questions, give a brief summary of any they missed. Mark the lesson complete regardless of score — the quiz is for learning, not gatekeeping."
+agentInstructions: "First, teach the student the material in this lesson before quizzing them. Cover these topics conversationally, one at a time, pausing for acknowledgment: (1) where the current model is shown in OpenCode (just below the text input), (2) how to change models (click the model name or type /models), (3) the free built-in models via OpenCode Zen and their limitations (most lack vision support), (4) OpenCode Go ($10/month) and its advantage — models like Kimi K2.5 that include vision support. Once you've covered all the material, use the question tool to quiz the student with four multiple-choice questions, one at a time, using the same four topics. Present each question with four plausible options. If the student gets one wrong, explain the correct answer in a friendly way and move on. After all four questions, give a brief summary of any they missed. Mark the lesson complete regardless of score — the quiz is for learning, not gatekeeping."
 ---
 
 import AgentPrompt from '../../components/AgentPrompt.astro'
 
 An AI [model](/glossary#model) is the brain behind OpenCode. When you type a message, it's a model that reads it and figures out how to respond — whether that's writing code, explaining an error, or running a command. Different models vary in speed, capability, and cost. Picking the right one is one of the best things you can do to improve your experience with OpenCode.
+
+<AgentPrompt title="Models" />
 
 ## See which model you're using
 
@@ -54,5 +56,3 @@ OpenCode supports 75+ model providers. If you already use Anthropic, OpenAI, Goo
 **At the time of this writing, Claude Opus 4.6 and GPT 5.4 are generally considered the most powerful models. If you can afford to use them, you'll get better results.**
 
 For full setup details, see the [providers documentation](https://opencode.ai/docs/providers/).
-
-<AgentPrompt title="Models" />
