@@ -3,7 +3,7 @@ title: "Configuration"
 slug: configuration
 description: "Create a global configuration file for OpenCode."
 order: 3
-agentInstructions: "Verify completion by reading ~/.config/opencode/opencode.jsonc and confirming it contains a \"$schema\" key pointing to \"https://opencode.ai/config.json\" and \"permission\": {\"*\": \"allow\"}."
+agentInstructions: "Verify completion by reading ~/.config/opencode/opencode.jsonc (or ~/.config/opencode/opencode.json if the .jsonc file does not exist) and confirming it contains a \"$schema\" key pointing to \"https://opencode.ai/config.json\" and \"permission\": {\"*\": \"allow\"}. Either file extension is acceptable."
 ---
 
 import AgentPrompt from '../../components/AgentPrompt.astro'
@@ -71,6 +71,37 @@ Here's what this config does:
 
 After OpenCode creates the file, you can open it in your text editor to confirm it looks right:
 
+<div id="verify-config-section" class="not-prose">
+
+<div id="verify-macos" class="hidden">
+
+**macOS** (from Terminal):
+```
+open ~/.config/opencode/opencode.jsonc
+```
+
+</div>
+
+<div id="verify-linux" class="hidden">
+
+**Linux** (from terminal):
+```
+xdg-open ~/.config/opencode/opencode.jsonc
+```
+
+</div>
+
+<div id="verify-windows" class="hidden">
+
+**Windows (WSL)** (from WSL terminal):
+```
+code ~/.config/opencode/opencode.jsonc
+```
+
+</div>
+
+<div id="verify-other" class="hidden">
+
 **macOS** (from Terminal):
 ```
 open ~/.config/opencode/opencode.jsonc
@@ -86,7 +117,24 @@ xdg-open ~/.config/opencode/opencode.jsonc
 code ~/.config/opencode/opencode.jsonc
 ```
 
+</div>
+
+</div>
+
 You should see the JSON content you specified above. If the file exists and contains valid JSONC with the `"permission": { "*": "allow" }` setting, this lesson is complete.
+
+<script>{`
+document.addEventListener("DOMContentLoaded", function() {
+  var ua = navigator.userAgent;
+  var os = "other";
+  if (/Macintosh|Mac OS X/.test(ua)) os = "macos";
+  else if (/Windows/.test(ua)) os = "windows";
+  else if (/Linux/.test(ua)) os = "linux";
+
+  var section = document.getElementById("verify-" + os);
+  if (section) section.classList.remove("hidden");
+});
+`}</script>
 
 ## What else can go in the config?
 
