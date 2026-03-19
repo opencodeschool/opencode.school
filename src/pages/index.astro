@@ -10,8 +10,11 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
 <Base>
 
   <!-- Student ID card: always at top, shown once enrolled -->
-  <div id="student-id-card" class="hidden mb-8 relative" style="max-width:420px; z-index:100">
-    <div class="theme-card-band rounded-2xl overflow-hidden" style="aspect-ratio:85.6/54">
+  <div id="student-id-card" class="hidden mb-8" style="max-width:420px; position:relative;">
+    <!-- Particle layer: behind the card, not clipped -->
+    <div id="celebration-layer" style="position:absolute; inset:-80px; pointer-events:none; z-index:1; overflow:visible;"></div>
+    <!-- Card itself sits above the particle layer -->
+    <div class="theme-card-band rounded-2xl overflow-hidden" style="aspect-ratio:85.6/54; position:relative; z-index:2;">
       <div class="flex flex-col justify-between h-full px-7 py-5">
         <p class="text-xs font-mono uppercase tracking-[0.3em] opacity-80">OpenCode Student ID</p>
         <p id="student-id-display" class="text-2xl font-mono font-bold tracking-tight"></p>
@@ -159,8 +162,6 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
     <p>Work through the lessons in order. Each one builds on the previous. Some lessons involve pasting prompts into OpenCode and letting it do the work for you. Progress is tracked through the website and synced with your OpenCode app.</p>
   </div>
 
-  <script is:inline src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-
   <script is:inline>
     (function() {
       var idCard          = document.getElementById("student-id-card");
@@ -196,21 +197,50 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
         return result;
       }
 
-      function fireConfetti() {
+      function fireCelebration() {
+        var layer = document.getElementById("celebration-layer");
+        if (!layer) return;
         var palettes = window.school.getThemePalettes();
         var palette = palettes[window.school.getThemeColor()] || palettes.blue;
         var colors = [palette.solid, palette.solidHover, palette.linkDark, palette.softText, palette.softTextDark];
 
-        var rect = idCard.getBoundingClientRect();
-        var originX = (rect.left + rect.width / 2) / window.innerWidth;
-        var originY = (rect.top + rect.height / 2) / window.innerHeight;
+        // Center of the layer (offset accounts for the -80px inset bleed)
+        var cx = layer.offsetWidth / 2;
+        var cy = layer.offsetHeight / 2;
 
-        for (var angle = 0; angle < 360; angle += 30) {
-          window.confetti({ particleCount: 12, angle: angle, spread: 40, startVelocity: 45, gravity: 1, origin: { x: originX, y: originY }, colors: colors, zIndex: 50, ticks: 120 });
+        for (var i = 0; i < 80; i++) {
+          var p = document.createElement("span");
+          p.className = "celebration-particle";
+
+          var angle = Math.random() * 2 * Math.PI;
+          var speed = 120 + Math.random() * 200;
+          var vx = Math.cos(angle) * speed * 1.6;
+          var vy = Math.sin(angle) * speed;
+          var size = (4 + Math.random() * 5) + "px";
+          var rot = (Math.random() * 720 - 360) + "deg";
+          var dur = (0.8 + Math.random() * 0.7) + "s";
+          var isCircle = Math.random() > 0.4;
+
+          p.style.setProperty("--vx", vx + "px");
+          p.style.setProperty("--vy", vy + "px");
+          p.style.setProperty("--rot", rot);
+          p.style.setProperty("--size", size);
+          p.style.setProperty("--dur", dur);
+          p.style.setProperty("--radius", isCircle ? "50%" : "20%");
+          p.style.setProperty("--color", colors[Math.floor(Math.random() * colors.length)]);
+          p.style.left = cx + "px";
+          p.style.top  = cy + "px";
+
+          layer.appendChild(p);
+          p.addEventListener("animationend", function() { this.remove(); });
         }
       }
 
-      function cipherReveal(target, callback) {
+      function cipherReveal(target, fast, callback) {
+        var scrambleMs = fast ? 15 : 30;
+        var delayMs    = fast ? 150 : 600;
+        var resolveMs  = fast ? 45 : 140;
+
         var resolved = 0;
         display.textContent = scramble(target);
 
@@ -222,7 +252,7 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
             else                        next += randomChar(target[i]);
           }
           display.textContent = next;
-        }, 30);
+        }, scrambleMs);
 
         setTimeout(function() {
           var resolveInterval = setInterval(function() {
@@ -235,8 +265,8 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
             }
             if (target[resolved] === "-") resolved++;
             resolved++;
-          }, 140);
-        }, 600);
+          }, resolveMs);
+        }, delayMs);
       }
 
       function revealIdCard(studentId) {
@@ -245,7 +275,7 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
         pageHeader.classList.add("hidden");
       }
 
-      function showEnrolled(studentId, animate) {
+      function showEnrolled(studentId, animate, fast) {
         notEnrolledSection.classList.add("hidden");
         enrolledSection.classList.remove("hidden");
         pageHeader.classList.add("hidden");
@@ -253,15 +283,16 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
         idCard.classList.remove("hidden");
 
         if (animate) {
-          // Re-run cipher reveal on the card at top
-          cipherReveal(studentId, function() {
-            fireConfetti();
-            window.school.markComplete("enrollment").then(function() {
-              window.school.updateAllCheckmarks();
-              if (typeof window.school.updateEnrolledIndicator === "function") {
-                window.school.updateEnrolledIndicator();
-              }
-            });
+          cipherReveal(studentId, fast, function() {
+            fireCelebration();
+            if (!fast) {
+              window.school.markComplete("enrollment").then(function() {
+                window.school.updateAllCheckmarks();
+                if (typeof window.school.updateEnrolledIndicator === "function") {
+                  window.school.updateEnrolledIndicator();
+                }
+              });
+            }
           });
         }
       }
@@ -284,10 +315,10 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
         });
       }
 
-      // On page load: if already enrolled, show card + lesson list
+      // On page load: if already enrolled, show card + lesson list with fast cipher + celebration
       var existingId = window.school.getStudentId();
       if (existingId) {
-        showEnrolled(existingId, false);
+        showEnrolled(existingId, true, true);
       } else {
         setSelectedTheme(selectedTheme);
       }
@@ -318,7 +349,7 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
           setPickerState("Generating your student ID...", true);
           try {
             var data = await window.school.enroll();
-            showEnrolled(data.studentId, true);
+            showEnrolled(data.studentId, true, false);
           } catch (e) {
             enrollError.classList.remove("hidden");
             setPickerState("Choose a color for your student ID card and site theme.", false);
