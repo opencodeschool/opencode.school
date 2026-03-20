@@ -31,6 +31,28 @@ Each lesson is an MDX file in `src/content/lessons/`. The frontmatter schema (de
 
 When editing lessons, keep `agentInstructions` accurate. It should describe both the verifiable end state and the steps an agent should take to confirm it.
 
+## Lesson authoring guidelines
+
+### Quiz format
+
+Lessons with `order` 3–6 use a teach → quiz → verify flow. The shared quiz boilerplate is defined in `src/lib/quiz-instructions.ts` and injected by the API layer at runtime — do not copy it into individual MDX files.
+
+For these lessons, `agentInstructions` in the MDX should contain only:
+
+1. A list of four topics to teach and quiz (numbered, one sentence each)
+2. A verification step describing what file to read and what to confirm (omit for lessons with no file-system check)
+
+Keep the instructions concise — the API appends the quiz boilerplate automatically.
+
+### Adding new lessons
+
+When adding a new OpenCode-based lesson with sufficient content:
+
+- Add it to the `QUIZ_LESSON_ORDERS` set in both `src/pages/api/lessons/[slug].ts` and `src/pages/api/lessons/index.ts`
+- Write `agentInstructions` with four topics and a verification step (no quiz boilerplate)
+- Default to four quiz questions; vary only if the lesson has notably more or fewer natural topics
+- For stub lessons (`Coming soon.` body), do not add quiz format until the lesson body is written
+
 ## API endpoints
 
 | Route                      | Method | Purpose                                  |
