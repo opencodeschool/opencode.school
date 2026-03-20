@@ -3,8 +3,6 @@ import type { APIRoute } from "astro";
 import { mdxToProse } from "../../../lib/mdx-to-prose";
 import { QUIZ_INSTRUCTIONS } from "../../../lib/quiz-instructions";
 
-const QUIZ_LESSON_ORDERS = new Set([3, 4, 5, 6]);
-
 const corsHeaders = {
 	"Access-Control-Allow-Origin": "*",
 	"Access-Control-Allow-Methods": "GET, OPTIONS",
@@ -29,7 +27,7 @@ export const GET: APIRoute = async ({ params }) => {
 		});
 	}
 
-	const agentInstructions = QUIZ_LESSON_ORDERS.has(lesson.data.order)
+	const agentInstructions = lesson.data.quiz
 		? `${lesson.data.agentInstructions}\n\n${QUIZ_INSTRUCTIONS}`
 		: lesson.data.agentInstructions;
 
