@@ -1,3 +1,7 @@
+// Copyright (c) 2026 Cloudflare, Inc.
+// Licensed under the Apache 2.0 license found in the LICENSE file or at:
+//     https://opensource.org/licenses/Apache-2.0
+
 /**
  * Shared quiz boilerplate appended to agentInstructions for OpenCode-based lessons (order 3–6).
  * Injected at the API layer so individual lesson MDX files stay focused on lesson-specific content.
