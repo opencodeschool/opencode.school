@@ -1,7 +1,7 @@
+---
 // Copyright (c) 2026 Cloudflare, Inc.
 // Licensed under the Apache 2.0 license found in the LICENSE file or at:
 //     https://opensource.org/licenses/Apache-2.0
----
 export const prerender = true;
 
 import Base from "../layouts/Base.astro";
@@ -76,6 +76,14 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
         );
       })}
     </ol>
+  </div>
+
+  <!-- Intro video -->
+  <div class="mb-8 rounded-2xl overflow-hidden" style="background-color: var(--theme-solid);">
+    <video controls loop playsinline class="w-full">
+      <source src="/video/intro.mov" type="video/mp4; codecs=hvc1">
+      <source src="/video/intro.webm" type="video/webm">
+    </video>
   </div>
 
   <!-- Not enrolled: enrollment widget -->
