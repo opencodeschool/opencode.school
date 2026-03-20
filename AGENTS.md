@@ -48,10 +48,10 @@ Keep the instructions concise — the API appends the quiz boilerplate automatic
 
 When adding a new OpenCode-based lesson with sufficient content:
 
-- Add it to the `QUIZ_LESSON_ORDERS` set in both `src/pages/api/lessons/[slug].ts` and `src/pages/api/lessons/index.ts`
+- Set `quiz: true` in the lesson's frontmatter
 - Write `agentInstructions` with four topics and a verification step (no quiz boilerplate)
 - Default to four quiz questions; vary only if the lesson has notably more or fewer natural topics
-- For stub lessons (`Coming soon.` body), do not add quiz format until the lesson body is written
+- For stub lessons (`Coming soon.` body), set `quiz: false` until the lesson body is written
 
 ## API endpoints
 
