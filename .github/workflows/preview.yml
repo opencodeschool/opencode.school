@@ -75,6 +75,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: "4.62.0"
           command: versions upload --preview-alias pr-${{ github.event.number }} --message "pr #${{ github.event.number }} (${{ github.sha }})"
 
       - name: Mark deployment success
