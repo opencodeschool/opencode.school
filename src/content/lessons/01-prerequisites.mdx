@@ -45,6 +45,16 @@ Before we install anything, let's make sure you have what you need. Your browser
   </div>
 </div>
 
+<div id="system-check-next" class="hidden mt-4 not-prose">
+  <a
+    id="system-check-next-link"
+    href="/lessons/installing-opencode"
+    class="theme-button flex w-full justify-center items-center gap-2 rounded-lg px-6 py-4 text-sm font-medium select-none"
+  >
+    <span id="system-check-next-label">Next lesson: Installation &rarr;</span>
+  </a>
+</div>
+
 ## A computer
 
 OpenCode runs on **macOS**, **Windows**, and **Linux**. Any computer from the last 5-6 years should work fine. OpenCode lets you run AI models hosted in the cloud, so you don't need a powerful machine — just something that can run a web browser and connect to the internet.
@@ -120,34 +130,74 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Run all checks with staggered reveal
   async function runChecks() {
+    var allPassed = true;
+
     // OS
     await delay(300);
     var os = detectOS();
     var supportedOS = ["macOS", "Windows", "Linux"];
-    setCheck("check-os", os, supportedOS.indexOf(os) !== -1 ? CHECK : WARN);
+    var osIcon = supportedOS.indexOf(os) !== -1 ? CHECK : WARN;
+    setCheck("check-os", os, osIcon);
+    if (osIcon !== CHECK) allPassed = false;
 
     // CPU
     await delay(400);
     var cores = navigator.hardwareConcurrency;
+    var cpuIcon;
     if (cores) {
-      setCheck("check-cpu", "\u2265" + cores + " cores", cores >= 2 ? CHECK : WARN);
+      cpuIcon = cores >= 2 ? CHECK : WARN;
+      setCheck("check-cpu", "\u2265" + cores + " cores", cpuIcon);
     } else {
+      cpuIcon = DASH;
       setCheck("check-cpu", "Unable to detect", DASH);
     }
+    if (cpuIcon !== CHECK) allPassed = false;
 
     // Memory
     await delay(400);
     var mem = navigator.deviceMemory;
+    var memIcon;
     if (mem) {
-      setCheck("check-memory", mem >= 1 ? "\u2265" + mem + " GB" : "\u2265" + (mem * 1024) + " MB", mem >= 4 ? CHECK : WARN);
+      memIcon = mem >= 4 ? CHECK : WARN;
+      setCheck("check-memory", mem >= 1 ? "\u2265" + mem + " GB" : "\u2265" + (mem * 1024) + " MB", memIcon);
     } else {
+      memIcon = DASH;
       setCheck("check-memory", "Unable to detect", DASH);
     }
+    if (memIcon !== CHECK) allPassed = false;
 
     // Internet
     await delay(300);
     var result = await measureConnectivity();
     setCheck("check-internet", result.label, result.icon);
+    if (result.icon !== CHECK) allPassed = false;
+
+    // Reveal inline next button if all checks passed
+    if (allPassed) {
+      var nextEl = document.getElementById("system-check-next");
+      var nextLink = document.getElementById("system-check-next-link");
+      var nextLabel = document.getElementById("system-check-next-label");
+      if (nextEl && nextLink && nextLabel) {
+        var enrolled = window.school && window.school.getStudentId && window.school.getStudentId();
+        if (!enrolled) {
+          nextLink.setAttribute("href", "/");
+          nextLabel.textContent = "Enroll for free to get started \u2192";
+        } else {
+          // Intercept click: mark lesson complete, then navigate
+          nextLink.addEventListener("click", function(e) {
+            e.preventDefault();
+            var dest = nextLink.getAttribute("href");
+            nextLabel.textContent = "Saving\u2026";
+            nextLink.style.pointerEvents = "none";
+            window.school.markComplete("prerequisites").then(function(progress) {
+              if (progress) window.school.updateAllCheckmarks();
+              window.location.href = dest;
+            });
+          });
+        }
+        nextEl.classList.remove("hidden");
+      }
+    }
   }
 
   runChecks();
