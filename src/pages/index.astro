@@ -80,7 +80,7 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
 
   <!-- Intro video -->
   <div class="mb-8 rounded-2xl overflow-hidden" style="background-color: var(--theme-solid);">
-    <video controls loop playsinline class="w-full">
+    <video controls playsinline class="w-full">
       <source src="https://assets.opencode.school/video/intro.mov" type="video/mp4; codecs=hvc1">
       <source src="https://assets.opencode.school/video/intro.webm" type="video/webm">
     </video>
@@ -88,7 +88,7 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
 
   <!-- Not enrolled: enrollment widget -->
   <div id="not-enrolled-section" class="mb-12">
-    <div id="enroll-step-button" class="py-8">
+    <div id="enroll-step-button" class="py-8 text-center">
       <button
         type="button"
         id="enroll-button"
@@ -174,6 +174,10 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
   </div>
 
   <script is:inline>
+    document.querySelector('video').addEventListener('ended', function() {
+      this.load();
+    });
+
     (function() {
       var idCard          = document.getElementById("student-id-card");
       var pageHeader      = document.getElementById("page-header");
