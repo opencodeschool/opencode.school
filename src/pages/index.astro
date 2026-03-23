@@ -80,7 +80,7 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
 
   <!-- Intro video -->
   <div class="mb-8 rounded-2xl overflow-hidden" style="background-color: var(--theme-solid);">
-    <video controls loop playsinline class="w-full">
+    <video controls loop playsinline class="w-full" poster="/video/poster.png">
       <source src="/video/intro.mov" type="video/mp4; codecs=hvc1">
       <source src="/video/intro.webm" type="video/webm">
     </video>
