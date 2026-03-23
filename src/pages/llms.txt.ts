@@ -4,11 +4,11 @@
 
 import type { APIRoute } from "astro";
 
-const content = `# OpenCode School
+const getContent = (origin: string) => `# OpenCode School
 
 OpenCode School is an interactive course that teaches people how to use OpenCode. 
 
-Students enroll on the homepage (https://opencode.school), get a student ID, then use OpenCode to work through lessons.
+Students enroll on the homepage (${origin}), get a student ID, then use OpenCode to work through lessons.
 
 When a student gives you their student ID, use the API to fetch their progress and the lesson they want to work. 
 
@@ -18,11 +18,11 @@ When the lesson criteria are met, mark the lesson complete via API before tellin
 
 When presenting multiple choice questions, do not label any answer choice as "Recommended".
 
-Download this schema to know how to interact with the API: https://opencode.school/api/openapi.json
+Download this schema to know how to interact with the API: ${origin}/api/openapi.json
 `;
 
-export const GET: APIRoute = () => {
-	return new Response(content, {
+export const GET: APIRoute = ({ url }) => {
+	return new Response(getContent(url.origin), {
 		status: 200,
 		headers: { "Content-Type": "text/plain; charset=utf-8" },
 	});

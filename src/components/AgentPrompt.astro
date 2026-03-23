@@ -40,7 +40,7 @@ const { title } = Astro.props;
       var confirm = card.querySelector(".agent-prompt-confirm");
       if (!promptText) return;
 
-      var prompt = "I'm enrolled in OpenCode School as " + studentId + "\n\nLet's work on the \"" + lessonTitle + "\" lesson together!\n\nFetch https://opencode.school/llms.txt for instructions.";
+      var prompt = "I'm enrolled in OpenCode School as " + studentId + "\n\nLet's work on the \"" + lessonTitle + "\" lesson together!\n\nFetch " + window.location.origin + "/llms.txt for instructions.;
       promptText.textContent = prompt;
       card.classList.remove("hidden");
 

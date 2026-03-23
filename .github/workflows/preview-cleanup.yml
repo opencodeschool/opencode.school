@@ -1,0 +1,56 @@
+name: Preview Cleanup
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  cleanup-preview:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - name: Mark deployment inactive
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo
+            const pr = context.payload.pull_request
+            const environment = `preview/pr-${pr.number}`
+
+            // Find the deployment for this environment
+            const { data: deployments } = await github.rest.repos.listDeployments({
+              owner,
+              repo,
+              environment,
+            })
+
+            if (deployments.length > 0) {
+              // Mark all deployments for this environment as inactive
+              for (const deployment of deployments) {
+                await github.rest.repos.createDeploymentStatus({
+                  owner,
+                  repo,
+                  deployment_id: deployment.id,
+                  state: 'inactive',
+                  description: 'Preview environment deleted - PR closed'
+                })
+              }
+            }
+
+      - name: Delete preview version
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          # Delete the preview version using wrangler
+          npx wrangler versions delete --preview-alias pr-${{ github.event.number }} --yes || true
