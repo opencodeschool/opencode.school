@@ -182,6 +182,18 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!enrolled) {
           nextLink.setAttribute("href", "/");
           nextLabel.textContent = "Enroll for free to get started \u2192";
+        } else {
+          // Intercept click: mark lesson complete, then navigate
+          nextLink.addEventListener("click", function(e) {
+            e.preventDefault();
+            var dest = nextLink.getAttribute("href");
+            nextLabel.textContent = "Saving\u2026";
+            nextLink.style.pointerEvents = "none";
+            window.school.markComplete("prerequisites").then(function(progress) {
+              if (progress) window.school.updateAllCheckmarks();
+              window.location.href = dest;
+            });
+          });
         }
         nextEl.classList.remove("hidden");
       }
