@@ -229,9 +229,13 @@
    the oversized gradient continuously on every page load.
    Removing .rainbow-bg transitions to the student's solid theme color. */
 
+/* Diagonal rainbow sweep: bands are tilted at 45° and the background-position
+   animates along both axes so the stripes travel diagonally across the element.
+   Each band is 120px wide; the repeating-linear-gradient tile is 18×120px = 2160px.
+   Animating by exactly one full tile (2160px on each axis) produces a seamless loop. */
 @keyframes rainbow-sweep {
-  from { background-position: 0% 50%; }
-  to   { background-position: 100% 50%; }
+  from { background-position: 0 0; }
+  to   { background-position: 2160px 2160px; }
 }
 
 #intro-video-bg {
@@ -239,32 +243,28 @@
 }
 
 .rainbow-bg {
-  /* 19 bands (18 colors + repeat of first to wrap): each band = 100/19 ≈ 5.26%
-     Hard stops: color X from N% to (N+5.26)%, color X+1 from (N+5.26)% to (N+10.52)%, etc. */
-  background-image: linear-gradient(
-    90deg,
-    #dc2626  0.00%  5.26%,
-    #ea580c  5.26% 10.53%,
-    #b45309 10.53% 15.79%,
-    #ca8a04 15.79% 21.05%,
-    #4d7c0f 21.05% 26.32%,
-    #15803d 26.32% 31.58%,
-    #059669 31.58% 36.84%,
-    #0f766e 36.84% 42.11%,
-    #0e7490 42.11% 47.37%,
-    #0284c7 47.37% 52.63%,
-    #2563eb 52.63% 57.89%,
-    #4f46e5 57.89% 63.16%,
-    #7c3aed 63.16% 68.42%,
-    #9333ea 68.42% 73.68%,
-    #c026d3 73.68% 78.95%,
-    #db2777 78.95% 84.21%,
-    #e11d48 84.21% 89.47%,
-    #475569 89.47% 94.74%,
-    #dc2626 94.74% 100%
+  background-image: repeating-linear-gradient(
+    -45deg,
+    #dc2626  0px   120px,
+    #ea580c  120px 240px,
+    #b45309  240px 360px,
+    #ca8a04  360px 480px,
+    #4d7c0f  480px 600px,
+    #15803d  600px 720px,
+    #059669  720px 840px,
+    #0f766e  840px 960px,
+    #0e7490  960px 1080px,
+    #0284c7 1080px 1200px,
+    #2563eb 1200px 1320px,
+    #4f46e5 1320px 1440px,
+    #7c3aed 1440px 1560px,
+    #9333ea 1560px 1680px,
+    #c026d3 1680px 1800px,
+    #db2777 1800px 1920px,
+    #e11d48 1920px 2040px,
+    #475569 2040px 2160px
   );
-  background-size: 1900% 100%;
-  animation: rainbow-sweep 18s linear infinite;
+  animation: rainbow-sweep 36s linear infinite;
 }
 
 @keyframes swatch-in {
