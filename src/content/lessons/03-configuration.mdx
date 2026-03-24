@@ -4,7 +4,7 @@ slug: configuration
 description: "Create a global configuration file for OpenCode."
 order: 3
 quiz: true
-agentInstructions: "Cover these four topics: (1) what opencode.jsonc is and where it lives (~/.config/opencode/opencode.jsonc), (2) the role of the $schema key — it points to the config schema and enables autocomplete in editors like VS Code, (3) what \"permission\": {\"*\": \"allow\"} does — it lets OpenCode perform all actions without asking, (4) how to edit the config and when changes take effect (on the next session). After teaching and quizzing, verify completion by reading ~/.config/opencode/opencode.jsonc (or ~/.config/opencode/opencode.json if the .jsonc file does not exist) and confirming it contains a $schema key pointing to https://opencode.ai/config.json and \"permission\": {\"*\": \"allow\"}. Either file extension is acceptable."
+agentInstructions: "Cover these four topics: (1) what the global config file is and why it applies to all OpenCode sessions across every project on the machine, (2) where the config file lives — ~/.config/opencode/opencode.jsonc on macOS/Linux, C:\\Users\\<Name>\\.config\\opencode\\opencode.jsonc on Windows, (3) what \"permission\": {\"*\": \"allow\"} does — it lets OpenCode perform all actions without asking, (4) that config changes require restarting OpenCode to take effect, and that the student should quit OpenCode Desktop after the file is created. After teaching and quizzing, verify completion by reading ~/.config/opencode/opencode.jsonc (or ~/.config/opencode/opencode.json if the .jsonc file does not exist) and confirming it contains \"permission\": {\"*\": \"allow\"}. Either file extension is acceptable. After verifying, instruct the student to quit OpenCode Desktop so the new config takes effect next time they open it."
 ---
 
 import AgentPrompt from '../../components/AgentPrompt.astro'
@@ -17,56 +17,61 @@ First up: a global configuration file. This file applies to every OpenCode sessi
 
 ## Where does the config file live?
 
-The global config file location depends on your operating system:
+<div id="config-location-section" class="not-prose">
+
+<div id="config-location-macos" class="hidden">
+
+`~/.config/opencode/opencode.jsonc` — the `~` is your home directory (`/Users/yourname`).
+
+</div>
+
+<div id="config-location-linux" class="hidden">
+
+`~/.config/opencode/opencode.jsonc` — the `~` is your home directory (`/home/yourname`).
+
+</div>
+
+<div id="config-location-windows" class="hidden">
+
+`~/.config/opencode/opencode.jsonc` inside your WSL home directory, or `C:\Users\<YourName>\.config\opencode\opencode.jsonc` on native Windows.
+
+</div>
+
+<div id="config-location-other" class="hidden">
 
 - **macOS / Linux**: `~/.config/opencode/opencode.jsonc`
 - **Windows (WSL)**: `~/.config/opencode/opencode.jsonc` (inside your WSL home directory)
 - **Windows (native)**: `C:\Users\<YourName>\.config\opencode\opencode.jsonc`
 
-The `~` symbol means your home directory. On macOS, that's `/Users/yourname`. On Linux, it's `/home/yourname`.
+</div>
 
-## What is JSON? What is JSONC?
-
-OpenCode uses **JSONC** for its configuration files. If you haven't seen this format before, here's a quick primer.
-
-**JSON** (JavaScript Object Notation) is a widely-used format for storing structured data. It uses curly braces `{}` for objects, square brackets `[]` for lists, and key-value pairs separated by colons:
-
-```json
-{
-  "name": "Alice",
-  "age": 30,
-  "languages": ["Python", "TypeScript"]
-}
-```
-
-JSON is strict — no comments allowed, and no trailing commas. This can be annoying when you're editing config files by hand.
-
-**JSONC** (JSON with Comments) is the same thing, but it also allows:
-
-- Comments using `//` — so you can annotate your config with notes
-- Trailing commas — so you don't get syntax errors when the last item in a list has a comma after it
-
-```jsonc
-{
-  // This is a comment — JSON doesn't allow these, but JSONC does
-  "name": "Alice",
-  "languages": [
-    "Python",
-    "TypeScript", // <-- trailing comma is fine in JSONC
-  ],
-}
-```
-
-OpenCode's config files use the `.jsonc` extension to signal that comments are allowed. If your text editor supports JSONC (VS Code does out of the box), you'll get syntax highlighting and error checking for free.
+</div>
 
 ## Create your config file
 
+OpenCode config files can be written in JSON or JSONC — we'll use JSONC because it supports `//` comments, which are handy for keeping notes right in your config.
+
 OpenCode will create the directory and file for you. **If you see any confirmation prompts, choose "Allow Once."** You may see a couple of prompts during this step — approve each one.
 
-Here's what this config does:
+Here's what your config file will look like:
 
-- `$schema` — Points to OpenCode's config schema. If you open this file in VS Code, you'll get autocomplete suggestions and validation for every setting.
-- `"permission": { "*": "allow" }` — Allows OpenCode to perform all actions without asking for permission. We're starting with wide-open permissions to keep things simple. In the next lesson, we'll tighten these up.
+```jsonc
+{
+  // Points to OpenCode's config schema — enables autocomplete in VS Code
+  "$schema": "https://opencode.ai/config.json",
+
+  // Permissions control what OpenCode can do without asking first.
+  // "*": "allow" grants permission for everything automatically.
+  // We'll tighten this up in the next lesson.
+  "permission": {
+    "*": "allow"
+  }
+}
+```
+
+## After the config is created
+
+Config changes take effect the next time OpenCode starts. Once the file is created, **quit OpenCode Desktop** so the new config loads when you reopen it.
 
 ## Verify your config
 
@@ -122,7 +127,7 @@ code ~/.config/opencode/opencode.jsonc
 
 </div>
 
-You should see the JSON content you specified above. If the file exists and contains valid JSONC with the `"permission": { "*": "allow" }` setting, this lesson is complete.
+You should see the JSONC content above. If the file exists and contains `"permission": { "*": "allow" }`, this lesson is complete.
 
 <script>{`
 document.addEventListener("DOMContentLoaded", function() {
@@ -132,11 +137,11 @@ document.addEventListener("DOMContentLoaded", function() {
   else if (/Windows/.test(ua)) os = "windows";
   else if (/Linux/.test(ua)) os = "linux";
 
-  var section = document.getElementById("verify-" + os);
-  if (section) section.classList.remove("hidden");
+  ["config-location", "verify"].forEach(function(prefix) {
+    var el = document.getElementById(prefix + "-" + os);
+    if (el) el.classList.remove("hidden");
+  });
 });
 `}</script>
 
-## What else can go in the config?
-
-A lot! The config file supports settings for [models](/glossary#model), [MCP servers](/glossary#mcp), custom [commands](/glossary#command), themes, keybinds, and more. We'll explore some of these in later lessons. For the full reference, see the [OpenCode config documentation](https://opencode.ai/docs/config/).
+The config also supports models, MCP servers, custom commands, themes, and keybinds — we'll get to those in later lessons. Full reference: [OpenCode config docs](https://opencode.ai/docs/config/).
