@@ -123,6 +123,7 @@
   background: var(--theme-solid-hover);
 }
 
+
 .theme-panel {
   border: 1px solid var(--theme-soft-border);
   background: color-mix(in srgb, var(--theme-soft-bg) 88%, white);
@@ -222,6 +223,58 @@
   color: theme(--color-stone-300);
 }
 
+
+/* .rainbow-bg — reusable diagonal rainbow sweep.
+   A single oversized linear-gradient at -45deg scaled to 400% × 400% covers
+   the element at all scroll positions without tiling. Animating
+   background-position from 0%/0% → 100%/100% slides the bands diagonally.
+   Hard stops (each color at adjacent percentages) keep bands distinct.
+   Works on any element: video wrappers, buttons, links, etc.
+   On interactive elements the hover state brightens slightly. */
+
+@keyframes rainbow-sweep {
+  from { background-position: 0% 0%; }
+  to   { background-position: 100% 100%; }
+}
+
+/* Elements that transition away from .rainbow-bg fade to their solid color */
+#intro-video-bg {
+  transition: background-color 0.6s ease;
+}
+
+.rainbow-bg {
+  /* 19 stops (18 colors + first repeated to close the loop): each ≈ 5.26% */
+  /* 18 chromatic stops (no gray) + first repeated to close the loop: each ≈ 5.56% */
+  background-image: linear-gradient(
+    -45deg,
+    #dc2626  0.00%  5.56%,
+    #ea580c  5.56% 11.11%,
+    #b45309 11.11% 16.67%,
+    #ca8a04 16.67% 22.22%,
+    #4d7c0f 22.22% 27.78%,
+    #15803d 27.78% 33.33%,
+    #059669 33.33% 38.89%,
+    #0f766e 38.89% 44.44%,
+    #0e7490 44.44% 50.00%,
+    #0284c7 50.00% 55.56%,
+    #2563eb 55.56% 61.11%,
+    #4f46e5 61.11% 66.67%,
+    #7c3aed 66.67% 72.22%,
+    #9333ea 72.22% 77.78%,
+    #c026d3 77.78% 83.33%,
+    #db2777 83.33% 88.89%,
+    #e11d48 88.89% 94.44%,
+    #dc2626 94.44% 100%
+  );
+  background-size: 400% 400%;
+  animation: rainbow-sweep 36s linear infinite;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.rainbow-bg:is(button, a):hover {
+  filter: brightness(1.15);
+}
 
 @keyframes swatch-in {
   from {

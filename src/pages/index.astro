@@ -79,7 +79,7 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
   </div>
 
   <!-- Intro video -->
-  <div class="mb-8 rounded-2xl overflow-hidden" style="background-color: var(--theme-solid);">
+  <div id="intro-video-bg" class="mb-8 rounded-2xl overflow-hidden rainbow-bg" style="background-color: var(--theme-solid);">
     <video controls playsinline class="w-full" poster="/video/poster.png">
       <source src="https://assets.opencode.school/video/intro.mov" type="video/mp4; codecs=hvc1">
       <source src="https://assets.opencode.school/video/intro.webm" type="video/webm">
@@ -92,9 +92,9 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
       <button
         type="button"
         id="enroll-button"
-        class="theme-button cursor-pointer rounded-lg px-10 py-4 font-mono text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        class="rainbow-bg cursor-pointer rounded-lg px-10 py-4 font-mono font-semibold text-2xl disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Enroll in OpenCode School &rarr;
+        Enroll in OpenCode School
       </button>
       <p class="text-sm text-gray-500 dark:text-stone-500 mt-4">
         Free forever. No account required. No personal data collected.
@@ -361,6 +361,9 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
           isSubmitting = true;
           enrollError.classList.add("hidden");
           setSelectedTheme(opt.getAttribute("data-theme-color"));
+          // Transition rainbow → student's chosen solid color
+          var videoBg = document.getElementById("intro-video-bg");
+          if (videoBg) videoBg.classList.remove("rainbow-bg");
           setPickerState("Generating your student ID...", true);
           try {
             var data = await window.school.enroll();
