@@ -226,12 +226,16 @@
 /* Rainbow gradient sweep for video background.
    Hard color stops (each color repeated at adjacent percentages) produce
    distinct solid bands — no blending between colors. The animation scrolls
-   the oversized gradient continuously, cycling through all 18 student card
-   palette colors. This runs forever, including after enrollment. */
+   the oversized gradient continuously on every page load.
+   Removing .rainbow-bg transitions to the student's solid theme color. */
 
 @keyframes rainbow-sweep {
   from { background-position: 0% 50%; }
   to   { background-position: 100% 50%; }
+}
+
+#intro-video-bg {
+  transition: background-color 0.6s ease;
 }
 
 .rainbow-bg {
@@ -258,9 +262,9 @@
     #e11d48 84.21% 89.47%,
     #475569 89.47% 94.74%,
     #dc2626 94.74% 100%
-  ) !important;
-  background-size: 1900% 100% !important;
-  animation: rainbow-sweep 18s linear infinite !important;
+  );
+  background-size: 1900% 100%;
+  animation: rainbow-sweep 18s linear infinite;
 }
 
 @keyframes swatch-in {
