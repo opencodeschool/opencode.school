@@ -223,46 +223,44 @@
 }
 
 
-/* Rainbow gradient sweep for video background before a theme color is chosen.
-   Color stops match the 18 student ID card palette colors in spectral order. */
-
-/* Always keep a transition on the video wrapper so removing .rainbow-bg fades smoothly */
-#intro-video-bg {
-  transition: background-color 0.5s ease, background-image 0.5s ease;
-}
+/* Rainbow gradient sweep for video background.
+   Hard color stops (each color repeated at adjacent percentages) produce
+   distinct solid bands — no blending between colors. The animation scrolls
+   the oversized gradient continuously, cycling through all 18 student card
+   palette colors. This runs forever, including after enrollment. */
 
 @keyframes rainbow-sweep {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  from { background-position: 0% 50%; }
+  to   { background-position: 100% 50%; }
 }
 
 .rainbow-bg {
+  /* 19 bands (18 colors + repeat of first to wrap): each band = 100/19 ≈ 5.26%
+     Hard stops: color X from N% to (N+5.26)%, color X+1 from (N+5.26)% to (N+10.52)%, etc. */
   background-image: linear-gradient(
-    135deg,
-    #dc2626,
-    #ea580c,
-    #b45309,
-    #ca8a04,
-    #4d7c0f,
-    #15803d,
-    #059669,
-    #0f766e,
-    #0e7490,
-    #0284c7,
-    #2563eb,
-    #4f46e5,
-    #7c3aed,
-    #9333ea,
-    #c026d3,
-    #db2777,
-    #e11d48,
-    #475569,
-    #dc2626
+    90deg,
+    #dc2626  0.00%  5.26%,
+    #ea580c  5.26% 10.53%,
+    #b45309 10.53% 15.79%,
+    #ca8a04 15.79% 21.05%,
+    #4d7c0f 21.05% 26.32%,
+    #15803d 26.32% 31.58%,
+    #059669 31.58% 36.84%,
+    #0f766e 36.84% 42.11%,
+    #0e7490 42.11% 47.37%,
+    #0284c7 47.37% 52.63%,
+    #2563eb 52.63% 57.89%,
+    #4f46e5 57.89% 63.16%,
+    #7c3aed 63.16% 68.42%,
+    #9333ea 68.42% 73.68%,
+    #c026d3 73.68% 78.95%,
+    #db2777 78.95% 84.21%,
+    #e11d48 84.21% 89.47%,
+    #475569 89.47% 94.74%,
+    #dc2626 94.74% 100%
   ) !important;
-  background-size: 400% 400% !important;
-  animation: rainbow-sweep 8s ease infinite !important;
-  transition: background 0.5s ease !important;
+  background-size: 1900% 100% !important;
+  animation: rainbow-sweep 18s linear infinite !important;
 }
 
 @keyframes swatch-in {

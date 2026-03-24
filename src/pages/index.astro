@@ -361,9 +361,6 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
           isSubmitting = true;
           enrollError.classList.add("hidden");
           setSelectedTheme(opt.getAttribute("data-theme-color"));
-          // Fade rainbow bg → student's chosen solid color
-          var videoBg = document.getElementById("intro-video-bg");
-          if (videoBg) videoBg.classList.remove("rainbow-bg");
           setPickerState("Generating your student ID...", true);
           try {
             var data = await window.school.enroll();
