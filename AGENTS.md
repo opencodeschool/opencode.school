@@ -7,6 +7,7 @@ OpenCode School (opencode.school) is an interactive course that teaches people h
 - [Astro](https://astro.build) — static site framework
 - [Cloudflare Workers](https://workers.cloudflare.com) — hosting
 - [Cloudflare KV](https://developers.cloudflare.com/kv/) — student progress storage
+- [Cloudflare R2](https://developers.cloudflare.com/r2/) — video asset storage (bucket: `opencodeschool-assets`, served at `https://assets.opencode.school`)
 
 ## Agent-facing files
 
@@ -35,7 +36,7 @@ When editing lessons, keep `agentInstructions` accurate. It should describe both
 
 ### Quiz format
 
-Lessons with `order` 3–6 use a teach → quiz → verify flow. The shared quiz boilerplate is defined in `src/lib/quiz-instructions.ts` and injected by the API layer at runtime — do not copy it into individual MDX files.
+Lessons with `quiz: true` in their frontmatter use a teach → quiz → verify flow. The set of quiz lessons may grow over time. The shared quiz boilerplate is defined in `src/lib/quiz-instructions.ts` and injected by the API layer at runtime — do not copy it into individual MDX files.
 
 For these lessons, `agentInstructions` in the MDX should contain only:
 
@@ -55,15 +56,7 @@ When adding a new OpenCode-based lesson with sufficient content:
 
 ## API endpoints
 
-| Route                      | Method | Purpose                                  |
-| -------------------------- | ------ | ---------------------------------------- |
-| `/api/lessons`             | GET    | All lessons as JSON (content + criteria) |
-| `/api/lessons/{slug}`      | GET    | Single lesson by slug                    |
-| `/api/enroll`              | POST   | Generate student ID + progress record    |
-| `/api/progress/{studentId}`| GET    | Fetch student progress                   |
-| `/api/progress/{studentId}`| PUT    | Mark a lesson complete                   |
-
-All endpoints return JSON with CORS headers. No authentication required.
+See `public/api/openapi.json` for the full OpenAPI 3.1 spec, including all routes, request/response schemas, and examples. All endpoints return JSON with CORS headers. No authentication required.
 
 ## Content stripping
 
@@ -75,9 +68,13 @@ Use Tailwind's `stone` palette for all dark mode colors (backgrounds, borders, t
 
 ## Scripts
 
-- `script/dev` — start the dev server
-- `script/build` — build for production
-- `script/lint` — run Biome linter
-- `script/deploy` — build + deploy to Cloudflare
+All development tasks have a corresponding script in the `script/` directory. Always run `script/lint` before committing.
 
-Always run `script/lint` before committing.
+## CI/CD
+
+Four GitHub Actions workflows handle automation:
+
+- `ci.yml` — runs lint and tests on every PR
+- `deploy.yml` — builds and deploys to Cloudflare Workers on push to main; do not run `script/deploy` manually
+- `preview.yml` — builds and deploys a preview Worker version on PR open/update, accessible at `https://pr-{N}-opencodeschool.ziki.workers.dev`
+- `preview-cleanup.yml` — deletes the preview version and marks the deployment inactive when a PR is closed
