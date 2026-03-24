@@ -627,6 +627,14 @@ const currentPath = Astro.url.pathname;
           });
         }
 
+        // Returning students: show rainbow briefly, then fade to their chosen color
+        if (window.school.getThemeColor()) {
+          setTimeout(function() {
+            var videoBg = document.getElementById("intro-video-bg");
+            if (videoBg) videoBg.classList.remove("rainbow-bg");
+          }, 1500);
+        }
+
         // Poll for progress updates every second so the UI reflects changes
         // made by agents (e.g. marking a lesson complete) without a page reload.
         if (window.school.getStudentId()) {

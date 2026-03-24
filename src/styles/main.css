@@ -223,6 +223,48 @@
 }
 
 
+/* Rainbow gradient sweep for video background before a theme color is chosen.
+   Color stops match the 18 student ID card palette colors in spectral order. */
+
+/* Always keep a transition on the video wrapper so removing .rainbow-bg fades smoothly */
+#intro-video-bg {
+  transition: background-color 0.5s ease, background-image 0.5s ease;
+}
+
+@keyframes rainbow-sweep {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.rainbow-bg {
+  background-image: linear-gradient(
+    135deg,
+    #dc2626,
+    #ea580c,
+    #b45309,
+    #ca8a04,
+    #4d7c0f,
+    #15803d,
+    #059669,
+    #0f766e,
+    #0e7490,
+    #0284c7,
+    #2563eb,
+    #4f46e5,
+    #7c3aed,
+    #9333ea,
+    #c026d3,
+    #db2777,
+    #e11d48,
+    #475569,
+    #dc2626
+  ) !important;
+  background-size: 400% 400% !important;
+  animation: rainbow-sweep 8s ease infinite !important;
+  transition: background 0.5s ease !important;
+}
+
 @keyframes swatch-in {
   from {
     opacity: 0;
