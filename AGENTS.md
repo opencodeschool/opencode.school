@@ -6,23 +6,21 @@ OpenCode School (opencode.school) is an interactive course that teaches people h
 
 - [Astro](https://astro.build) — static site framework
 - [Cloudflare Workers](https://workers.cloudflare.com) — hosting
-- [Cloudflare KV](https://developers.cloudflare.com/kv/) — student progress storage
-- [Cloudflare R2](https://developers.cloudflare.com/r2/) — video asset storage (bucket: `opencodeschool-assets`, served at `https://assets.opencode.school`)
+- [Cloudflare KV](https://developers.cloudflare.com/kv/) — student progress storage (binding: `PROGRESS`)
+- [Cloudflare R2](https://developers.cloudflare.com/r2/) — video asset storage (bucket: `opencodeschool-assets`, binding: `ASSETS_BUCKET`, served at `https://assets.opencode.school`)
 
 ## Agent-facing files
 
 This project serves two audiences: human students (via the website) and AI agents (via the API and discovery files). Three files work together to make the API discoverable:
 
-- `public/llms.txt` — plain-text overview of the site and API for LLM agents. Points to the OpenAPI spec and lists all lesson API URLs. This is the first thing an agent reads when visiting the site.
-- `public/api/openapi.json` — OpenAPI 3.1 spec describing all API endpoints, request/response schemas, and examples.
+- `src/pages/llms.txt.ts` — dynamic Astro route that serves a plain-text overview of the site and API for LLM agents at `/llms.txt`. Points to the OpenAPI spec and gives agents their operating instructions. This is the first thing an agent reads when visiting the site. Do not edit `public/llms.txt` directly — it is not used at runtime.
+- `src/pages/api/openapi.json.ts` — dynamic Astro route that serves the OpenAPI 3.1 spec at `/api/openapi.json`, describing all API endpoints, request/response schemas, and examples.
 - `src/pages/api/lessons/index.ts` and `src/pages/api/lessons/[slug].ts` — the actual API endpoints that serve lesson content and agent instructions as JSON.
 
 When adding or removing API endpoints or lessons, update both of these in the same commit:
 
 1. Add/update the route handler in `src/pages/api/`
-2. Update `public/api/openapi.json` with the new endpoint schema
-
-`llms.txt` is generated at build time from `src/pages/llms.txt.ts` — do not edit it directly.
+2. Update `src/pages/api/openapi.json.ts` with the new endpoint schema
 
 ## Lesson content
 
@@ -59,11 +57,26 @@ When adding a new OpenCode-based lesson with sufficient content:
 
 ## API endpoints
 
-See `public/api/openapi.json` for the full OpenAPI 3.1 spec, including all routes, request/response schemas, and examples. All endpoints return JSON with CORS headers. No authentication required.
+See `src/pages/api/openapi.json.ts` for the full OpenAPI 3.1 spec, including all routes, request/response schemas, and examples. All endpoints return JSON with CORS headers. No authentication required.
+
+## Special pages
+
+The site has three non-lesson pages that are linked from lesson content and the sidebar:
+
+- `/glossary` — definitions for terms used in lessons (e.g. `/glossary#gui`). Lesson MDX files link here frequently.
+- `/troubleshooting` — common problems and solutions, including the disenroll flow.
+- `/disenroll` — lets a student clear their progress and student ID.
 
 ## Content stripping
 
 The lessons API returns prose-only markdown (HTML, scripts, and interactive components stripped). The stripping logic is in `src/lib/mdx-to-prose.ts`. If you add new interactive HTML patterns to lesson MDX files, check that the stripping function handles them correctly.
+
+## Video assets
+
+Videos are stored in R2 and served from `https://assets.opencode.school/video/`. Two scripts manage the workflow:
+
+- `script/encode-video` — encodes a green-screen source video to transparent WebM (Chrome/Firefox/Edge) and MOV (Safari) using ffmpeg. Run this first.
+- `script/publish-video` — uploads the encoded files to the `opencodeschool-assets` R2 bucket via `wrangler r2 object put`. Run this after encoding.
 
 ## Styles
 
@@ -75,9 +88,7 @@ All development tasks have a corresponding script in the `script/` directory. Al
 
 ## CI/CD
 
-Four GitHub Actions workflows handle automation:
+Two GitHub Actions workflows handle automation:
 
-- `ci.yml` — runs lint and tests on every PR
+- `ci.yml` — runs lint and tests on every PR and every non-main push
 - `deploy.yml` — builds and deploys to Cloudflare Workers on push to main; do not run `script/deploy` manually
-- `preview.yml` — builds and deploys a preview Worker version on PR open/update, accessible at `https://pr-{N}-opencodeschool.ziki.workers.dev`
-- `preview-cleanup.yml` — deletes the preview version and marks the deployment inactive when a PR is closed
