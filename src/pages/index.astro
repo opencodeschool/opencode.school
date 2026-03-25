@@ -173,6 +173,20 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
     <p>The first two lessons — Prerequisites and Installation — are done here in the browser. Once you have OpenCode up and running, the rest of the course happens interactively <em>inside</em> OpenCode itself. Each lesson page has a prompt you copy and paste into OpenCode. The agent reads the lesson, works through the material with you, and marks it complete — which syncs back to this page in real time.</p>
   </div>
 
+  <!-- Bottom enroll CTA: hidden once enrolled -->
+  <div id="enroll-bottom-section" class="mt-10 py-8 text-center not-prose">
+    <button
+      type="button"
+      id="enroll-button-bottom"
+      class="rainbow-bg cursor-pointer rounded-lg px-10 py-4 font-mono font-semibold text-2xl disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      Enroll in OpenCode School
+    </button>
+    <p class="text-sm text-gray-500 dark:text-stone-500 mt-4">
+      Free forever. No account required. No personal data collected.
+    </p>
+  </div>
+
   <script is:inline>
     document.querySelector('video').addEventListener('ended', function() {
       this.load();
@@ -187,8 +201,10 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
       var colorPickerCopy = document.getElementById("color-picker-copy");
       var enrollError     = document.getElementById("enroll-error");
       var display         = document.getElementById("student-id-display");
-      var notEnrolledSection = document.getElementById("not-enrolled-section");
-      var enrolledSection    = document.getElementById("enrolled-section");
+      var notEnrolledSection  = document.getElementById("not-enrolled-section");
+      var enrolledSection     = document.getElementById("enrolled-section");
+      var enrollBottomSection = document.getElementById("enroll-bottom-section");
+      var enrollBtnBottom     = document.getElementById("enroll-button-bottom");
 
       var colorOptions = Array.prototype.slice.call(
         document.querySelectorAll(".enrollment-color-option[data-theme-color]")
@@ -292,6 +308,7 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
 
       function showEnrolled(studentId, animate, fast) {
         notEnrolledSection.classList.add("hidden");
+        if (enrollBottomSection) enrollBottomSection.classList.add("hidden");
         enrolledSection.classList.remove("hidden");
         pageHeader.classList.add("hidden");
         display.textContent = studentId;
@@ -336,6 +353,14 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
         showEnrolled(existingId, true, true);
       } else {
         setSelectedTheme(selectedTheme);
+      }
+
+      // Bottom enroll button → scroll to top and trigger the main enroll flow
+      if (enrollBtnBottom) {
+        enrollBtnBottom.addEventListener("click", function() {
+          notEnrolledSection.scrollIntoView({ behavior: "smooth", block: "start" });
+          setTimeout(function() { if (enrollBtn) enrollBtn.click(); }, 400);
+        });
       }
 
       // Step 1: click Enroll button → show color picker with staggered animation
