@@ -17,11 +17,12 @@ This project serves two audiences: human students (via the website) and AI agent
 - `public/api/openapi.json` — OpenAPI 3.1 spec describing all API endpoints, request/response schemas, and examples.
 - `src/pages/api/lessons/index.ts` and `src/pages/api/lessons/[slug].ts` — the actual API endpoints that serve lesson content and agent instructions as JSON.
 
-When adding or removing API endpoints or lessons, update all three of these in the same commit:
+When adding or removing API endpoints or lessons, update both of these in the same commit:
 
 1. Add/update the route handler in `src/pages/api/`
 2. Update `public/api/openapi.json` with the new endpoint schema
-3. Update `public/llms.txt` if the new endpoint or lesson should be listed
+
+`llms.txt` is generated at build time from `src/pages/llms.txt.ts` — do not edit it directly.
 
 ## Lesson content
 
@@ -46,6 +47,8 @@ For these lessons, `agentInstructions` in the MDX should contain only:
 Keep the instructions concise — the API appends the quiz boilerplate automatically.
 
 ### Adding new lessons
+
+The numeric prefix in filenames (e.g. `01-`, `02-`) is for human readability only. Lesson ordering is controlled by the `order` frontmatter field. Routing and the API use `slug`, not the filename or `order`. When renaming or adding lessons, keep filenames, `order` values, and `slug` values in sync, but the filename prefix has no functional effect.
 
 When adding a new OpenCode-based lesson with sufficient content:
 

@@ -222,7 +222,7 @@
           "completedLessons": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/CompletedLesson" },
-            "example": [{ "slug": "prerequisites", "completedAt": "2026-03-17T12:00:00Z", "source": "browser" }]
+            "example": [{ "slug": "installation", "completedAt": "2026-03-17T12:00:00Z", "source": "browser" }]
           },
           "createdAt": { "type": "string", "format": "date-time" },
           "updatedAt": { "type": "string", "format": "date-time" }
