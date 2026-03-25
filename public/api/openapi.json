@@ -89,6 +89,55 @@
         }
       }
     },
+    "/api/profile/{studentId}": {
+      "put": {
+        "summary": "Save student profile",
+        "description": "Saves or replaces the student's intake profile. All fields are optional — only provided fields are stored.",
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "example": "analytical-pilgrim-5076"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/StudentProfile" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profile saved; returns updated progress",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Progress" }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "404": {
+            "description": "Student not found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/progress/{studentId}": {
       "get": {
         "summary": "Get student progress",
@@ -216,6 +265,38 @@
         },
         "required": ["slug", "completedAt", "source"]
       },
+      "StudentProfile": {
+        "type": "object",
+        "description": "Optional intake profile collected during enrollment. All fields are optional.",
+        "properties": {
+          "isSoftwareEngineer": {
+            "type": "boolean",
+            "description": "Whether the student is a software engineer.",
+            "example": true
+          },
+          "terminalComfort": {
+            "type": "string",
+            "enum": ["beginner", "some", "comfortable"],
+            "description": "Self-reported terminal comfort level.",
+            "example": "some"
+          },
+          "primaryGoal": {
+            "type": "string",
+            "enum": ["ai-coding", "automate", "build-projects", "curious"],
+            "description": "Primary reason for taking the course.",
+            "example": "build-projects"
+          },
+          "aiProviders": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["openai", "anthropic", "google", "local", "none"]
+            },
+            "description": "AI providers the student currently uses.",
+            "example": ["anthropic", "openai"]
+          }
+        }
+      },
       "Progress": {
         "type": "object",
         "properties": {
@@ -223,6 +304,10 @@
             "type": "array",
             "items": { "$ref": "#/components/schemas/CompletedLesson" },
             "example": [{ "slug": "installation", "completedAt": "2026-03-17T12:00:00Z", "source": "browser" }]
+          },
+          "profile": {
+            "$ref": "#/components/schemas/StudentProfile",
+            "description": "Intake profile, if the student completed the survey."
           },
           "createdAt": { "type": "string", "format": "date-time" },
           "updatedAt": { "type": "string", "format": "date-time" }

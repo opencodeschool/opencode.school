@@ -34,9 +34,9 @@ import Base from "../layouts/Base.astro";
 
   <script is:inline>
     document.getElementById("disenroll-button").addEventListener("click", function () {
-      localStorage.removeItem("studentId");
-      localStorage.removeItem("themeColor");
-      localStorage.removeItem("progress");
+      // Clear everything — this site owns the entire localStorage origin, so
+      // clear() is safer than a manual list that drifts as features are added.
+      localStorage.clear();
       document.getElementById("disenroll-confirm").classList.add("hidden");
       document.getElementById("disenroll-done").classList.remove("hidden");
       setTimeout(function () {

@@ -10,8 +10,20 @@ export interface CompletedLesson {
 	source: CompletionSource;
 }
 
+export interface StudentProfile {
+	/** Is the student a software engineer? */
+	isSoftwareEngineer?: boolean;
+	/** Self-reported terminal comfort: "beginner" | "some" | "comfortable" */
+	terminalComfort?: "beginner" | "some" | "comfortable";
+	/** Primary goal for taking the course */
+	primaryGoal?: "ai-coding" | "automate" | "build-projects" | "curious";
+	/** AI providers the student currently uses */
+	aiProviders?: ("openai" | "anthropic" | "google" | "local" | "none")[];
+}
+
 export interface StudentProgress {
 	completedLessons: CompletedLesson[];
+	profile?: StudentProfile;
 	createdAt: string;
 	updatedAt: string;
 }
@@ -19,6 +31,7 @@ export interface StudentProgress {
 // Legacy records stored completedLessons as string[]. Normalize on read.
 function normalizeProgress(raw: {
 	completedLessons: (string | CompletedLesson)[];
+	profile?: StudentProfile;
 	createdAt: string;
 	updatedAt: string;
 }): StudentProgress {
@@ -47,6 +60,7 @@ export async function getProgress(
 ): Promise<StudentProgress | null> {
 	const raw = await kv.get<{
 		completedLessons: (string | CompletedLesson)[];
+		profile?: StudentProfile;
 		createdAt: string;
 		updatedAt: string;
 	}>(kvKey(studentId), "json");
@@ -64,6 +78,24 @@ export async function createStudent(
 		createdAt: now,
 		updatedAt: now,
 	};
+	await kv.put(kvKey(studentId), JSON.stringify(progress));
+	return progress;
+}
+
+/**
+ * Save (or replace) the student's profile. Returns the updated progress,
+ * or null if the student doesn't exist.
+ */
+export async function updateProfile(
+	kv: KVNamespace,
+	studentId: string,
+	profile: StudentProfile,
+): Promise<StudentProgress | null> {
+	const progress = await getProgress(kv, studentId);
+	if (!progress) return null;
+
+	progress.profile = profile;
+	progress.updatedAt = new Date().toISOString();
 	await kv.put(kvKey(studentId), JSON.stringify(progress));
 	return progress;
 }

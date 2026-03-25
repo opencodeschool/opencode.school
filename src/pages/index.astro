@@ -25,6 +25,58 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
     </div>
   </div>
 
+  <!-- Intake survey: shown after fresh enrollment, hidden once submitted -->
+  <div id="intake-survey" class="hidden mb-12">
+    <h2 class="text-2xl font-bold mb-2">You're enrolled!</h2>
+    <p class="text-gray-600 dark:text-stone-400 mb-8">Before you dive in, answer a few quick questions so your lessons can be tailored to your experience level.</p>
+
+    <!-- Q1: Software engineer? -->
+    <div class="survey-question mb-6" data-question="isSoftwareEngineer">
+      <p class="font-medium mb-3">Are you a software engineer?</p>
+      <div class="flex gap-3 flex-wrap">
+        <button type="button" class="survey-option rounded-lg border border-gray-300 dark:border-stone-700 px-4 py-2 text-sm font-mono hover:border-current" data-value="true">Yes</button>
+        <button type="button" class="survey-option rounded-lg border border-gray-300 dark:border-stone-700 px-4 py-2 text-sm font-mono hover:border-current" data-value="false">No</button>
+      </div>
+    </div>
+
+    <!-- Q2: Terminal comfort -->
+    <div class="survey-question mb-6" data-question="terminalComfort">
+      <p class="font-medium mb-3">How comfortable are you with the terminal?</p>
+      <div class="flex gap-3 flex-wrap">
+        <button type="button" class="survey-option rounded-lg border border-gray-300 dark:border-stone-700 px-4 py-2 text-sm font-mono hover:border-current" data-value="beginner">Beginner</button>
+        <button type="button" class="survey-option rounded-lg border border-gray-300 dark:border-stone-700 px-4 py-2 text-sm font-mono hover:border-current" data-value="some">Some experience</button>
+        <button type="button" class="survey-option rounded-lg border border-gray-300 dark:border-stone-700 px-4 py-2 text-sm font-mono hover:border-current" data-value="comfortable">Very comfortable</button>
+      </div>
+    </div>
+
+    <!-- Q3: Primary goal -->
+    <div class="survey-question mb-6" data-question="primaryGoal">
+      <p class="font-medium mb-3">What's your main goal with OpenCode?</p>
+      <div class="flex gap-3 flex-wrap">
+        <button type="button" class="survey-option rounded-lg border border-gray-300 dark:border-stone-700 px-4 py-2 text-sm font-mono hover:border-current" data-value="ai-coding">AI-assisted coding</button>
+        <button type="button" class="survey-option rounded-lg border border-gray-300 dark:border-stone-700 px-4 py-2 text-sm font-mono hover:border-current" data-value="automate">Automate tasks</button>
+        <button type="button" class="survey-option rounded-lg border border-gray-300 dark:border-stone-700 px-4 py-2 text-sm font-mono hover:border-current" data-value="build-projects">Build projects</button>
+        <button type="button" class="survey-option rounded-lg border border-gray-300 dark:border-stone-700 px-4 py-2 text-sm font-mono hover:border-current" data-value="curious">Just curious</button>
+      </div>
+    </div>
+
+    <!-- Q4: AI providers (multi-select) -->
+    <div class="survey-question mb-8" data-question="aiProviders" data-multi="true">
+      <p class="font-medium mb-3">Which AI providers do you use? <span class="font-normal text-gray-500 dark:text-stone-500 text-sm">(pick all that apply)</span></p>
+      <div class="flex gap-3 flex-wrap">
+        <button type="button" class="survey-option rounded-lg border border-gray-300 dark:border-stone-700 px-4 py-2 text-sm font-mono hover:border-current" data-value="openai">OpenAI</button>
+        <button type="button" class="survey-option rounded-lg border border-gray-300 dark:border-stone-700 px-4 py-2 text-sm font-mono hover:border-current" data-value="anthropic">Anthropic</button>
+        <button type="button" class="survey-option rounded-lg border border-gray-300 dark:border-stone-700 px-4 py-2 text-sm font-mono hover:border-current" data-value="google">Google</button>
+        <button type="button" class="survey-option rounded-lg border border-gray-300 dark:border-stone-700 px-4 py-2 text-sm font-mono hover:border-current" data-value="local">Local models</button>
+        <button type="button" class="survey-option rounded-lg border border-gray-300 dark:border-stone-700 px-4 py-2 text-sm font-mono hover:border-current" data-value="none">None yet</button>
+      </div>
+    </div>
+
+    <a id="survey-submit" href="/lessons/installation" class="theme-button block w-full rounded-lg px-10 py-4 text-center font-mono font-semibold text-xl opacity-50 pointer-events-none" aria-disabled="true">
+      Proceed to Installation
+    </a>
+  </div>
+
   <!-- Page header: hidden once enrolled -->
   <div id="page-header" class="mb-8">
     <p class="text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
@@ -309,10 +361,19 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
       function showEnrolled(studentId, animate, fast) {
         notEnrolledSection.classList.add("hidden");
         if (enrollBottomSection) enrollBottomSection.classList.add("hidden");
-        enrolledSection.classList.remove("hidden");
         pageHeader.classList.add("hidden");
         display.textContent = studentId;
         idCard.classList.remove("hidden");
+
+        var surveyDone = !!localStorage.getItem(SURVEY_DONE_KEY);
+
+        if (surveyDone) {
+          // Returning user who completed the survey — show lesson list
+          enrolledSection.classList.remove("hidden");
+        } else {
+          // New enrollment or returning before survey was answered — show survey
+          surveyEl.classList.remove("hidden");
+        }
 
         if (animate) {
           cipherReveal(studentId, fast, function() {
@@ -344,6 +405,99 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
           opt.disabled = disabled;
           opt.classList.toggle("opacity-60", disabled);
           opt.classList.toggle("cursor-not-allowed", disabled);
+        });
+      }
+
+      // ── Intake survey ────────────────────────────────────────────────────────
+      var surveyEl     = document.getElementById("intake-survey");
+      var surveySubmit = document.getElementById("survey-submit");
+      var SURVEY_DONE_KEY = "surveyDone";
+
+      // Theme-colored selected state for survey options
+      function getSurveySelectionStyle() {
+        return "border-[var(--theme-solid)] bg-[var(--theme-soft-bg)] dark:bg-[var(--theme-soft-bg-dark)] text-[var(--theme-solid)] dark:text-[var(--theme-soft-text-dark)]";
+      }
+
+      function updateSubmitState() {
+        if (!surveySubmit) return;
+        var questions = Array.prototype.slice.call(document.querySelectorAll(".survey-question"));
+        var allAnswered = questions.every(function(q) {
+          return q.querySelector(".survey-option.selected");
+        });
+        if (allAnswered) {
+          surveySubmit.classList.remove("opacity-50", "pointer-events-none");
+          surveySubmit.removeAttribute("aria-disabled");
+        } else {
+          surveySubmit.classList.add("opacity-50", "pointer-events-none");
+          surveySubmit.setAttribute("aria-disabled", "true");
+        }
+      }
+
+      // Wire up survey option clicks
+      document.querySelectorAll(".survey-question").forEach(function(question) {
+        var isMulti = question.getAttribute("data-multi") === "true";
+        question.querySelectorAll(".survey-option").forEach(function(btn) {
+          btn.addEventListener("click", function() {
+            if (!isMulti) {
+              question.querySelectorAll(".survey-option").forEach(function(b) {
+                b.classList.remove("selected");
+                b.removeAttribute("aria-pressed");
+                getSurveySelectionStyle().split(" ").forEach(function(cls) { b.classList.remove(cls); });
+              });
+            }
+            var isSelected = btn.classList.contains("selected");
+            if (isMulti && isSelected) {
+              btn.classList.remove("selected");
+              btn.removeAttribute("aria-pressed");
+              getSurveySelectionStyle().split(" ").forEach(function(cls) { btn.classList.remove(cls); });
+            } else {
+              btn.classList.add("selected");
+              btn.setAttribute("aria-pressed", "true");
+              getSurveySelectionStyle().split(" ").forEach(function(cls) { btn.classList.add(cls); });
+            }
+            updateSubmitState();
+          });
+        });
+      });
+
+      function collectProfile() {
+        var profile = {};
+        document.querySelectorAll(".survey-question").forEach(function(question) {
+          var key = question.getAttribute("data-question");
+          var isMulti = question.getAttribute("data-multi") === "true";
+          var selected = Array.prototype.slice.call(question.querySelectorAll(".survey-option.selected"));
+          if (selected.length === 0) return;
+          if (isMulti) {
+            profile[key] = selected.map(function(b) { return b.getAttribute("data-value"); });
+          } else {
+            var val = selected[0].getAttribute("data-value");
+            profile[key] = (val === "true") ? true : (val === "false") ? false : val;
+          }
+        });
+        return profile;
+      }
+
+      // Fire-and-forget profile save — don't block navigation
+      function saveProfile() {
+        var studentId = window.school.getStudentId();
+        if (!studentId) return;
+        localStorage.setItem(SURVEY_DONE_KEY, "1");
+        fetch("/api/profile/" + studentId, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(collectProfile()),
+        }).catch(function() { /* non-critical */ });
+      }
+
+      // Intercept the <a> click: save profile then let the browser navigate
+      if (surveySubmit) {
+        surveySubmit.addEventListener("click", function(e) {
+          if (surveySubmit.getAttribute("aria-disabled") === "true") {
+            e.preventDefault();
+            return;
+          }
+          saveProfile();
+          // navigation proceeds naturally
         });
       }
 
@@ -400,6 +554,7 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
           }
         });
       });
+
     })();
   </script>
 </Base>

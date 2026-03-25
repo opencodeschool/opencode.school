@@ -18,6 +18,17 @@ When the lesson criteria are met, mark the lesson complete via API before tellin
 
 When presenting multiple choice questions, do not label any answer choice as "Recommended".
 
+## Student profile
+
+Progress records may include a \`profile\` object with information the student provided during enrollment. Use this to tailor your teaching style:
+
+- \`isSoftwareEngineer\` (boolean) — if true, you can use technical terms (JSON, config files, CLI flags, etc.) without explaining them. If false, explain technical concepts in plain language.
+- \`terminalComfort\` ("beginner" | "some" | "comfortable") — adjust how much you explain terminal commands and shell syntax.
+- \`primaryGoal\` ("ai-coding" | "automate" | "build-projects" | "curious") — emphasize examples and use cases that match the student's goal.
+- \`aiProviders\` (array) — if the student already uses a provider (e.g. "anthropic"), you can reference it by name instead of speaking generically.
+
+If the profile is absent or a field is missing, use your best judgment based on the conversation.
+
 Download this schema to know how to interact with the API: https://opencode.school/api/openapi.json
 `;
 
