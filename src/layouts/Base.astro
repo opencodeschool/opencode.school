@@ -448,6 +448,10 @@ const currentPath = Astro.url.pathname;
             el.querySelector("[data-student-id]").textContent = id;
             el.classList.remove("hidden");
           }
+          const disenrollLink = document.getElementById("sidebar-disenroll-link");
+          if (disenrollLink && id) {
+            disenrollLink.classList.remove("hidden");
+          }
         },
       };
     </script>
@@ -523,6 +527,13 @@ const currentPath = Astro.url.pathname;
             ]}
           >
             Troubleshooting
+          </a>
+          <a
+            id="sidebar-disenroll-link"
+            href="/troubleshooting#disenroll"
+            class="hidden block px-3 py-1.5 rounded-md text-sm transition-colors text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-stone-400 dark:hover:text-stone-200 dark:hover:bg-stone-800"
+          >
+            Disenroll
           </a>
         </div>
       </nav>
