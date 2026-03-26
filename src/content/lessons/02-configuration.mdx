@@ -4,36 +4,52 @@ slug: configuration
 description: "Create a global configuration file for OpenCode."
 order: 2
 quiz: true
-agentInstructions: "Cover these four topics: (1) what the global config file is and why it applies to all OpenCode sessions across every project on the machine, (2) where the config file lives — ~/.config/opencode/opencode.jsonc on macOS/Linux, C:\\Users\\<Name>\\.config\\opencode\\opencode.jsonc on Windows, (3) what \"permission\": {\"*\": \"allow\"} does — it lets OpenCode perform all actions without asking, (4) that config changes require restarting OpenCode to take effect, and that the student should quit OpenCode Desktop after the file is created. After teaching and quizzing, verify completion by reading ~/.config/opencode/opencode.jsonc (or ~/.config/opencode/opencode.json if the .jsonc file does not exist) and confirming it contains \"permission\": {\"*\": \"allow\"}. Either file extension is acceptable. After verifying, instruct the student to quit OpenCode Desktop so the new config takes effect next time they open it."
+agentInstructions: "Cover these four topics: (1) what the global config file is and why it applies to all OpenCode sessions across every project on the machine, (2) where the config file lives — ~/.config/opencode/opencode.jsonc on macOS/Linux, C:\\Users\\<Name>\\.config\\opencode\\opencode.jsonc on Windows, (3) what \"permission\": {\"*\": \"allow\"} does — it lets OpenCode perform all actions without asking, (4) that config changes require restarting OpenCode to take effect, and that the student should quit OpenCode Desktop after the file is created. After teaching and quizzing, verify completion by reading ~/.config/opencode/opencode.jsonc (or ~/.config/opencode/opencode.json if the .jsonc file does not exist) and confirming it contains \"permission\": {\"*\": \"allow\"}. Either file extension is acceptable. IMPORTANT: If a global config file already exists, do not modify or overwrite it — just read it and confirm it contains the required permission setting. After verifying, instruct the student to quit OpenCode Desktop so the new config takes effect next time they open it."
 ---
 
 import AgentPrompt from '../../components/AgentPrompt.astro'
 
 Each lesson has a prompt you can copy and paste into OpenCode. The prompt includes your student ID and a link to this site, which gives OpenCode everything it needs to teach the lesson and track your progress.
 
-First up: a global configuration file. This file applies to every OpenCode session across every project on your machine. It includes settings like which AI [model](/glossary#model) to use, what [permissions](/glossary#permissions) to grant, and how the [agent](/glossary#agent) should behave. You'll tweak it over time to make OpenCode work exactly the way you want.
+In this lesson, you'll create a **global configuration file** that will apply to every OpenCode session across every project on your machine. It includes settings like which AI [model](/glossary#model) to use, what [permissions](/glossary#permissions) to grant, and how the [agent](/glossary#agent) should behave. You'll tweak your global configuration over time to make OpenCode work exactly the way you want.
+
+**If you've already created a global config file, that's great — it won't be overwritten.** Just make sure it contains `"permission": { "*": "allow" }` and you're all set.
 
 <AgentPrompt title="Configuration" />
 
-## Where does the config file live?
+## Create the global config file
 
-<div id="config-location-section" class="not-prose">
+When OpenCode starts, it looks for a global config file in this location:
+
+<div id="config-location-section">
 
 <div id="config-location-macos" class="hidden">
 
-`~/.config/opencode/opencode.jsonc` — the `~` is your home directory (`/Users/yourname`).
+```
+~/.config/opencode/opencode.jsonc
+```
+
+The `~` is your home directory (`/Users/yourname`).
 
 </div>
 
 <div id="config-location-linux" class="hidden">
 
-`~/.config/opencode/opencode.jsonc` — the `~` is your home directory (`/home/yourname`).
+```
+~/.config/opencode/opencode.jsonc
+```
+
+The `~` is your home directory (`/home/yourname`).
 
 </div>
 
 <div id="config-location-windows" class="hidden">
 
-`~/.config/opencode/opencode.jsonc` inside your WSL home directory, or `C:\Users\<YourName>\.config\opencode\opencode.jsonc` on native Windows.
+```
+~/.config/opencode/opencode.jsonc
+```
+
+That's inside your WSL home directory. On native Windows: `C:\Users\<YourName>\.config\opencode\opencode.jsonc`.
 
 </div>
 
@@ -47,11 +63,9 @@ First up: a global configuration file. This file applies to every OpenCode sessi
 
 </div>
 
-## Create your config file
+OpenCode config files can be written in JSON or JSONC — we'll use JSONC because it supports `//` comments, which are handy for keeping notes right in your config. OpenCode will create the directory and file for you. **If you see any confirmation prompts, choose "Allow Once."** You may see a couple of prompts during this step — approve each one.
 
-OpenCode config files can be written in JSON or JSONC — we'll use JSONC because it supports `//` comments, which are handy for keeping notes right in your config.
-
-OpenCode will create the directory and file for you. **If you see any confirmation prompts, choose "Allow Once."** You may see a couple of prompts during this step — approve each one.
+## Set some basic configuration
 
 Here's what your config file will look like:
 
@@ -69,65 +83,15 @@ Here's what your config file will look like:
 }
 ```
 
-## After the config is created
+## Restart OpenCode
 
-Config changes take effect the next time OpenCode starts. Once the file is created, **quit OpenCode Desktop** so the new config loads when you reopen it.
+Config changes take effect the next time OpenCode starts. Once the file is created, **quit OpenCode Desktop** and reopen it, then return to this chat session so OpenCode can verify your config.
 
-## Verify your config
+## Verify config is working
 
-After OpenCode creates the file, ask it to show you the contents to confirm it looks right:
+Let's ask OpenCode to check that the config file exists and is being applied correctly.
 
-<div id="verify-config-section" class="not-prose">
-
-<div id="verify-macos" class="hidden">
-
-**macOS** (from Terminal):
-```
-open ~/.config/opencode/opencode.jsonc
-```
-
-</div>
-
-<div id="verify-linux" class="hidden">
-
-**Linux** (from terminal):
-```
-xdg-open ~/.config/opencode/opencode.jsonc
-```
-
-</div>
-
-<div id="verify-windows" class="hidden">
-
-**Windows (WSL)** (from WSL terminal):
-```
-code ~/.config/opencode/opencode.jsonc
-```
-
-</div>
-
-<div id="verify-other" class="hidden">
-
-**macOS** (from Terminal):
-```
-open ~/.config/opencode/opencode.jsonc
-```
-
-**Linux** (from terminal):
-```
-xdg-open ~/.config/opencode/opencode.jsonc
-```
-
-**Windows (WSL)** (from WSL terminal):
-```
-code ~/.config/opencode/opencode.jsonc
-```
-
-</div>
-
-</div>
-
-You should see the JSONC content above. If the file exists and contains `"permission": { "*": "allow" }`, this lesson is complete.
+<AgentPrompt title="Configuration" prompt={`Let's check that the "Configuration" lesson is complete.`} />
 
 <script>{`
 document.addEventListener("DOMContentLoaded", function() {
@@ -137,7 +101,7 @@ document.addEventListener("DOMContentLoaded", function() {
   else if (/Windows/.test(ua)) os = "windows";
   else if (/Linux/.test(ua)) os = "linux";
 
-  ["config-location", "verify"].forEach(function(prefix) {
+  ["config-location"].forEach(function(prefix) {
     var el = document.getElementById(prefix + "-" + os);
     if (el) el.classList.remove("hidden");
   });
