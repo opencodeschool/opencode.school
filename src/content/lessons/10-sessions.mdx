@@ -3,12 +3,49 @@ title: "Sessions"
 slug: sessions
 description: "Manage and resume conversations with Sessions."
 order: 10
-quiz: false
-agentInstructions: "Verify completion by asking the student to confirm they've started a new session and resumed a previous one using /sessions."
+quiz: true
+agentInstructions: "Cover these four topics: (1) what a session is — an individual conversation with OpenCode; each session has its own history and context; a single project can have many sessions, (2) starting a new session — type /new in the prompt (works in both Desktop and TUI) or use the New Session button in the Desktop left sidebar, (3) sessions persist — conversation history is saved, so you can resume any previous session even after quitting and restarting OpenCode, (4) listing and exporting — 'opencode session list' shows all sessions across all projects; 'opencode export <sessionID>' exports a single session as JSON, useful for reviewing and summarizing past work. After teaching and quizzing, run 'opencode session list' yourself to get all sessions, pick one that looks interesting, run 'opencode export <sessionID>' on it, and give the student a brief summary of what was being worked on in that session. Then mark the lesson complete."
 ---
 
 import AgentPrompt from '../../components/AgentPrompt.astro'
 
+Every conversation you have with OpenCode is a session. Sessions have their own history and context — the model remembers everything said within a session, but starts fresh in a new one. A single project can have as many sessions as you like.
+
 <AgentPrompt title="Sessions" />
 
-Coming soon.
+## Starting a new session
+
+There are a few ways to start a new session:
+
+- **Type `/new`** in the prompt — works in both OpenCode Desktop and the TUI
+- **Click New Session** in the left sidebar in OpenCode Desktop
+
+The current session stays in your history. You can always go back to it.
+
+## Sessions persist
+
+Your session history is saved to disk. You can resume any previous session even after quitting and restarting OpenCode. Nothing is lost between sessions — if you were mid-task when you closed the app, the conversation is still there when you reopen it.
+
+## Listing and exporting sessions
+
+OpenCode has two CLI commands for working with session data:
+
+```
+opencode session list
+```
+
+Lists all sessions across all your projects — session IDs, project paths, and timestamps.
+
+```
+opencode export <sessionID>
+```
+
+Exports a single session as JSON, including the full message history and metadata.
+
+## Exercise: summarize your past work
+
+Ask OpenCode to run both commands on your behalf and summarize what you've been working on across your recent sessions. You don't need to touch the terminal yourself — OpenCode can run the commands, read the output, and give you a summary.
+
+Try something like:
+
+> List my recent OpenCode sessions and summarize what I've been working on.
