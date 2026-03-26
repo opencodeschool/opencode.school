@@ -4,12 +4,13 @@
 //     https://opensource.org/licenses/Apache-2.0
 interface Props {
   title: string;
+  prompt?: string;
 }
 
-const { title } = Astro.props;
+const { title, prompt } = Astro.props;
 ---
 
-<div class="agent-prompt-card hidden mb-8" data-lesson-title={title}>
+<div class="agent-prompt-card hidden mb-8" data-lesson-title={title} data-prompt={prompt}>
   <p class="text-sm text-gray-500 dark:text-stone-400 mb-2 font-mono uppercase tracking-wider text-xs">
     Prompt for OpenCode
   </p>
@@ -40,7 +41,8 @@ const { title } = Astro.props;
       var confirm = card.querySelector(".agent-prompt-confirm");
       if (!promptText) return;
 
-      var prompt = "I'm enrolled in OpenCode School as " + studentId + "\n\nLet's work on the \"" + lessonTitle + "\" lesson together!\n\nFetch https://opencode.school/llms.txt for instructions.";
+      var customPrompt = card.getAttribute("data-prompt");
+      var prompt = "I'm enrolled in OpenCode School as " + studentId + "\n\n" + (customPrompt || "Let's work on the \"" + lessonTitle + "\" lesson together!") + "\n\nFetch https://opencode.school/llms.txt for instructions.";
       promptText.textContent = prompt;
       card.classList.remove("hidden");
 
