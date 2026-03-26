@@ -4,12 +4,14 @@ slug: models
 description: "Choose and configure AI models in OpenCode."
 order: 5
 quiz: true
-agentInstructions: "Cover these four topics: (1) where the current model is shown in OpenCode (just below the text input), (2) how to change models — click the model name or type /model to open the model picker, (3) the free built-in models via OpenCode Zen and their limitations — most lack vision support and may be less capable on complex tasks, (4) OpenCode Go ($10/month) and its advantage — access to models like Kimi K2.5 that include vision support. This lesson has no file-system verification step — completion is confirmed by the student demonstrating understanding through the quiz."
+agentInstructions: "Cover these four topics: (1) the cost vs. capability tradeoff — state-of-the-art models from Anthropic and OpenAI deliver better results on complex tasks but cost money per request; open-source alternatives are faster and cheaper but less capable; using OpenCode well means finding the right balance for what you're trying to do, (2) where the current model is shown in OpenCode (just below the text input) and how to change it — click the model name or type /model to open the model picker, (3) the free built-in models via OpenCode Zen and their limitations — most lack vision support and may be less capable on complex tasks, (4) OpenCode Go ($10/month) and its advantage — access to models like Kimi K2.5 that include vision support; and that connecting your own Anthropic or OpenAI key gives access to the most capable models available. This lesson has no file-system verification step — completion is confirmed by the student demonstrating understanding through the quiz."
 ---
 
 import AgentPrompt from '../../components/AgentPrompt.astro'
 
-An AI [model](/glossary#model) is the brain behind OpenCode. When you type a message, it's a model that reads it and figures out how to respond — whether that's writing code, explaining an error, or running a command. Different models vary in speed, capability, and cost. Picking the right one is one of the best things you can do to improve your experience with OpenCode.
+The model you choose is probably the single most important factor in how successful your OpenCode sessions will be. State-of-the-art models from Anthropic and OpenAI are highly capable — they write better code, reason through complex problems, and make fewer mistakes. But they cost money per request. Open-source alternatives are faster and cheaper, sometimes free, but they don't match the top models on difficult tasks. Using OpenCode well means finding the right balance between cost and capability for what you're trying to do.
+
+An AI [model](/glossary#model) is the engine behind that capability. When you type a message, it's a model that reads it and figures out how to respond — whether that's writing code, explaining an error, or running a command.
 
 <AgentPrompt title="Models" />
 
@@ -54,6 +56,6 @@ To set up Go, run `/connect`, select "OpenCode Go", and follow the prompts.
 
 OpenCode supports 75+ model providers. If you already use Anthropic, OpenAI, Google, or another provider, you can connect it to OpenCode. Run `/connect` and select your provider from the list.
 
-**At the time of this writing, Claude Opus 4.6 and GPT 5.4 are generally considered the most powerful models. If you can afford to use them, you'll get better results.**
+**The latest flagship models from Anthropic and OpenAI are generally the most capable options available. If you can afford to use them, you'll get better results.**
 
 For full setup details, see the [providers documentation](https://opencode.ai/docs/providers/).
