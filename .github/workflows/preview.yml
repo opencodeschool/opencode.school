@@ -1,0 +1,91 @@
+name: Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+jobs:
+  deploy-preview:
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      deployments: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Create GitHub Deployment
+        id: deployment
+        run: |
+          deployment_id=$(gh api repos/${{ github.repository }}/deployments \
+            --method POST \
+            -f ref=${{ github.head_ref }} \
+            -f environment=preview \
+            -f description="PR #${{ github.event.pull_request.number }} preview" \
+            -F auto_merge=false \
+            -F required_contexts='[]' \
+            --jq '.id')
+          echo "deployment_id=$deployment_id" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy to Cloudflare Workers
+        run: npx wrangler deploy --name opencodeschool-pr-${{ github.event.pull_request.number }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Set Deployment Status
+        run: |
+          gh api repos/${{ github.repository }}/deployments/${{ steps.deployment.outputs.deployment_id }}/statuses \
+            --method POST \
+            -f state=success \
+            -f environment_url=https://opencodeschool-pr-${{ github.event.pull_request.number }}.ziki.workers.dev \
+            -f description="Preview deployed"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  cleanup-preview:
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      deployments: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Delete preview Worker
+        run: npx wrangler delete --name opencodeschool-pr-${{ github.event.pull_request.number }} --force
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Mark deployments inactive
+        run: |
+          gh api repos/${{ github.repository }}/deployments \
+            -f environment=preview \
+            --jq '.[].id' | \
+          while read id; do
+            gh api repos/${{ github.repository }}/deployments/$id/statuses \
+              --method POST \
+              -f state=inactive
+          done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
