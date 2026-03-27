@@ -18,10 +18,14 @@
       "id": "3bd04cd0e35548b181036e6385b5120c"
     }
   ],
-  "routes": [
-    {
-      "pattern": "opencode.school",
-      "custom_domain": true
+  "env": {
+    "production": {
+      "routes": [
+        {
+          "pattern": "opencode.school",
+          "custom_domain": true
+        }
+      ]
     }
-  ]
+  }
 }
