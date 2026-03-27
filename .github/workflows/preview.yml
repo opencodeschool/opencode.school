@@ -27,13 +27,15 @@ jobs:
       - name: Create GitHub Deployment
         id: deployment
         run: |
-          deployment_id=$(gh api repos/${{ github.repository }}/deployments \
+          deployment_id=$(echo '{
+            "ref": "${{ github.head_ref }}",
+            "environment": "preview",
+            "description": "PR #${{ github.event.pull_request.number }} preview",
+            "auto_merge": false,
+            "required_contexts": []
+          }' | gh api repos/${{ github.repository }}/deployments \
             --method POST \
-            -f ref=${{ github.head_ref }} \
-            -f environment=preview \
-            -f description="PR #${{ github.event.pull_request.number }} preview" \
-            -F auto_merge=false \
-            -F required_contexts='[]' \
+            --input - \
             --jq '.id')
           echo "deployment_id=$deployment_id" >> $GITHUB_OUTPUT
         env:
