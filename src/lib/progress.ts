@@ -14,6 +14,7 @@ export interface StudentProgress {
 	completedLessons: CompletedLesson[];
 	createdAt: string;
 	updatedAt: string;
+	deviceId?: string;
 }
 
 // Legacy records stored completedLessons as string[]. Normalize on read.
@@ -57,12 +58,14 @@ export async function getProgress(
 export async function createStudent(
 	kv: KVNamespace,
 	studentId: string,
+	deviceId?: string,
 ): Promise<StudentProgress> {
 	const now = new Date().toISOString();
 	const progress: StudentProgress = {
 		completedLessons: [],
 		createdAt: now,
 		updatedAt: now,
+		...(deviceId ? { deviceId } : {}),
 	};
 	await kv.put(kvKey(studentId), JSON.stringify(progress));
 	return progress;

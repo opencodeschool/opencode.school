@@ -304,6 +304,15 @@ const currentPath = Astro.url.pathname;
           localStorage.setItem("studentId", id);
         },
 
+        getDeviceId() {
+          let deviceId = localStorage.getItem("deviceId");
+          if (!deviceId) {
+            deviceId = crypto.randomUUID();
+            localStorage.setItem("deviceId", deviceId);
+          }
+          return deviceId;
+        },
+
         getThemeColor() {
           return localStorage.getItem("themeColor") || "blue";
         },
@@ -361,7 +370,12 @@ const currentPath = Astro.url.pathname;
         },
 
         async enroll() {
-          const res = await fetch("/api/enroll", { method: "POST" });
+          const deviceId = this.getDeviceId();
+          const res = await fetch("/api/enroll", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ deviceId }),
+          });
           if (!res.ok) throw new Error("Enrollment failed");
           const data = await res.json();
           this.setStudentId(data.studentId);

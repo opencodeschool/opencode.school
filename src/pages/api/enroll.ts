@@ -17,10 +17,19 @@ export const OPTIONS: APIRoute = async () => {
 	return new Response(null, { status: 204, headers: corsHeaders });
 };
 
-export const POST: APIRoute = async () => {
+export const POST: APIRoute = async ({ request }) => {
 	const kv = env.PROGRESS;
 	const studentId = await generateStudentId(kv);
-	const progress = await createStudent(kv, studentId);
+
+	let deviceId: string | undefined;
+	try {
+		const body = await request.json();
+		if (typeof body?.deviceId === "string") deviceId = body.deviceId;
+	} catch {
+		// Body is optional; ignore parse errors
+	}
+
+	const progress = await createStudent(kv, studentId, deviceId);
 
 	return new Response(JSON.stringify({ studentId, progress }), {
 		status: 201,

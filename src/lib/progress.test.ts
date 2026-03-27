@@ -33,10 +33,32 @@ describe("createStudent", () => {
 		expect(progress.completedLessons).toEqual([]);
 		expect(progress.createdAt).toBeTruthy();
 		expect(progress.updatedAt).toBeTruthy();
+		expect(progress.deviceId).toBeUndefined();
 		expect(kv.put).toHaveBeenCalledWith(
 			"student:curious-hacker-1234",
 			expect.any(String),
 		);
+	});
+
+	it("stores deviceId when provided", async () => {
+		const kv = createMockKv();
+		const deviceId = "550e8400-e29b-41d4-a716-446655440000";
+		const progress = await createStudent(kv, "crafty-tinkerer-7890", deviceId);
+
+		expect(progress.deviceId).toBe(deviceId);
+		const stored = JSON.parse(
+			(await kv.get("student:crafty-tinkerer-7890")) as string,
+		);
+		expect(stored.deviceId).toBe(deviceId);
+	});
+
+	it("omits deviceId from stored record when not provided", async () => {
+		const kv = createMockKv();
+		await createStudent(kv, "vibing-operator-1111");
+		const stored = JSON.parse(
+			(await kv.get("student:vibing-operator-1111")) as string,
+		);
+		expect(stored.deviceId).toBeUndefined();
 	});
 });
 
