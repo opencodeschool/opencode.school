@@ -8,6 +8,7 @@ export interface CompletedLesson {
 	slug: string;
 	completedAt: string;
 	source: CompletionSource;
+	model?: string;
 }
 
 export interface StudentProgress {
@@ -77,16 +78,19 @@ export async function markLessonComplete(
 	studentId: string,
 	lessonSlug: string,
 	source: CompletionSource = "browser",
+	model?: string,
 ): Promise<StudentProgress | null> {
 	const progress = await getProgress(kv, studentId);
 	if (!progress) return null;
 
 	if (!progress.completedLessons.some((l) => l.slug === lessonSlug)) {
-		progress.completedLessons.push({
+		const entry: CompletedLesson = {
 			slug: lessonSlug,
 			completedAt: new Date().toISOString(),
 			source,
-		});
+		};
+		if (model) entry.model = model;
+		progress.completedLessons.push(entry);
 	}
 	progress.updatedAt = new Date().toISOString();
 	await kv.put(kvKey(studentId), JSON.stringify(progress));

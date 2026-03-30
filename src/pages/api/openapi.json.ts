@@ -170,6 +170,12 @@ export const GET: APIRoute = (context) => {
 												'Who marked the lesson complete. Omit or use "browser" for student-initiated completions; use "agent" when an AI agent marks it complete on the student\'s behalf.',
 											example: "agent",
 										},
+										model: {
+											type: "string",
+											description:
+												"The model ID used by the agent to complete this lesson. Agents should always include this field. Example: anthropic/claude-sonnet-4-5",
+											example: "anthropic/claude-sonnet-4-5",
+										},
 									},
 									required: ["lessonSlug"],
 								},
@@ -243,6 +249,12 @@ export const GET: APIRoute = (context) => {
 						slug: { type: "string", example: "configuration" },
 						completedAt: { type: "string", format: "date-time" },
 						source: { type: "string", enum: ["browser", "agent"] },
+						model: {
+							type: "string",
+							description:
+								"The model ID used by the agent to complete this lesson, if applicable.",
+							example: "anthropic/claude-sonnet-4-5",
+						},
 					},
 					required: ["slug", "completedAt", "source"],
 				},
