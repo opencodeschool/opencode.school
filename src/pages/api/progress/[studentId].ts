@@ -57,7 +57,7 @@ export const PUT: APIRoute = async ({ params, request }) => {
 		return badRequest("Invalid student ID format");
 	}
 
-	let body: { lessonSlug?: string; source?: string };
+	let body: { lessonSlug?: string; source?: string; model?: string };
 	try {
 		body = await request.json();
 	} catch {
@@ -71,11 +71,17 @@ export const PUT: APIRoute = async ({ params, request }) => {
 	const source: CompletionSource =
 		body.source === "agent" ? "agent" : "browser";
 
+	const model =
+		typeof body.model === "string" && body.model.trim()
+			? body.model.trim()
+			: undefined;
+
 	const progress = await markLessonComplete(
 		env.PROGRESS,
 		studentId,
 		body.lessonSlug,
 		source,
+		model,
 	);
 	if (!progress) {
 		return notFound("Student not found");
