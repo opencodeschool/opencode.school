@@ -33,7 +33,6 @@ jobs:
             echo "--- Checking PR #$pr ---"
 
             # Check if any checks have failed
-            # gh pr checks returns non-zero if any check failed
             if gh pr checks "$pr" --json name,state --jq '.[] | select(.state == "FAILURE") | .name' | grep -q .; then
               echo "PR #$pr has failing checks."
             else
@@ -51,13 +50,13 @@ jobs:
             last_comment_author=$(gh pr view "$pr" --json comments --jq '.comments[-1].author.login // ""')
             last_comment_body=$(gh pr view "$pr" --json comments --jq '.comments[-1].body // ""')
 
-            if [ "$last_comment_author" = "github-actions" ] && echo "$last_comment_body" | grep -q "^/oc"; then
+            if [ "$last_comment_author" = "github-actions[bot]" ] && echo "$last_comment_body" | grep -q "^/oc"; then
               echo "PR #$pr: last comment is already a /oc from this workflow. Skipping."
               continue
             fi
 
             # Max retries: count total /oc comments from github-actions[bot] on this PR
-            retry_count=$(gh pr view "$pr" --json comments --jq '[.comments[] | select(.author.login == "github-actions" and (.body | startswith("/oc")))] | length')
+            retry_count=$(gh pr view "$pr" --json comments --jq '[.comments[] | select(.author.login == "github-actions[bot]" and (.body | startswith("/oc")))] | length')
 
             if [ "$retry_count" -ge "$MAX_RETRIES" ]; then
               echo "PR #$pr: reached max retries ($MAX_RETRIES). Leaving for a human."
