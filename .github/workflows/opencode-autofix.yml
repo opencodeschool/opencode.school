@@ -65,5 +65,5 @@ jobs:
             fi
 
             echo "PR #$pr: posting /oc comment (attempt $((retry_count + 1))/$MAX_RETRIES)."
-            gh pr comment "$pr" --body "/oc The CI checks are failing on this PR. Read the workflow logs, find the errors, and push fixes."
+            gh pr comment "$pr" --body "/oc Some checks are failing on this PR. Read the workflow logs, find the errors, and push fixes."
           done
