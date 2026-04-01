@@ -85,7 +85,7 @@ jobs:
         run: |
           gh api repos/${{ github.repository }}/deployments \
             -f environment=preview \
-            --jq '.[].id' | \
+            --jq '.[] | select(.ref == "${{ github.head_ref }}") | .id' | \
           while read id; do
             gh api repos/${{ github.repository }}/deployments/$id/statuses \
               --method POST \
