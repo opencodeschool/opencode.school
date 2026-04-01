@@ -22,7 +22,7 @@ const allLessons = (await getCollection("lessons")).sort((a, b) => a.data.order 
 const currentIndex = allLessons.findIndex((l) => l.data.slug === lesson.data.slug);
 const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null;
 
-const ogImage = new URL(`/og/lesson/${lesson.data.slug}.svg`, Astro.site ?? Astro.url.origin).href;
+const ogImage = new URL(`/og/lesson/${lesson.data.slug}.png`, Astro.site ?? Astro.url.origin).href;
 ---
 
 <Base title={lesson.data.title} description={lesson.data.description} ogImage={ogImage}>

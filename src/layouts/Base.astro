@@ -15,7 +15,7 @@ const { title, description = "Learn to use OpenCode, the free and open-source AI
 const pageTitle = title ? `${title} | OpenCode School` : "OpenCode School";
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin).href;
-const defaultOgImage = new URL("/og.svg", Astro.site ?? Astro.url.origin).href;
+const defaultOgImage = new URL("/og.png", Astro.site ?? Astro.url.origin).href;
 const ogImageUrl = ogImage ?? defaultOgImage;
 
 const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b.data.order);

@@ -12,6 +12,7 @@
   "dependencies": {
     "@astrojs/cloudflare": "^13.1.1",
     "@astrojs/mdx": "^5.0.0",
+    "@resvg/resvg-wasm": "^2.6.2",
     "astro": "^6.0.4",
     "marked": "^17.0.4"
   },

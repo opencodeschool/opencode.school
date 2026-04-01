@@ -1,4 +1,11 @@
-<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+// Copyright (c) 2026 Cloudflare, Inc.
+// Licensed under the Apache 2.0 license found in the LICENSE file or at:
+//     https://opensource.org/licenses/Apache-2.0
+
+import type { APIRoute } from "astro";
+import { svgToPng } from "../lib/og-png";
+
+const svg = `<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#0c0a09"/>
@@ -34,5 +41,15 @@
 
   <!-- Decorative bracket elements -->
   <text x="1020" y="320" font-family="'Courier New', Courier, monospace" font-size="200" font-weight="700" fill="#1c1917" letter-spacing="-10">{ }</text>
+</svg>`;
 
-</svg>
+export const GET: APIRoute = async () => {
+	const png = await svgToPng(svg);
+	return new Response(png.buffer as ArrayBuffer, {
+		status: 200,
+		headers: {
+			"Content-Type": "image/png",
+			"Cache-Control": "public, max-age=86400",
+		},
+	});
+};
