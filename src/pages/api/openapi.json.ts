@@ -337,6 +337,50 @@ export const GET: APIRoute = (context) => {
 					},
 				},
 			},
+			"/api/instructions/{studentId}": {
+				get: {
+					summary: "Get student-specific instructions",
+					description:
+						"Returns plain-text instructions personalized to the given student. Designed to be used as an OpenCode instructions URL in the student's global config, so OpenCode is always aware of their enrollment.",
+					parameters: [
+						{
+							name: "studentId",
+							in: "path",
+							required: true,
+							schema: { type: "string" },
+							example: "analytical-pilgrim-5076",
+						},
+					],
+					responses: {
+						"200": {
+							description: "Plain-text instructions for this student",
+							content: {
+								"text/plain": {
+									schema: { type: "string" },
+									example:
+										"My OpenCode School student ID is analytical-pilgrim-5076.\n\nWhen I mention school, lessons, progress, exercises, enrollment, or my student ID, use this ID to fetch my OpenCode School data as needed.\n\nFor the full OpenCode School agent protocol, fetch https://opencode.school/llms.txt\n",
+								},
+							},
+						},
+						"400": {
+							description: "Invalid student ID format",
+							content: {
+								"application/json": {
+									schema: { $ref: "#/components/schemas/Error" },
+								},
+							},
+						},
+						"404": {
+							description: "Student not found",
+							content: {
+								"application/json": {
+									schema: { $ref: "#/components/schemas/Error" },
+								},
+							},
+						},
+					},
+				},
+			},
 		},
 		components: {
 			schemas: {
