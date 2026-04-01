@@ -91,6 +91,10 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
 
       var nextUrl = btn.getAttribute("data-next-url");
       var originalLabel = label.textContent;
+      // Track whether this lesson was already complete when the page loaded.
+      // If so, we must not auto-redirect on subsequent progress polls — the
+      // student intentionally navigated here to review a completed lesson.
+      var wasAlreadyComplete = window.school.isLessonComplete(lessonSlug);
 
       function formatBannerText(completion) {
         var text = "You completed this lesson!";
@@ -150,10 +154,12 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
         if (nudge && window.school.getStudentId()) nudge.classList.add("hidden");
         if (window.school.isLessonComplete(lessonSlug)) {
           showBanner();
-          // If this lesson just became complete via an agent (i.e. the button hasn't
-          // been clicked and we're still showing the original label), auto-navigate
-          // to the next lesson so the browser keeps pace with the agent.
-          if (nextUrl && label.textContent === originalLabel) {
+          // Only auto-navigate if the lesson just became complete during this
+          // page session (i.e. it was completed by an agent while the student
+          // had this page open). If it was already complete when the page
+          // loaded, the student navigated here intentionally and we should
+          // not redirect them away.
+          if (nextUrl && !wasAlreadyComplete && label.textContent === originalLabel) {
             setCompleted();
           }
         }
