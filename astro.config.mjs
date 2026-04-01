@@ -13,7 +13,7 @@ export default defineConfig({
 	integrations: [mdx()],
 	markdown: {
 		shikiConfig: {
-			theme: "vesper",
+			theme: "css-variables",
 		},
 	},
 	security: {

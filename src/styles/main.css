@@ -38,23 +38,23 @@
     @apply bg-white text-gray-900 dark:bg-stone-900 dark:text-stone-400;
   }
 
-  /* Prose overrides for dark mode */
+  /* Prose overrides */
   .prose {
     --tw-prose-body: theme(--color-gray-700);
     --tw-prose-headings: theme(--color-gray-900);
     --tw-prose-links: var(--theme-link);
-    --tw-prose-code: theme(--color-gray-800);
-    --tw-prose-pre-bg: theme(--color-gray-50);
-    --tw-prose-pre-code: theme(--color-gray-800);
+    --tw-prose-code: var(--theme-link);
+    --tw-prose-pre-bg: theme(--color-stone-100);
+    --tw-prose-pre-code: var(--theme-link);
   }
 
   .dark .prose {
     --tw-prose-body: theme(--color-stone-400);
     --tw-prose-headings: theme(--color-stone-300);
     --tw-prose-links: var(--theme-link-dark);
-    --tw-prose-code: theme(--color-stone-300);
+    --tw-prose-code: var(--theme-link-dark);
     --tw-prose-pre-bg: theme(--color-stone-800);
-    --tw-prose-pre-code: theme(--color-stone-300);
+    --tw-prose-pre-code: var(--theme-link-dark);
     --tw-prose-bold: theme(--color-stone-300);
     --tw-prose-counters: theme(--color-stone-400);
     --tw-prose-bullets: theme(--color-stone-500);
@@ -65,15 +65,59 @@
     --tw-prose-td-borders: theme(--color-stone-700);
   }
 
-  /* Ensure prose code blocks and inline code stay stone-toned in dark mode */
-  .dark .prose pre {
-    background-color: theme(--color-stone-800);
-    color: theme(--color-stone-300);
+  /*
+    Syntax highlighting — Shiki css-variables theme.
+
+    Shiki emits token colors as var(--shiki-*) references. We map those to the
+    user's selected theme color (--theme-solid / --theme-link-dark) with
+    varying opacity levels to distinguish token types, plus stone backgrounds
+    that match the rest of the UI.
+
+    Light mode: stone-100 bg, theme-solid foreground with opacity variants
+    Dark mode:  stone-800 bg, theme-link-dark foreground with opacity variants
+  */
+
+  /* Light mode Shiki variables */
+  :root {
+    --shiki-foreground:           var(--theme-link);
+    --shiki-background:           theme(--color-stone-100);
+    --shiki-token-constant:       var(--theme-link);
+    --shiki-token-string:         var(--theme-link);
+    --shiki-token-comment:        color-mix(in srgb, var(--theme-link) 50%, transparent);
+    --shiki-token-keyword:        var(--theme-link);
+    --shiki-token-parameter:      var(--theme-link);
+    --shiki-token-function:       var(--theme-link);
+    --shiki-token-string-expression: var(--theme-link);
+    --shiki-token-punctuation:    color-mix(in srgb, var(--theme-link) 60%, transparent);
+    --shiki-token-link:           var(--theme-link);
   }
 
-  .dark .prose code {
-    background-color: theme(--color-stone-800);
-    color: theme(--color-stone-300);
+  /* Dark mode Shiki variables */
+  .dark {
+    --shiki-foreground:           var(--theme-link-dark);
+    --shiki-background:           theme(--color-stone-800);
+    --shiki-token-constant:       var(--theme-link-dark);
+    --shiki-token-string:         var(--theme-link-dark);
+    --shiki-token-comment:        color-mix(in srgb, var(--theme-link-dark) 50%, transparent);
+    --shiki-token-keyword:        var(--theme-link-dark);
+    --shiki-token-parameter:      var(--theme-link-dark);
+    --shiki-token-function:       var(--theme-link-dark);
+    --shiki-token-string-expression: var(--theme-link-dark);
+    --shiki-token-punctuation:    color-mix(in srgb, var(--theme-link-dark) 60%, transparent);
+    --shiki-token-link:           var(--theme-link-dark);
+  }
+
+  /* Ensure prose code blocks pick up the Shiki background variable */
+  .prose pre {
+    background-color: var(--shiki-background) !important;
+  }
+
+  /* Inline code: match code block styling */
+  .prose :not(pre) > code {
+    background-color: var(--shiki-background);
+    color: var(--shiki-foreground);
+    padding: 0.125em 0.375em;
+    border-radius: 0.25rem;
   }
 }
 
