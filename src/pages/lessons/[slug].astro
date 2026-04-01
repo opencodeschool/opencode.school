@@ -150,6 +150,12 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
         if (nudge && window.school.getStudentId()) nudge.classList.add("hidden");
         if (window.school.isLessonComplete(lessonSlug)) {
           showBanner();
+          // If this lesson just became complete via an agent (i.e. the button hasn't
+          // been clicked and we're still showing the original label), auto-navigate
+          // to the next lesson so the browser keeps pace with the agent.
+          if (nextUrl && label.textContent === originalLabel) {
+            setCompleted();
+          }
         }
       };
     })();
