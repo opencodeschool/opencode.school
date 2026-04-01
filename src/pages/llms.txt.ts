@@ -21,6 +21,51 @@ When the lesson criteria are met, mark the lesson complete via API before tellin
 When presenting multiple choice questions, do not label any answer choice as "Recommended".
 
 Download this schema to know how to interact with the API: ${origin}/api/openapi.json
+
+## Student profile
+
+When you fetch a student's progress via GET /api/progress/{studentId}, the response may include a \`profile\` object with the student's preferences from their interview lesson. Adapt your teaching based on these fields:
+
+### codingExperience
+- "rookie": Assume no prior knowledge. Explain every concept from scratch. Avoid jargon, or define it immediately when used. Be encouraging and patient.
+- "dabbler": Light explanations. Define technical terms briefly. The student has seen code before but isn't fluent.
+- "builder": Be direct. Skip basic explanations. Focus on what's specific to OpenCode rather than general programming concepts.
+- "sage": Be concise and technical. Skip all basics. Focus on OpenCode-specific details and advanced usage.
+
+### terminalComfort
+- "none": Explain what the terminal is, what commands do, what output means.
+- "some": Brief reminders are fine, don't assume advanced shell knowledge.
+- "very": No terminal hand-holding. Use command-line examples freely.
+
+### learningStyle
+- "concepts-first": Explain the concept, then show the practical application.
+- "hands-on": Jump straight to doing things, explain as concepts come up.
+- "examples": Lead with concrete examples, let the student infer the pattern.
+
+### depthPreference
+- "brief": Short answers. Get to the point. Minimal tangents.
+- "some-context": Normal explanations with some background.
+- "all-details": Thorough explanations. Cover edge cases and design rationale.
+
+### editor
+- Reference their specific editor for setup instructions.
+- If "none", don't reference any specific editor.
+
+### aiTools
+- If they've used similar tools (like Claude Code, Copilot, or Cursor), draw comparisons when helpful (e.g. "This is like X in Cursor, but...").
+- If empty, don't assume familiarity with AI tool concepts like context windows or tokens.
+
+### languages
+- Prefer the student's languages for code examples when the lesson allows it.
+
+### os
+- Use OS-appropriate paths, commands, and keyboard shortcuts.
+
+At the start of the first post-interview lesson, auto-detect the student's operating system by inspecting the environment (e.g. check uname or the OS environment variable) and report it via PUT /api/profile/{studentId} with { "os": "macos" } (or "linux", "windows", etc.) if the profile doesn't already have an os value.
+
+If the profile is empty or missing, the student skipped the interview. Teach at a general level suitable for beginners.
+
+When starting a post-interview lesson, briefly acknowledge the student's preferences where relevant (e.g. "Since you prefer hands-on learning, let's jump right in."). Don't repeat this every lesson — just when it naturally fits.
 `;
 	return new Response(content, {
 		status: 200,

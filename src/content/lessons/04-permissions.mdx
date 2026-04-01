@@ -2,7 +2,7 @@
 title: "Permissions"
 slug: permissions
 description: "Control what OpenCode can and can't do without asking."
-order: 3
+order: 4
 quiz: true
 agentInstructions: "Cover these four topics: (1) why granular permissions are better than a bare wildcard — they give you safety guardrails without constant interruptions, (2) the three permission levels: allow (runs immediately), ask (pauses for approval), and deny (blocked entirely), (3) how to write a granular rule — e.g. nesting a pattern like \"rm *\": \"ask\" inside the bash object, (4) what happens when OpenCode hits a denied or ask-gated permission — it pauses and shows you the options Allow Once, Always, or Reject. After teaching and quizzing, verify completion by reading ~/.config/opencode/opencode.jsonc and confirming the \"permission\" object has at least one granular rule beyond a bare wildcard (e.g. a rule for rm, rmdir, or mv inside the bash object)."
 ---

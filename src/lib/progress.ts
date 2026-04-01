@@ -11,8 +11,20 @@ export interface CompletedLesson {
 	model?: string;
 }
 
+export interface StudentProfile {
+	codingExperience?: "rookie" | "dabbler" | "builder" | "sage";
+	aiTools?: string[];
+	editor?: string;
+	terminalComfort?: "none" | "some" | "very";
+	learningStyle?: "concepts-first" | "hands-on" | "examples";
+	depthPreference?: "brief" | "some-context" | "all-details";
+	languages?: string[];
+	os?: string;
+}
+
 export interface StudentProgress {
 	completedLessons: CompletedLesson[];
+	profile?: StudentProfile;
 	createdAt: string;
 	updatedAt: string;
 	deviceId?: string;
@@ -21,6 +33,7 @@ export interface StudentProgress {
 // Legacy records stored completedLessons as string[]. Normalize on read.
 function normalizeProgress(raw: {
 	completedLessons: (string | CompletedLesson)[];
+	profile?: StudentProfile;
 	createdAt: string;
 	updatedAt: string;
 }): StudentProgress {
@@ -49,6 +62,7 @@ export async function getProgress(
 ): Promise<StudentProgress | null> {
 	const raw = await kv.get<{
 		completedLessons: (string | CompletedLesson)[];
+		profile?: StudentProfile;
 		createdAt: string;
 		updatedAt: string;
 	}>(kvKey(studentId), "json");
@@ -98,4 +112,32 @@ export async function markLessonComplete(
 	progress.updatedAt = new Date().toISOString();
 	await kv.put(kvKey(studentId), JSON.stringify(progress));
 	return progress;
+}
+
+/** Fetch a student's profile from KV. Returns null if the student doesn't exist. */
+export async function getProfile(
+	kv: KVNamespace,
+	studentId: string,
+): Promise<StudentProfile | null> {
+	const progress = await getProgress(kv, studentId);
+	if (!progress) return null;
+	return progress.profile ?? {};
+}
+
+/**
+ * Merge partial profile data into a student's existing profile. Returns the
+ * updated profile, or null if the student doesn't exist.
+ */
+export async function updateProfile(
+	kv: KVNamespace,
+	studentId: string,
+	profile: Partial<StudentProfile>,
+): Promise<StudentProfile | null> {
+	const progress = await getProgress(kv, studentId);
+	if (!progress) return null;
+
+	progress.profile = { ...progress.profile, ...profile };
+	progress.updatedAt = new Date().toISOString();
+	await kv.put(kvKey(studentId), JSON.stringify(progress));
+	return progress.profile;
 }

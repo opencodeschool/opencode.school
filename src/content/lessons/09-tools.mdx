@@ -2,7 +2,7 @@
 title: "Tools"
 slug: tools
 description: "Extend OpenCode with external tools and MCP servers."
-order: 8
+order: 9
 quiz: true
 agentInstructions: "Cover these four topics: (1) what tools are — functions an AI can call to do things beyond generating text, sometimes called 'function calling' or 'tool use'; this is what makes OpenCode an agent rather than a chatbot, (2) what MCP is — Model Context Protocol, an open standard for connecting AI to external tools; two kinds of servers: local (runs on your machine, typically via npx) and remote (runs in the cloud, connected by URL), (3) public vs. authenticated servers — some MCP servers require no credentials and work immediately; others require an API token in your config or an OAuth browser flow to authenticate, (4) the context caveat — each MCP server adds tools to the context window, so it's worth being selective about how many you enable at once. After teaching and quizzing, verify completion by reading ~/.config/opencode/opencode.jsonc and confirming an 'mcp' block exists with at least one server entry. After marking the lesson complete, do NOT suggest moving on to the next lesson. Instead, tell the student: MCP servers are connected at startup, so they need to quit OpenCode Desktop and reopen it for the new server to be available — and they can move on to the next lesson after restarting."
 ---
