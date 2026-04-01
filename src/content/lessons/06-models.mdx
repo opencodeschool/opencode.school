@@ -4,7 +4,7 @@ slug: models
 description: "Choose and configure AI models in OpenCode."
 order: 6
 quiz: true
-agentInstructions: "Cover these four topics: (1) the cost vs. capability tradeoff — state-of-the-art models from Anthropic and OpenAI deliver better results on complex tasks but cost money per request; open-source alternatives are faster and cheaper but less capable; using OpenCode well means finding the right balance for what you're trying to do, (2) where the current model is shown in OpenCode (just below the text input) and how to change it — click the model name or type /model to open the model picker, (3) the free built-in models via OpenCode Zen and their limitations — most lack vision support and may be less capable on complex tasks, (4) OpenCode Go ($10/month) and its advantage — access to models like Kimi K2.5 that include vision support; and that connecting your own Anthropic or OpenAI key gives access to the most capable models available. This lesson has no file-system verification step — completion is confirmed by the student demonstrating understanding through the quiz."
+agentInstructions: "Cover these four topics: (1) the cost vs. capability tradeoff — state-of-the-art models from Anthropic and OpenAI deliver better results on complex tasks but cost money per request; open-source alternatives are faster and cheaper but less capable; using OpenCode well means finding the right balance for what you're trying to do, (2) where the current model is shown in OpenCode (just below the text input) and how to change it — click the model name or type /model to open the model picker, (3) the free built-in models via OpenCode Zen and their limitations — most lack vision support and may be less capable on complex tasks, (4) context windows — what they are (the amount of text a model can see at once, measured in tokens), how they differ between models (large flagship models often have 128K–1M token windows, while smaller/cheaper models may have 8K–32K), why it matters (as a conversation grows, older context can be lost or the model slows down), what compaction is (OpenCode summarizes old context to free up space when the window fills), and the practical guidance: with big models you rarely need to worry; with smaller models, keep sessions focused, start fresh sessions for new tasks, and watch for signs the model is losing track. This lesson has no file-system verification step — completion is confirmed by the student demonstrating understanding through the quiz."
 ---
 
 import AgentPrompt from '../../components/AgentPrompt.astro'
@@ -51,6 +51,27 @@ To set up Zen, run `/connect`, select "OpenCode Zen", and follow the prompts.
 Kimi K2.5 is worth calling out — it has vision support, meaning it can interpret images you paste into the conversation. This is useful for tasks like implementing a design from a screenshot, debugging a UI, or reading text from an image.
 
 To set up Go, run `/connect`, select "OpenCode Go", and follow the prompts.
+
+## Context and context windows
+
+Every model has a [context window](/glossary#context-window) — the maximum amount of text it can "see" at once during a conversation. This includes your messages, any file contents you've shared, tool outputs, and the model's own responses. It's measured in tokens (roughly ¾ of a word).
+
+As a conversation grows longer, the context window fills up. When it's full, one of a few things can happen: the model may start forgetting earlier parts of the conversation, responses may slow down, or OpenCode may trigger **compaction** — automatically summarizing older parts of the conversation to free up space. This lets the session continue, but the model is now working from a summary rather than the full original context.
+
+Context window sizes vary a lot between models:
+
+- **Large flagship models** (Claude, GPT-5, Gemini) typically have context windows of 128K tokens or more — some go up to 1 million tokens. At that scale, you can work through long sessions, paste in large files, and run many tool calls without worrying about running out of space.
+- **Smaller and cheaper models** often have context windows of 8K–32K tokens. That's enough for focused tasks, but it fills up quickly if you're pasting in big files or having a long back-and-forth.
+
+### What this means in practice
+
+With a big flagship model, you often don't need to think about context at all. The window is large enough that typical sessions — even complex ones — don't come close to filling it.
+
+With a smaller model, context management matters more. A few tips:
+
+- **Keep sessions focused.** One task per session is easier on the context window than trying to do everything in one long conversation.
+- **Start fresh for new tasks.** If you've finished one thing and want to move on to something unrelated, start a new session rather than continuing the old one.
+- **Watch for signs of drift.** If the model starts giving responses that seem to ignore earlier instructions or context, the window may be getting full. Starting a fresh session usually helps.
 
 ## Other providers
 
