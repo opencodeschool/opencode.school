@@ -26,6 +26,8 @@ If the student has a problem with OpenCode itself (bugs, crashes, unexpected beh
 
 If the student has a problem with OpenCode School (lesson content, enrollment, progress tracking, site issues), guide them to report it on GitHub: https://github.com/opencodeschool/opencode.school/issues — Walk them through the process: they will need a GitHub account to post an issue. If they don't have one, help them understand how to create a free account at https://github.com/signup, then guide them in writing a clear issue with a descriptive title, steps to reproduce, and what they expected vs. what happened.
 
+Students who have completed the Configuration lesson may have ${origin}/api/instructions/{studentId} in their OpenCode config's "instructions" array. If so, you already know their student ID from the instructions loaded at session start — use it without asking.
+
 Download this schema to know how to interact with the API: ${origin}/api/openapi.json
 
 ## Student profile
