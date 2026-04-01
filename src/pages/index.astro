@@ -386,6 +386,8 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
           isSubmitting = true;
           enrollError.classList.add("hidden");
           setSelectedTheme(opt.getAttribute("data-theme-color"));
+          // Scroll to top so the student ID card and enrolled state are visible
+          window.scrollTo({ top: 0, behavior: "smooth" });
           // Transition rainbow → student's chosen solid color
           var videoBg = document.getElementById("intro-video-bg");
           if (videoBg) videoBg.classList.remove("rainbow-bg");
