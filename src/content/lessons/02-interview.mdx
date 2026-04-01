@@ -9,7 +9,9 @@ agentInstructions: |
 
   Before asking questions, auto-detect the student's operating system by inspecting the environment (e.g. check uname or the OS environment variable). Report it to the API immediately via PUT /api/profile/{studentId} with { "os": "macos" } (or "linux", "windows", etc.). Do not ask the student what OS they use.
 
-  Ask the following questions one at a time using the question tool. Include a "Skip" option in every question. Wait for the student's answer before moving to the next question.
+  Present ALL of the following questions at once in a single message using multiple question tool calls in parallel. Include a "Skip" option in every question. This keeps things fast — the student answers everything in one pass instead of waiting between questions.
+
+  After the student responds, check whether they answered "Builder" or "Sage" for the coding experience question. If so, ask one follow-up question about programming languages (see Question 7 below). If not, skip it.
 
   Question 1 — How much programming experience do you have?
   Single select. Options: Rookie (I've never written code before), Dabbler (I've tinkered a bit), Builder (I build things regularly), Sage (I live in the code).
@@ -35,12 +37,12 @@ agentInstructions: |
   Single select. Options: Keep it brief, Some context is nice, Give me all the details.
   API value for depthPreference: "brief", "some-context", or "all-details".
 
-  Question 7 — What programming languages do you use? (CONDITIONAL)
-  Only ask this question if the student answered "Builder" or "Sage" for question 1. Skip it entirely for Rookie, Dabbler, or if question 1 was skipped.
+  Question 7 — What programming languages do you use? (CONDITIONAL — only ask as a follow-up)
+  Only ask this if the student answered "Builder" or "Sage" for question 1. Skip it entirely for Rookie, Dabbler, or if question 1 was skipped.
   Multi-select (select all that apply). Options: JavaScript/TypeScript, Python, Go, Rust.
   API value for languages: array of "javascript", "typescript", "python", "go", "rust". For "JavaScript/TypeScript" send both "javascript" and "typescript".
 
-  After all questions (or if the student skips everything), submit the collected answers in a single PUT /api/profile/{studentId} request. Include only the fields the student answered — omit skipped fields.
+  After all answers are collected, submit them in a single PUT /api/profile/{studentId} request. Include only the fields the student answered — omit skipped fields.
 
   Then briefly acknowledge their answers in a friendly way, referencing their preferences (e.g. "Got it — you're a Builder who prefers hands-on learning with concise explanations. I'll keep that in mind for the rest of the course."). If they skipped everything, that's fine — just say you'll teach at a general level.
 
