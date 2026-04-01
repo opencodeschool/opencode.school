@@ -229,6 +229,114 @@ export const GET: APIRoute = (context) => {
 					},
 				},
 			},
+			"/api/profile/{studentId}": {
+				get: {
+					summary: "Get student profile",
+					description:
+						"Returns the student's profile — their preferences and background from the interview lesson.",
+					parameters: [
+						{
+							name: "studentId",
+							in: "path",
+							required: true,
+							schema: { type: "string" },
+							example: "analytical-pilgrim-5076",
+						},
+					],
+					responses: {
+						"200": {
+							description: "Profile found",
+							content: {
+								"application/json": {
+									schema: {
+										type: "object",
+										properties: {
+											profile: {
+												$ref: "#/components/schemas/StudentProfile",
+											},
+										},
+										required: ["profile"],
+									},
+								},
+							},
+						},
+						"400": {
+							description: "Invalid student ID format",
+							content: {
+								"application/json": {
+									schema: { $ref: "#/components/schemas/Error" },
+								},
+							},
+						},
+						"404": {
+							description: "Student not found",
+							content: {
+								"application/json": {
+									schema: { $ref: "#/components/schemas/Error" },
+								},
+							},
+						},
+					},
+				},
+				put: {
+					summary: "Update student profile",
+					description:
+						"Merges new profile fields into the student's existing profile. Partial updates are supported — only include the fields you want to set or change.",
+					parameters: [
+						{
+							name: "studentId",
+							in: "path",
+							required: true,
+							schema: { type: "string" },
+							example: "analytical-pilgrim-5076",
+						},
+					],
+					requestBody: {
+						required: true,
+						content: {
+							"application/json": {
+								schema: {
+									$ref: "#/components/schemas/StudentProfile",
+								},
+							},
+						},
+					},
+					responses: {
+						"200": {
+							description: "Profile updated",
+							content: {
+								"application/json": {
+									schema: {
+										type: "object",
+										properties: {
+											profile: {
+												$ref: "#/components/schemas/StudentProfile",
+											},
+										},
+										required: ["profile"],
+									},
+								},
+							},
+						},
+						"400": {
+							description: "Invalid request",
+							content: {
+								"application/json": {
+									schema: { $ref: "#/components/schemas/Error" },
+								},
+							},
+						},
+						"404": {
+							description: "Student not found",
+							content: {
+								"application/json": {
+									schema: { $ref: "#/components/schemas/Error" },
+								},
+							},
+						},
+					},
+				},
+			},
 		},
 		components: {
 			schemas: {
@@ -277,6 +385,92 @@ export const GET: APIRoute = (context) => {
 					},
 					required: ["slug", "completedAt", "source"],
 				},
+				StudentProfile: {
+					type: "object",
+					description:
+						"Student preferences and background from the interview lesson. All fields are optional.",
+					properties: {
+						codingExperience: {
+							type: "string",
+							enum: ["rookie", "dabbler", "builder", "sage"],
+							description:
+								"Programming experience level. rookie = never written code, dabbler = tinkered a bit, builder = builds regularly, sage = lives in the code.",
+						},
+						aiTools: {
+							type: "array",
+							items: {
+								type: "string",
+								enum: [
+									"chatgpt",
+									"gemini",
+									"claude",
+									"claude-code",
+									"openai-codex",
+									"copilot",
+								],
+							},
+							description: "AI tools the student has used.",
+						},
+						editor: {
+							type: "string",
+							enum: [
+								"vscode",
+								"cursor",
+								"windsurf",
+								"zed",
+								"vim",
+								"emacs",
+								"other",
+								"none",
+							],
+							description:
+								'Code editor the student uses. "none" means they don\'t have one yet.',
+						},
+						terminalComfort: {
+							type: "string",
+							enum: ["none", "some", "very"],
+							description:
+								"Terminal comfort level. none = not at all, some = can get around, very = very comfortable.",
+						},
+						learningStyle: {
+							type: "string",
+							enum: ["concepts-first", "hands-on", "examples"],
+							description:
+								"Preferred learning style. concepts-first = explain then practice, hands-on = jump into tasks, examples = learn by example.",
+						},
+						depthPreference: {
+							type: "string",
+							enum: ["brief", "some-context", "all-details"],
+							description:
+								"Preferred explanation depth. brief = short and direct, some-context = moderate detail, all-details = thorough.",
+						},
+						languages: {
+							type: "array",
+							items: {
+								type: "string",
+								enum: [
+									"javascript",
+									"typescript",
+									"python",
+									"go",
+									"rust",
+									"java",
+									"kotlin",
+									"c",
+									"cpp",
+									"ruby",
+								],
+							},
+							description:
+								"Programming languages the student uses. Only populated for experienced programmers (builder/sage).",
+						},
+						os: {
+							type: "string",
+							description:
+								"Operating system, auto-detected by the agent (e.g. macos, linux, windows).",
+						},
+					},
+				},
 				Progress: {
 					type: "object",
 					properties: {
@@ -290,6 +484,9 @@ export const GET: APIRoute = (context) => {
 									source: "browser",
 								},
 							],
+						},
+						profile: {
+							$ref: "#/components/schemas/StudentProfile",
 						},
 						createdAt: { type: "string", format: "date-time" },
 						updatedAt: { type: "string", format: "date-time" },

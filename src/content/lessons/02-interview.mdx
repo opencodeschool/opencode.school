@@ -1,0 +1,60 @@
+---
+title: "Interview"
+slug: interview
+description: "Tell OpenCode a bit about yourself so it can tailor the course to you."
+order: 2
+quiz: false
+agentInstructions: |
+  This lesson is a short, optional interview. The student's answers are used to personalize the rest of the course. Every question can be skipped — make this clear up front.
+
+  Before asking questions, auto-detect the student's operating system by inspecting the environment (e.g. check uname or the OS environment variable). Report it to the API immediately via PUT /api/profile/{studentId} with { "os": "macos" } (or "linux", "windows", etc.). Do not ask the student what OS they use.
+
+  Ask the following questions one at a time using the question tool. Include a "Skip" option in every question. Wait for the student's answer before moving to the next question.
+
+  Question 1 — How much programming experience do you have?
+  Single select. Options: Rookie (I've never written code before), Dabbler (I've tinkered a bit), Builder (I build things regularly), Sage (I live in the code).
+  API value for codingExperience: "rookie", "dabbler", "builder", or "sage".
+
+  Question 2 — Which AI tools have you used?
+  Multi-select (select all that apply). Options: ChatGPT, Gemini, Claude, Claude Code, OpenAI Codex, GitHub Copilot. Include "None of these" as an option.
+  API value for aiTools: array of "chatgpt", "gemini", "claude", "claude-code", "openai-codex", "copilot". Send an empty array if they select "None of these" or skip.
+
+  Question 3 — What code editor do you use?
+  Single select. Options: VS Code, Cursor, Windsurf, Zed, Vim, Emacs, Other, I don't have one yet.
+  API value for editor: "vscode", "cursor", "windsurf", "zed", "vim", "emacs", "other", or "none".
+
+  Question 4 — How comfortable are you with the terminal?
+  Single select. Options: Not at all, I can get around, Very comfortable.
+  API value for terminalComfort: "none", "some", or "very".
+
+  Question 5 — How do you prefer to learn?
+  Single select. Options: Explain concepts first, Jump into hands-on tasks, Show me examples.
+  API value for learningStyle: "concepts-first", "hands-on", or "examples".
+
+  Question 6 — How much detail do you want in explanations?
+  Single select. Options: Keep it brief, Some context is nice, Give me all the details.
+  API value for depthPreference: "brief", "some-context", or "all-details".
+
+  Question 7 — What programming languages do you use? (CONDITIONAL)
+  Only ask this question if the student answered "Builder" or "Sage" for question 1. Skip it entirely for Rookie, Dabbler, or if question 1 was skipped.
+  Multi-select (select all that apply). Options: JavaScript/TypeScript, Python, Go, Rust, Java/Kotlin, C/C++, Ruby.
+  API value for languages: array of "javascript", "typescript", "python", "go", "rust", "java", "kotlin", "c", "cpp", "ruby". For "JavaScript/TypeScript" send both "javascript" and "typescript". For "Java/Kotlin" send both "java" and "kotlin". For "C/C++" send both "c" and "cpp".
+
+  After all questions (or if the student skips everything), submit the collected answers in a single PUT /api/profile/{studentId} request. Include only the fields the student answered — omit skipped fields.
+
+  Then briefly acknowledge their answers in a friendly way, referencing their preferences (e.g. "Got it — you're a Builder who prefers hands-on learning with concise explanations. I'll keep that in mind for the rest of the course."). If they skipped everything, that's fine — just say you'll teach at a general level.
+
+  Note: This lesson happens before the student has configured generous permissions, so they may need to manually approve a few permission prompts from OpenCode (like allowing network requests). If the student asks about this, reassure them it's normal and will be addressed in the Configuration lesson.
+
+  Mark the lesson complete after submitting the profile (or after acknowledging that all questions were skipped).
+---
+
+import AgentPrompt from '../../components/AgentPrompt.astro'
+
+In this lesson, OpenCode will ask you a few optional questions about your background and preferences. Your answers help tailor the rest of the course — adjusting the level of detail, choosing relevant examples, and matching your comfort level with the terminal and code.
+
+All questions are optional. Skip any you'd rather not answer.
+
+Since this is early in the course, OpenCode doesn't have broad permissions yet. You may need to click "Allow" on a few prompts during this lesson — that's normal. You'll set up permissions in an upcoming lesson.
+
+<AgentPrompt title="Interview" />
