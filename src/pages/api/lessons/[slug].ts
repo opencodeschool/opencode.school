@@ -17,7 +17,8 @@ export const OPTIONS: APIRoute = async () => {
 	return new Response(null, { status: 204, headers: corsHeaders });
 };
 
-export const GET: APIRoute = async ({ params }) => {
+export const GET: APIRoute = async ({ params, request }) => {
+	const origin = new URL(request.url).origin;
 	const lessons = await getCollection("lessons");
 	const lesson = lessons.find((l) => l.data.slug === params.slug);
 
@@ -31,9 +32,10 @@ export const GET: APIRoute = async ({ params }) => {
 		});
 	}
 
-	const agentInstructions = lesson.data.quiz
+	const rawInstructions = lesson.data.quiz
 		? `${lesson.data.agentInstructions}\n\n${QUIZ_INSTRUCTIONS}`
 		: lesson.data.agentInstructions;
+	const agentInstructions = rawInstructions.replaceAll("{origin}", origin);
 
 	const result = {
 		order: lesson.data.order,

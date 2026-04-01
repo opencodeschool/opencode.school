@@ -39,7 +39,7 @@ export const GET: APIRoute = async ({ params, request }) => {
 
 	const origin = new URL(request.url).origin;
 
-	const content = `My OpenCode School student ID is ${studentId}.
+	const content = `My OpenCode School student ID is ${studentId}
 
 When I mention school, lessons, progress, exercises, enrollment, or my student ID, use this ID to fetch my OpenCode School data as needed.
 

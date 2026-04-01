@@ -357,8 +357,7 @@ export const GET: APIRoute = (context) => {
 							content: {
 								"text/plain": {
 									schema: { type: "string" },
-									example:
-										"My OpenCode School student ID is analytical-pilgrim-5076.\n\nWhen I mention school, lessons, progress, exercises, enrollment, or my student ID, use this ID to fetch my OpenCode School data as needed.\n\nFor the full OpenCode School agent protocol, fetch https://opencode.school/llms.txt\n",
+									example: `My OpenCode School student ID is analytical-pilgrim-5076\n\nWhen I mention school, lessons, progress, exercises, enrollment, or my student ID, use this ID to fetch my OpenCode School data as needed.\n\nFor the full OpenCode School agent protocol, fetch ${origin}/llms.txt\n`,
 								},
 							},
 						},
