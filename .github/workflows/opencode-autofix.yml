@@ -1,0 +1,68 @@
+name: OpenCode Autofix
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+jobs:
+  autofix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+
+    steps:
+      - name: Find OpenCode PRs with failing checks
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          MAX_RETRIES: "3"
+        run: |
+          # Get open PRs authored by OpenCode
+          prs=$(gh pr list --author "app/opencode-agent" --state open --json number --jq '.[].number')
+
+          if [ -z "$prs" ]; then
+            echo "No open OpenCode PRs found."
+            exit 0
+          fi
+
+          for pr in $prs; do
+            echo "--- Checking PR #$pr ---"
+
+            # Check if any checks have failed
+            if gh pr checks "$pr" --json name,state --jq '.[] | select(.state == "FAILURE") | .name' | grep -q .; then
+              echo "PR #$pr has failing checks."
+            else
+              echo "PR #$pr has no failing checks. Skipping."
+              continue
+            fi
+
+            # Check if any checks are still pending — if so, wait for them to finish
+            if gh pr checks "$pr" --json name,state --jq '.[] | select(.state == "PENDING") | .name' | grep -q .; then
+              echo "PR #$pr still has pending checks. Skipping until they complete."
+              continue
+            fi
+
+            # Spam guard: skip if the last comment is already a /oc from this bot
+            last_comment_author=$(gh pr view "$pr" --json comments --jq '.comments[-1].author.login // ""')
+            last_comment_body=$(gh pr view "$pr" --json comments --jq '.comments[-1].body // ""')
+
+            if [ "$last_comment_author" = "github-actions[bot]" ] && echo "$last_comment_body" | grep -q "^/oc"; then
+              echo "PR #$pr: last comment is already a /oc from this workflow. Skipping."
+              continue
+            fi
+
+            # Max retries: count total /oc comments from github-actions[bot] on this PR
+            retry_count=$(gh pr view "$pr" --json comments --jq '[.comments[] | select(.author.login == "github-actions[bot]" and (.body | startswith("/oc")))] | length')
+
+            if [ "$retry_count" -ge "$MAX_RETRIES" ]; then
+              echo "PR #$pr: reached max retries ($MAX_RETRIES). Leaving for a human."
+              continue
+            fi
+
+            echo "PR #$pr: posting /oc comment (attempt $((retry_count + 1))/$MAX_RETRIES)."
+            gh pr comment "$pr" --body "/oc Some checks are failing on this PR. Read the workflow logs, find the errors, and push fixes."
+          done
