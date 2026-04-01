@@ -22,6 +22,8 @@ When adding or removing API endpoints or lessons, update both of these in the sa
 1. Add/update the route handler in `src/pages/api/`
 2. Update `src/pages/api/openapi.json.ts` with the new endpoint schema
 
+Agent-facing URLs (`/llms.txt`, `/api/openapi.json`, `/api/instructions/{studentId}`, lesson prompts) must use the current request or page origin, not a hardcoded domain. The lessons API replaces the `{origin}` placeholder in `agentInstructions` with the request origin at serve time, so use `{origin}` in MDX frontmatter when an agent-facing URL needs the site origin.
+
 ## Lesson content
 
 Each lesson is an MDX file in `src/content/lessons/`. The frontmatter schema (defined in `src/content.config.ts`) includes:

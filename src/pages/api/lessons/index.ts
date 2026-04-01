@@ -17,15 +17,17 @@ export const OPTIONS: APIRoute = async () => {
 	return new Response(null, { status: 204, headers: corsHeaders });
 };
 
-export const GET: APIRoute = async () => {
+export const GET: APIRoute = async ({ request }) => {
+	const origin = new URL(request.url).origin;
 	const lessons = (await getCollection("lessons")).sort(
 		(a, b) => a.data.order - b.data.order,
 	);
 
 	const result = lessons.map((lesson) => {
-		const agentInstructions = lesson.data.quiz
+		const rawInstructions = lesson.data.quiz
 			? `${lesson.data.agentInstructions}\n\n${QUIZ_INSTRUCTIONS}`
 			: lesson.data.agentInstructions;
+		const agentInstructions = rawInstructions.replaceAll("{origin}", origin);
 
 		return {
 			order: lesson.data.order,
