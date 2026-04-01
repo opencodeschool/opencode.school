@@ -448,18 +448,7 @@ export const GET: APIRoute = (context) => {
 							type: "array",
 							items: {
 								type: "string",
-								enum: [
-									"javascript",
-									"typescript",
-									"python",
-									"go",
-									"rust",
-									"java",
-									"kotlin",
-									"c",
-									"cpp",
-									"ruby",
-								],
+								enum: ["javascript", "typescript", "python", "go", "rust"],
 							},
 							description:
 								"Programming languages the student uses. Only populated for experienced programmers (builder/sage).",

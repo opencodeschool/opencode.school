@@ -37,8 +37,8 @@ agentInstructions: |
 
   Question 7 — What programming languages do you use? (CONDITIONAL)
   Only ask this question if the student answered "Builder" or "Sage" for question 1. Skip it entirely for Rookie, Dabbler, or if question 1 was skipped.
-  Multi-select (select all that apply). Options: JavaScript/TypeScript, Python, Go, Rust, Java/Kotlin, C/C++, Ruby.
-  API value for languages: array of "javascript", "typescript", "python", "go", "rust", "java", "kotlin", "c", "cpp", "ruby". For "JavaScript/TypeScript" send both "javascript" and "typescript". For "Java/Kotlin" send both "java" and "kotlin". For "C/C++" send both "c" and "cpp".
+  Multi-select (select all that apply). Options: JavaScript/TypeScript, Python, Go, Rust.
+  API value for languages: array of "javascript", "typescript", "python", "go", "rust". For "JavaScript/TypeScript" send both "javascript" and "typescript".
 
   After all questions (or if the student skips everything), submit the collected answers in a single PUT /api/profile/{studentId} request. Include only the fields the student answered — omit skipped fields.
 

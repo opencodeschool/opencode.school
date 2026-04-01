@@ -73,18 +73,7 @@ const VALID_EDITORS = [
 const VALID_TERMINAL_COMFORT = ["none", "some", "very"];
 const VALID_LEARNING_STYLE = ["concepts-first", "hands-on", "examples"];
 const VALID_DEPTH_PREFERENCE = ["brief", "some-context", "all-details"];
-const VALID_LANGUAGES = [
-	"javascript",
-	"typescript",
-	"python",
-	"go",
-	"rust",
-	"java",
-	"kotlin",
-	"c",
-	"cpp",
-	"ruby",
-];
+const VALID_LANGUAGES = ["javascript", "typescript", "python", "go", "rust"];
 
 function validateProfile(body: Record<string, unknown>): {
 	profile: Partial<StudentProfile>;
