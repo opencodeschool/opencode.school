@@ -380,6 +380,23 @@ export const GET: APIRoute = (context) => {
 					},
 				},
 			},
+			"/api/admin/stats": {
+				get: {
+					summary: "Get admin dashboard stats",
+					description:
+						"Returns aggregated enrollment, lesson completion, funnel, profile, and model usage statistics. Protected by Cloudflare Access (cloudflare.com email domain).",
+					responses: {
+						"200": {
+							description: "Admin stats",
+							content: {
+								"application/json": {
+									schema: { $ref: "#/components/schemas/AdminStats" },
+								},
+							},
+						},
+					},
+				},
+			},
 		},
 		components: {
 			schemas: {
@@ -531,6 +548,117 @@ export const GET: APIRoute = (context) => {
 						},
 					},
 					required: ["completedLessons", "createdAt", "updatedAt"],
+				},
+				AdminStats: {
+					type: "object",
+					description:
+						"Aggregated enrollment, completion, and profile statistics.",
+					properties: {
+						generatedAt: { type: "string", format: "date-time" },
+						enrollment: {
+							type: "object",
+							properties: {
+								total: { type: "integer" },
+								byDate: {
+									type: "object",
+									additionalProperties: { type: "integer" },
+								},
+								thisWeek: { type: "integer" },
+								thisMonth: { type: "integer" },
+							},
+							required: ["total", "byDate", "thisWeek", "thisMonth"],
+						},
+						lessons: {
+							type: "object",
+							properties: {
+								completionCounts: {
+									type: "object",
+									additionalProperties: { type: "integer" },
+								},
+								bySource: {
+									type: "object",
+									properties: {
+										browser: { type: "integer" },
+										agent: { type: "integer" },
+									},
+									required: ["browser", "agent"],
+								},
+							},
+							required: ["completionCounts", "bySource"],
+						},
+						funnel: {
+							type: "object",
+							properties: {
+								enrolled: { type: "integer" },
+								completedFirst: { type: "integer" },
+								completedHalf: { type: "integer" },
+								completedAll: { type: "integer" },
+							},
+							required: [
+								"enrolled",
+								"completedFirst",
+								"completedHalf",
+								"completedAll",
+							],
+						},
+						profiles: {
+							type: "object",
+							properties: {
+								codingExperience: {
+									type: "object",
+									additionalProperties: { type: "integer" },
+								},
+								editor: {
+									type: "object",
+									additionalProperties: { type: "integer" },
+								},
+								os: {
+									type: "object",
+									additionalProperties: { type: "integer" },
+								},
+								terminalComfort: {
+									type: "object",
+									additionalProperties: { type: "integer" },
+								},
+								learningStyle: {
+									type: "object",
+									additionalProperties: { type: "integer" },
+								},
+								depthPreference: {
+									type: "object",
+									additionalProperties: { type: "integer" },
+								},
+							},
+						},
+						models: {
+							type: "object",
+							additionalProperties: { type: "integer" },
+						},
+						recentEnrollments: {
+							type: "array",
+							items: {
+								type: "object",
+								properties: {
+									id: { type: "string" },
+									createdAt: {
+										type: "string",
+										format: "date-time",
+									},
+									lessonsCompleted: { type: "integer" },
+								},
+								required: ["id", "createdAt", "lessonsCompleted"],
+							},
+						},
+					},
+					required: [
+						"generatedAt",
+						"enrollment",
+						"lessons",
+						"funnel",
+						"profiles",
+						"models",
+						"recentEnrollments",
+					],
 				},
 				Error: {
 					type: "object",
