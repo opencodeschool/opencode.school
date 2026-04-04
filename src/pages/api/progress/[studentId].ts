@@ -7,6 +7,7 @@ import type { APIRoute } from "astro";
 import {
 	type CompletionSource,
 	getProgress,
+	markExerciseComplete,
 	markLessonComplete,
 } from "../../../lib/progress";
 import { isValidStudentId } from "../../../lib/student-id";
@@ -57,15 +58,27 @@ export const PUT: APIRoute = async ({ params, request }) => {
 		return badRequest("Invalid student ID format");
 	}
 
-	let body: { lessonSlug?: string; source?: string; model?: string };
+	let body: {
+		lessonSlug?: string;
+		exerciseSlug?: string;
+		source?: string;
+		model?: string;
+	};
 	try {
 		body = await request.json();
 	} catch {
 		return badRequest("Invalid JSON body");
 	}
 
-	if (!body.lessonSlug || typeof body.lessonSlug !== "string") {
-		return badRequest('Missing or invalid "lessonSlug" field');
+	const hasLesson =
+		typeof body.lessonSlug === "string" && body.lessonSlug.length > 0;
+	const hasExercise =
+		typeof body.exerciseSlug === "string" && body.exerciseSlug.length > 0;
+
+	if (!hasLesson && !hasExercise) {
+		return badRequest(
+			'Missing or invalid "lessonSlug" or "exerciseSlug" field',
+		);
 	}
 
 	const source: CompletionSource =
@@ -76,13 +89,13 @@ export const PUT: APIRoute = async ({ params, request }) => {
 			? body.model.trim()
 			: undefined;
 
-	const progress = await markLessonComplete(
-		env.PROGRESS,
-		studentId,
-		body.lessonSlug,
-		source,
-		model,
-	);
+	const slug = hasExercise
+		? (body.exerciseSlug as string)
+		: (body.lessonSlug as string);
+
+	const progress = hasExercise
+		? await markExerciseComplete(env.PROGRESS, studentId, slug, source, model)
+		: await markLessonComplete(env.PROGRESS, studentId, slug, source, model);
 	if (!progress) {
 		return notFound("Student not found");
 	}
