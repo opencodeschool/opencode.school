@@ -592,7 +592,6 @@ const currentPath = Astro.url.pathname;
             {exercises.map((exercise) => {
               const href = `/exercises/${exercise.data.slug}`;
               const isActive = currentPath === href || currentPath === `${href}/`;
-              const isStub = exercise.body?.trim() === "Coming soon.";
               return (
                 <li data-sidebar-exercise-slug={exercise.data.slug}>
                   <a
@@ -602,7 +601,6 @@ const currentPath = Astro.url.pathname;
                       isActive
                         ? "theme-active-nav font-medium"
                         : "text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-stone-400 dark:hover:text-stone-200 dark:hover:bg-stone-800",
-                      isStub && "opacity-50",
                     ]}
                   >
                     <span>{exercise.data.title}</span>
