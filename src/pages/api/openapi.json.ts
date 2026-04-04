@@ -12,7 +12,7 @@ export const GET: APIRoute = (context) => {
 		info: {
 			title: "OpenCode School API",
 			description:
-				"API for fetching lesson content, enrolling students, and tracking progress through OpenCode School.",
+				"API for fetching lesson and exercise content, enrolling students, and tracking progress through OpenCode School.",
 			version: "1.0.0",
 		},
 		servers: [{ url: origin }],
@@ -62,6 +62,60 @@ export const GET: APIRoute = (context) => {
 						},
 						"404": {
 							description: "Lesson not found",
+							content: {
+								"application/json": {
+									schema: { $ref: "#/components/schemas/Error" },
+								},
+							},
+						},
+					},
+				},
+			},
+			"/api/exercises": {
+				get: {
+					summary: "List all exercises",
+					description:
+						"Returns all exercises sorted by order, including content (as prose markdown) and agent instructions.",
+					responses: {
+						"200": {
+							description: "Array of all exercises",
+							content: {
+								"application/json": {
+									schema: {
+										type: "array",
+										items: { $ref: "#/components/schemas/Exercise" },
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			"/api/exercises/{slug}": {
+				get: {
+					summary: "Get a single exercise",
+					description:
+						"Returns a single exercise by slug, including content (as prose markdown) and agent instructions.",
+					parameters: [
+						{
+							name: "slug",
+							in: "path",
+							required: true,
+							schema: { type: "string" },
+							example: "build-a-website",
+						},
+					],
+					responses: {
+						"200": {
+							description: "Exercise found",
+							content: {
+								"application/json": {
+									schema: { $ref: "#/components/schemas/Exercise" },
+								},
+							},
+						},
+						"404": {
+							description: "Exercise not found",
 							content: {
 								"application/json": {
 									schema: { $ref: "#/components/schemas/Error" },
@@ -159,9 +213,9 @@ export const GET: APIRoute = (context) => {
 					},
 				},
 				put: {
-					summary: "Mark a lesson as complete",
+					summary: "Mark a lesson or exercise as complete",
 					description:
-						"Marks a lesson as complete for the given student. Idempotent — marking an already-completed lesson has no effect.",
+						"Marks a lesson or exercise as complete for the given student. Supply either lessonSlug or exerciseSlug (not both). Idempotent — marking an already-completed item has no effect.",
 					parameters: [
 						{
 							name: "studentId",
@@ -180,23 +234,30 @@ export const GET: APIRoute = (context) => {
 									properties: {
 										lessonSlug: {
 											type: "string",
+											description:
+												"Slug of the lesson to mark complete. Provide this or exerciseSlug.",
 											example: "configuration",
+										},
+										exerciseSlug: {
+											type: "string",
+											description:
+												"Slug of the exercise to mark complete. Provide this or lessonSlug.",
+											example: "build-a-website",
 										},
 										source: {
 											type: "string",
 											enum: ["browser", "agent"],
 											description:
-												'Who marked the lesson complete. Omit or use "browser" for student-initiated completions; use "agent" when an AI agent marks it complete on the student\'s behalf.',
+												'Who marked the item complete. Omit or use "browser" for student-initiated completions; use "agent" when an AI agent marks it complete on the student\'s behalf.',
 											example: "agent",
 										},
 										model: {
 											type: "string",
 											description:
-												"The model ID used by the agent to complete this lesson. Agents should always include this field. Example: anthropic/claude-sonnet-4-5",
+												"The model ID used by the agent to complete this item. Agents should always include this field. Example: anthropic/claude-sonnet-4-5",
 											example: "anthropic/claude-sonnet-4-5",
 										},
 									},
-									required: ["lessonSlug"],
 								},
 							},
 						},
@@ -413,6 +474,52 @@ export const GET: APIRoute = (context) => {
 						"content",
 					],
 				},
+				Exercise: {
+					type: "object",
+					properties: {
+						order: { type: "integer", example: 1 },
+						slug: { type: "string", example: "build-a-website" },
+						title: { type: "string", example: "Build a Website" },
+						description: {
+							type: "string",
+							example:
+								"Build a website with Hono and deploy it to Cloudflare Workers.",
+						},
+						agentInstructions: {
+							type: "string",
+							example:
+								"Guide the student through building a simple website using Hono and deploying it to Cloudflare Workers.",
+						},
+						content: {
+							type: "string",
+							description:
+								"Exercise content as prose markdown (HTML and scripts stripped).",
+						},
+					},
+					required: [
+						"order",
+						"slug",
+						"title",
+						"description",
+						"agentInstructions",
+						"content",
+					],
+				},
+				CompletedExercise: {
+					type: "object",
+					properties: {
+						slug: { type: "string", example: "build-a-website" },
+						completedAt: { type: "string", format: "date-time" },
+						source: { type: "string", enum: ["browser", "agent"] },
+						model: {
+							type: "string",
+							description:
+								"The model ID used by the agent to complete this exercise, if applicable.",
+							example: "anthropic/claude-sonnet-4-5",
+						},
+					},
+					required: ["slug", "completedAt", "source"],
+				},
 				CompletedLesson: {
 					type: "object",
 					properties: {
@@ -517,6 +624,17 @@ export const GET: APIRoute = (context) => {
 								},
 							],
 						},
+						completedExercises: {
+							type: "array",
+							items: { $ref: "#/components/schemas/CompletedExercise" },
+							example: [
+								{
+									slug: "build-a-website",
+									completedAt: "2026-03-20T14:30:00Z",
+									source: "agent",
+								},
+							],
+						},
 						profile: {
 							$ref: "#/components/schemas/StudentProfile",
 						},
@@ -530,7 +648,12 @@ export const GET: APIRoute = (context) => {
 							example: "550e8400-e29b-41d4-a716-446655440000",
 						},
 					},
-					required: ["completedLessons", "createdAt", "updatedAt"],
+					required: [
+						"completedLessons",
+						"completedExercises",
+						"createdAt",
+						"updatedAt",
+					],
 				},
 				Error: {
 					type: "object",

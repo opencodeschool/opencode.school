@@ -14,6 +14,7 @@ const { title, description = "Learn to use OpenCode, the free and open-source AI
 const pageTitle = title ? `${title} | OpenCode School` : "OpenCode School";
 
 const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b.data.order);
+const exercises = (await getCollection("exercises")).sort((a, b) => a.data.order - b.data.order);
 const currentPath = Astro.url.pathname;
 ---
 
@@ -331,13 +332,18 @@ const currentPath = Astro.url.pathname;
 
         getCachedProgress() {
           try {
-            return JSON.parse(localStorage.getItem("progress") || "null");
+            const p = JSON.parse(localStorage.getItem("progress") || "null");
+            this._progressCache = p;
+            return p;
           } catch { return null; }
         },
 
         setCachedProgress(progress) {
+          this._progressCache = progress;
           localStorage.setItem("progress", JSON.stringify(progress));
         },
+
+        _progressCache: null,
 
         isLessonComplete(slug) {
           const progress = this.getCachedProgress();
@@ -347,6 +353,18 @@ const currentPath = Astro.url.pathname;
         getLessonCompletion(slug) {
           const progress = this.getCachedProgress();
           const entry = progress?.completedLessons?.find((l) => (typeof l === "string" ? l : l.slug) === slug);
+          if (!entry) return null;
+          return typeof entry === "string" ? { slug: entry, completedAt: null, source: "browser" } : entry;
+        },
+
+        isExerciseComplete(slug) {
+          const progress = this.getCachedProgress();
+          return progress?.completedExercises?.some((e) => (typeof e === "string" ? e : e.slug) === slug) || false;
+        },
+
+        getExerciseCompletion(slug) {
+          const progress = this.getCachedProgress();
+          const entry = progress?.completedExercises?.find((e) => (typeof e === "string" ? e : e.slug) === slug);
           if (!entry) return null;
           return typeof entry === "string" ? { slug: entry, completedAt: null, source: "browser" } : entry;
         },
@@ -407,6 +425,20 @@ const currentPath = Astro.url.pathname;
           return progress;
         },
 
+        async markExerciseComplete(exerciseSlug) {
+          const studentId = this.getStudentId();
+          if (!studentId) return null;
+          const res = await fetch(`/api/progress/${studentId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ exerciseSlug, source: "browser" }),
+          });
+          if (!res.ok) return null;
+          const progress = await res.json();
+          this.setCachedProgress(progress);
+          return progress;
+        },
+
         updateAllCheckmarks() {
           let nextIncompleteSet = false;
           document.querySelectorAll("[data-lesson-slug]").forEach((el) => {
@@ -442,7 +474,7 @@ const currentPath = Astro.url.pathname;
             }
             if (dotEl) dotEl.classList.toggle("hidden", complete);
           });
-          // Update sidebar completion circles
+          // Update sidebar lesson completion circles
           document.querySelectorAll("[data-sidebar-slug]").forEach((el) => {
             const slug = el.getAttribute("data-sidebar-slug");
             const circle = el.querySelector(".sidebar-check");
@@ -452,6 +484,31 @@ const currentPath = Astro.url.pathname;
               circle.classList.toggle("hidden", !complete);
               circle.classList.toggle("flex", complete);
             }
+          });
+          // Update sidebar exercise completion circles
+          document.querySelectorAll("[data-sidebar-exercise-slug]").forEach((el) => {
+            const slug = el.getAttribute("data-sidebar-exercise-slug");
+            const circle = el.querySelector(".sidebar-exercise-check");
+            if (circle) {
+              const complete = this.isExerciseComplete(slug);
+              circle.textContent = complete ? "\u2713" : "";
+              circle.classList.toggle("hidden", !complete);
+              circle.classList.toggle("flex", complete);
+            }
+          });
+          // Update exercise completion checkmarks (homepage + exercises index)
+          document.querySelectorAll("[data-exercise-slug]").forEach((el) => {
+            const slug = el.getAttribute("data-exercise-slug");
+            const complete = this.isExerciseComplete(slug);
+            const statusEl = el.querySelector(".exercise-status");
+            const checkEl = el.querySelector(".exercise-check");
+            const dotEl = el.querySelector(".exercise-status-dot");
+            if (statusEl) statusEl.classList.toggle("lesson-status--complete", complete);
+            if (checkEl) {
+              checkEl.classList.toggle("hidden", !complete);
+              checkEl.classList.toggle("flex", complete);
+            }
+            if (dotEl) dotEl.classList.toggle("hidden", complete);
           });
         },
 
@@ -519,6 +576,41 @@ const currentPath = Astro.url.pathname;
             );
           })}
         </ol>
+        <div class="mt-6 pt-4 border-t border-gray-200 dark:border-stone-800">
+          <a
+            href="/exercises"
+            class:list={[
+              "block px-3 py-1.5 rounded-md text-xs font-mono uppercase tracking-wider mb-1",
+              currentPath === "/exercises" || currentPath === "/exercises/"
+                ? "theme-active-nav font-medium"
+                : "text-gray-500 dark:text-stone-500 hover:text-gray-900 dark:hover:text-stone-200",
+            ]}
+          >
+            Exercises
+          </a>
+          <ol class="space-y-1">
+            {exercises.map((exercise) => {
+              const href = `/exercises/${exercise.data.slug}`;
+              const isActive = currentPath === href || currentPath === `${href}/`;
+              return (
+                <li data-sidebar-exercise-slug={exercise.data.slug}>
+                  <a
+                    href={href}
+                    class:list={[
+                      "flex items-center justify-between px-3 py-1.5 rounded-md text-sm transition-colors",
+                      isActive
+                        ? "theme-active-nav font-medium"
+                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-stone-400 dark:hover:text-stone-200 dark:hover:bg-stone-800",
+                    ]}
+                  >
+                    <span>{exercise.data.title}</span>
+                    <span class="sidebar-exercise-check theme-solid-bg w-4 h-4 rounded-full text-white text-[10px] font-bold items-center justify-center shrink-0 ml-2 hidden"></span>
+                  </a>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
         <div class="mt-6 pt-4 border-t border-gray-200 dark:border-stone-800">
           <a
             href="/about"

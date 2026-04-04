@@ -22,17 +22,26 @@ export interface StudentProfile {
 	os?: string;
 }
 
+export interface CompletedExercise {
+	slug: string;
+	completedAt: string;
+	source: CompletionSource;
+	model?: string;
+}
+
 export interface StudentProgress {
 	completedLessons: CompletedLesson[];
+	completedExercises: CompletedExercise[];
 	profile?: StudentProfile;
 	createdAt: string;
 	updatedAt: string;
 	deviceId?: string;
 }
 
-// Legacy records stored completedLessons as string[]. Normalize on read.
+// Legacy records stored completedLessons as string[] and may lack completedExercises. Normalize on read.
 function normalizeProgress(raw: {
 	completedLessons: (string | CompletedLesson)[];
+	completedExercises?: (string | CompletedExercise)[];
 	profile?: StudentProfile;
 	createdAt: string;
 	updatedAt: string;
@@ -40,6 +49,15 @@ function normalizeProgress(raw: {
 	return {
 		...raw,
 		completedLessons: raw.completedLessons.map((entry) =>
+			typeof entry === "string"
+				? {
+						slug: entry,
+						completedAt: raw.updatedAt,
+						source: "browser" as CompletionSource,
+					}
+				: entry,
+		),
+		completedExercises: (raw.completedExercises ?? []).map((entry) =>
 			typeof entry === "string"
 				? {
 						slug: entry,
@@ -62,6 +80,7 @@ export async function getProgress(
 ): Promise<StudentProgress | null> {
 	const raw = await kv.get<{
 		completedLessons: (string | CompletedLesson)[];
+		completedExercises?: (string | CompletedExercise)[];
 		profile?: StudentProfile;
 		createdAt: string;
 		updatedAt: string;
@@ -78,6 +97,7 @@ export async function createStudent(
 	const now = new Date().toISOString();
 	const progress: StudentProgress = {
 		completedLessons: [],
+		completedExercises: [],
 		createdAt: now,
 		updatedAt: now,
 		...(deviceId ? { deviceId } : {}),
@@ -108,6 +128,34 @@ export async function markLessonComplete(
 		};
 		if (model) entry.model = model;
 		progress.completedLessons.push(entry);
+	}
+	progress.updatedAt = new Date().toISOString();
+	await kv.put(kvKey(studentId), JSON.stringify(progress));
+	return progress;
+}
+
+/**
+ * Mark an exercise as complete for a student. Idempotent — marking an already-completed
+ * exercise is a no-op. Returns the updated progress, or null if the student doesn't exist.
+ */
+export async function markExerciseComplete(
+	kv: KVNamespace,
+	studentId: string,
+	exerciseSlug: string,
+	source: CompletionSource = "browser",
+	model?: string,
+): Promise<StudentProgress | null> {
+	const progress = await getProgress(kv, studentId);
+	if (!progress) return null;
+
+	if (!progress.completedExercises.some((e) => e.slug === exerciseSlug)) {
+		const entry: CompletedExercise = {
+			slug: exerciseSlug,
+			completedAt: new Date().toISOString(),
+			source,
+		};
+		if (model) entry.model = model;
+		progress.completedExercises.push(entry);
 	}
 	progress.updatedAt = new Date().toISOString();
 	await kv.put(kvKey(studentId), JSON.stringify(progress));

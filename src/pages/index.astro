@@ -8,6 +8,7 @@ import Base from "../layouts/Base.astro";
 import { getCollection } from "astro:content";
 
 const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b.data.order);
+const exercises = (await getCollection("exercises")).sort((a, b) => a.data.order - b.data.order);
 ---
 
 <Base>
@@ -70,6 +71,47 @@ const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b
                 class="lesson-cta theme-button hidden shrink-0 rounded-lg px-3 py-2 text-center font-mono text-sm"
               >
                 Continue
+              </a>
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+
+    <h2 class="text-sm font-mono uppercase tracking-wider text-gray-500 dark:text-gray-500 mb-4 mt-10">Exercises</h2>
+    <p class="text-sm text-gray-500 dark:text-gray-500 mb-4">
+      Hands-on projects where you apply what you've learned to build real things.
+      <a href="/exercises" class="theme-link underline underline-offset-2">Learn more</a>
+    </p>
+
+    <ol class="divide-y divide-gray-200 dark:divide-stone-800">
+      {exercises.map((exercise) => {
+        const isStub = exercise.body?.trim() === "Coming soon.";
+        const href = `/exercises/${exercise.data.slug}`;
+        return (
+          <li data-exercise-slug={exercise.data.slug} data-exercise-stub={isStub ? "true" : "false"}>
+            <div class="exercise-row flex flex-col gap-3 py-3 transition-colors sm:flex-row sm:items-center sm:justify-between">
+              <a
+                href={href}
+                class="exercise-link group flex min-w-0 items-center gap-3"
+              >
+                <span
+                  class="exercise-status flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-gray-300 bg-gray-100/70 text-white dark:border-stone-700 dark:bg-stone-900/70"
+                  aria-hidden="true"
+                >
+                  <span class="exercise-status-dot h-2 w-2 rounded-full bg-gray-400 dark:bg-stone-500"></span>
+                  <span class="exercise-check hidden h-full w-full items-center justify-center text-xs font-bold leading-none">&#10003;</span>
+                </span>
+                <div class="min-w-0">
+                  <h3 class:list={[
+                    "exercise-title font-medium transition-colors",
+                    isStub && "text-gray-400 dark:text-gray-600",
+                  ]}>
+                    {exercise.data.title}
+                    {isStub && <span class="ml-2 text-xs font-normal text-gray-400 dark:text-gray-600">(coming soon)</span>}
+                  </h3>
+                  <p class="exercise-description mt-0.5 text-sm text-gray-500 dark:text-gray-500">{exercise.data.description}</p>
+                </div>
               </a>
             </div>
           </li>
