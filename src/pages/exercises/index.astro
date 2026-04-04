@@ -24,8 +24,10 @@ const exercises = (await getCollection("exercises")).sort((a, b) => a.data.order
     </p>
   </header>
 
-  <div id="exercise-enroll-nudge" class="hidden mb-8 rounded-lg border border-gray-200 dark:border-stone-700 px-4 py-3 text-sm text-gray-600 dark:text-stone-400">
-    <a href="/" class="theme-link font-medium underline underline-offset-2">Enroll for free</a> to track your progress through the course.
+  <div id="exercise-enroll-nudge" class="hidden mb-8 rounded-xl theme-banner px-6 py-5">
+    <p class="text-base font-medium mb-1">Exercises work best with OpenCode</p>
+    <p class="text-sm opacity-80 mb-3">Enroll in OpenCode School to get a student ID. Then paste the exercise prompt into OpenCode, and it will guide you through each project step by step.</p>
+    <a href="/" class="theme-button inline-block rounded-lg px-4 py-2 text-sm font-medium">Enroll for free</a>
   </div>
 
   <ol class="divide-y divide-gray-200 dark:divide-stone-800">
