@@ -22,6 +22,16 @@ When the criteria are met, mark the lesson or exercise complete via API before t
 
 Exercises are available at GET /api/exercises (list all) and GET /api/exercises/{slug} (single exercise).
 
+## Exercise prerequisites
+
+Before starting an exercise, check the student's progress via GET /api/progress/{studentId}. Exercises assume the student has completed at least the Installation and Configuration lessons. The Configuration lesson sets up permissions (so OpenCode can run commands without prompting each time) and adds the student's instructions URL to their config — both of which make exercises much smoother.
+
+If any foundational lessons are incomplete, let the student know which ones they're missing and suggest completing them first, starting with the earliest incomplete one. Don't block them from proceeding if they'd rather jump in, but make sure they understand what they might be missing.
+
+Some exercises have additional lesson prerequisites:
+- Run AI Models requires the Skills lesson (the Replicate skill must be installed)
+- Drive a Browser benefits from the Tools lesson (which explains MCP servers and config)
+
 When presenting multiple choice questions, do not label any answer choice as "Recommended".
 
 ## Support channels
