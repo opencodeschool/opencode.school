@@ -4,7 +4,7 @@ slug: permissions
 description: "Control what OpenCode can and can't do without asking."
 order: 4
 quiz: true
-agentInstructions: "Cover these four topics: (1) why granular permissions are better than a bare wildcard — they give you safety guardrails without constant interruptions, (2) the three permission levels: allow (runs immediately), ask (pauses for approval), and deny (blocked entirely), (3) how to write a granular rule — e.g. nesting a pattern like \"rm *\": \"ask\" inside the bash object, (4) what happens when OpenCode hits a denied or ask-gated permission — it pauses and shows you the options Allow Once, Always, or Reject. After teaching and quizzing, verify completion by reading ~/.config/opencode/opencode.jsonc and confirming the \"permission\" object has at least one granular rule beyond a bare wildcard (e.g. a rule for rm, rmdir, or mv inside the bash object)."
+agentInstructions: "Cover these four topics: (1) why granular permissions are better than a bare wildcard — they give you safety guardrails without constant interruptions, (2) the three permission levels: allow (runs immediately), ask (pauses for approval), and deny (blocked entirely), (3) how to write a granular rule — e.g. nesting a pattern like \"rm *\": \"ask\" inside the bash object, (4) the external_directory permission — it controls access to paths outside the project working directory, defaults to \"ask\", and can be configured with path patterns using ~ or $HOME (e.g. \"~/projects/**\": \"allow\"). After teaching and quizzing, verify completion by reading ~/.config/opencode/opencode.jsonc and confirming the \"permission\" object has at least one granular rule beyond a bare wildcard (e.g. a rule for rm, rmdir, or mv inside the bash object)."
 ---
 
 import AgentPrompt from '../../components/AgentPrompt.astro'
@@ -45,7 +45,9 @@ Let's edit your global config to add some safety guardrails. Ask OpenCode to rep
       "rm *": "ask",
       "rmdir *": "ask",
       "mv *": "ask"
-    }
+    },
+    // Ask before accessing files outside the project directory
+    "external_directory": "ask"
   }
 }
 ```
@@ -54,6 +56,27 @@ Save the file. This config:
 
 - Allows most actions automatically (reading files, editing code, running safe commands)
 - Asks for your permission before deleting files (`rm`), removing directories (`rmdir`), or moving/renaming files (`mv`)
+
+## Working outside the project
+
+OpenCode is scoped to the directory where you started it. If it needs to read or edit a file somewhere else on your machine, the `external_directory` permission kicks in.
+
+By default, `external_directory` is set to `"ask"` — OpenCode will pause and ask before touching anything outside the project. This is a good default: it prevents an agent from wandering into unrelated directories without your knowledge.
+
+If you regularly work across multiple repos, you can allow specific external paths:
+
+```jsonc
+{
+  "permission": {
+    "external_directory": {
+      // Allow access to sibling projects
+      "~/projects/**": "allow"
+    }
+  }
+}
+```
+
+Paths allowed via `external_directory` inherit the same tool defaults as your project. So if `read` is set to `"allow"`, reads are also allowed in those external directories. You can layer additional rules on top — for example, allowing reads but denying edits in external paths.
 
 For the full list of permissions and pattern syntax, see the [permissions documentation](https://opencode.ai/docs/permissions/).
 
