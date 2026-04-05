@@ -64,6 +64,8 @@ Once you're back, ask OpenCode something like:
 
 Watch the UI as OpenCode responds — you should see it make a tool call to the weather server, fetch the data, and use the result in its answer. That's the AI deciding a tool is needed, calling it, and working with what comes back. This is what distinguishes an agent from a chatbot.
 
+If you have several tools available, the model might not always pick the one you expect. You can nudge it by mentioning the tool by name — for example, "use the open-meteo MCP server to check the weather in Tokyo." This makes the model more likely to reach for that specific tool instead of trying to answer from its training data or picking a different tool.
+
 ## A note on context
 
 Each MCP server you add registers its tools with the model at the start of every session. With many servers enabled, those tool descriptions can take up a meaningful portion of your [context window](/glossary#context-window). OpenCode's docs recommend being selective — only enable the servers you actually use regularly.
