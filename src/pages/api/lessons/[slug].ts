@@ -4,6 +4,7 @@
 
 import { getCollection } from "astro:content";
 import type { APIRoute } from "astro";
+import { FILE_SAFETY_INSTRUCTIONS } from "../../../lib/file-safety-instructions";
 import { mdxToProse } from "../../../lib/mdx-to-prose";
 import { QUIZ_INSTRUCTIONS } from "../../../lib/quiz-instructions";
 
@@ -32,9 +33,10 @@ export const GET: APIRoute = async ({ params, request }) => {
 		});
 	}
 
-	const rawInstructions = lesson.data.quiz
+	let rawInstructions = lesson.data.quiz
 		? `${lesson.data.agentInstructions}\n\n${QUIZ_INSTRUCTIONS}`
 		: lesson.data.agentInstructions;
+	rawInstructions += `\n\n${FILE_SAFETY_INSTRUCTIONS}`;
 	const agentInstructions = rawInstructions.replaceAll("{origin}", origin);
 
 	const result = {
