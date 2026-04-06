@@ -624,6 +624,17 @@ const currentPath = Astro.url.pathname;
             About
           </a>
           <a
+            href="/tips"
+            class:list={[
+              "block px-3 py-1.5 rounded-md text-sm transition-colors",
+              currentPath === "/tips" || currentPath === "/tips/"
+                ? "theme-active-nav font-medium"
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-stone-400 dark:hover:text-stone-200 dark:hover:bg-stone-800",
+            ]}
+          >
+            Tips
+          </a>
+          <a
             href="/glossary"
             class:list={[
               "block px-3 py-1.5 rounded-md text-sm transition-colors",
