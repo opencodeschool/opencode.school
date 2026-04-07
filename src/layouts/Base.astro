@@ -8,10 +8,13 @@ import { getCollection } from "astro:content";
 interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
 }
 
-const { title, description = "Learn to use OpenCode, the free and open-source AI coding agent." } = Astro.props;
+const { title, description = "Learn to use OpenCode, the free and open-source AI coding agent.", ogImage } = Astro.props;
 const pageTitle = title ? `${title} | OpenCode School` : "OpenCode School";
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
+const ogImageUrl = new URL(ogImage || "/og/default.png", Astro.site).href;
 
 const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b.data.order);
 const exercises = (await getCollection("exercises")).sort((a, b) => a.data.order - b.data.order);
@@ -24,6 +27,19 @@ const currentPath = Astro.url.pathname;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="OpenCode School" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
     <title>{pageTitle}</title>
     <script is:inline>
       window.__schoolThemePalettes = {
