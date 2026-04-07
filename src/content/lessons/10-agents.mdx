@@ -4,7 +4,7 @@ slug: agents
 description: "Use Plan and Build agents to think before you act."
 order: 10
 quiz: true
-agentInstructions: "Cover these four topics: (1) what an agent means in OpenCode specifically — a specialized assistant configured for a particular task or workflow, distinct from the broader industry use of the word, (2) the Plan agent — conversational and read-only; it can read files and discuss the project but won't make any changes; use it to think out loud, explore options, and arrive at a clear plan — but note that Plan mode is not a hard sandbox and the agent may still occasionally run commands or make API calls that have side effects, (3) the Build agent — the implementation agent with full access to read, write, and run things; use this once you know what you want to do, (4) the recommended workflow — start in Plan to think things through safely, switch to Build when ready to implement; Plan is optional but a good habit especially for complex or unfamiliar tasks. After teaching and quizzing, verify completion by asking the student to describe when they'd use Plan vs. Build and confirm they understand that Plan is read-only by default but not a guaranteed sandbox, and that Build can make changes."
+agentInstructions: "Cover these four topics: (1) what an agent means in OpenCode specifically — a specialized assistant configured for a particular task or workflow, distinct from the broader industry use of the word, (2) the Plan agent — conversational and read-only; it can read files and discuss the project but won't make any changes; the student already set \"default_agent\": \"plan\" in the Configuration lesson so every new session starts here — but note that Plan mode is not a hard sandbox and the agent may still occasionally run commands or make API calls that have side effects, (3) the Build agent — the implementation agent with full access to read, write, and run things; switch to this when you know what you want to do, (4) the recommended workflow — since Plan is already the default, the student is already starting safe; the key skill is knowing when to switch to Build and being deliberate about it, especially for complex or unfamiliar tasks. After teaching and quizzing, verify completion by asking the student to describe when they'd use Plan vs. Build and confirm they understand that Plan is read-only by default but not a guaranteed sandbox, and that Build can make changes."
 ---
 
 import AgentPrompt from '../../components/AgentPrompt.astro'
@@ -18,6 +18,8 @@ OpenCode ships with two built-in agents: **Plan** and **Build**.
 ## The Plan agent
 
 Plan is a read-only conversational agent. It can read your files and discuss your project, but it won't make any changes. No files written, no commands run, nothing modified.
+
+You already set `"default_agent": "plan"` in your global config back in the [Configuration](/configuration) lesson, so every new session starts here. That's intentional — you think first, then act.
 
 That said, Plan mode is an instruction to the model, not a hard sandbox. Occasionally the agent may still make API calls or run commands that have side effects, so it's not a guaranteed protection against unintended changes.
 
@@ -42,11 +44,11 @@ Build is the implementation agent. It has full access — it can read files, wri
 
 ## The recommended workflow
 
-Plan is not required — you can go straight to Build for straightforward tasks. But for anything complex or unfamiliar, starting in Plan is a good habit. It gives you a chance to think out loud with the agent, catch problems early, and arrive at Build with a clear direction.
+Since Plan is your default, every session already starts safe. For quick, straightforward tasks you can switch straight to Build. But for anything complex or unfamiliar, staying in Plan first is a good habit. It gives you a chance to think out loud with the agent, catch problems early, and arrive at Build with a clear direction.
 
 A useful pattern:
 
-1. **Switch to Plan.** Describe what you want to accomplish.
+1. **Start in Plan.** Describe what you want to accomplish. (You're already here.)
 2. **Explore together.** Ask questions, consider options, refine the approach.
 3. **Switch to Build.** Tell it to implement what you planned.
 

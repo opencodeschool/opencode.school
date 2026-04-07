@@ -4,7 +4,7 @@ slug: configuration
 description: "Create a global configuration file for OpenCode."
 order: 3
 quiz: true
-agentInstructions: "Cover these four topics: (1) what the global config file is and why it applies to all OpenCode sessions across every project on the machine, (2) where the config file lives — ~/.config/opencode/opencode.jsonc on macOS/Linux, C:\\Users\\<Name>\\.config\\opencode\\opencode.jsonc on Windows, (3) what \"permission\": {\"*\": \"allow\"} does — it lets OpenCode perform all actions without asking, (4) that the \"instructions\" array lets OpenCode load extra context at session start, and that we are adding the student's personal OpenCode School instructions URL so OpenCode always knows who they are — the URL is {origin}/api/instructions/{studentId} (substituting the student's actual ID). After teaching and quizzing, verify completion by reading ~/.config/opencode/opencode.jsonc (or ~/.config/opencode/opencode.json if the .jsonc file does not exist) and confirming it contains both \"permission\": {\"*\": \"allow\"} and an \"instructions\" array that includes the student's personal OpenCode School instructions URL ({origin}/api/instructions/{studentId} with their actual student ID). Either file extension is acceptable. IMPORTANT: If a global config file already exists, do not overwrite it — read it, confirm the required permission setting exists, and add the \"instructions\" array only if it does not already contain the student's OpenCode School URL. Config changes require restarting OpenCode to take effect. After verifying, instruct the student to quit OpenCode Desktop so the new config takes effect next time they open it."
+agentInstructions: "Cover these four topics: (1) what the global config file is and why it applies to all OpenCode sessions across every project on the machine, (2) where the config file lives — ~/.config/opencode/opencode.jsonc on macOS/Linux, C:\\Users\\<Name>\\.config\\opencode\\opencode.jsonc on Windows, (3) what \"default_agent\": \"plan\" does — it starts every new session in Plan mode, which is read-only and safe; the student can switch to Build mode when they're ready to make changes, (4) permission basics and the instructions URL — \"*\": \"allow\" lets most actions through automatically, but the bash object adds \"ask\" rules for destructive commands like rm and rmdir so OpenCode pauses before running them; the \"instructions\" array loads the student's personal OpenCode School URL ({origin}/api/instructions/{studentId}) so OpenCode always knows who they are. After teaching and quizzing, verify completion by reading ~/.config/opencode/opencode.jsonc (or ~/.config/opencode/opencode.json if the .jsonc file does not exist) and confirming it contains \"default_agent\": \"plan\", a \"permission\" object with \"*\": \"allow\" plus at least one \"ask\" rule inside a bash object (e.g. \"rm *\": \"ask\"), and an \"instructions\" array that includes the student's personal OpenCode School instructions URL ({origin}/api/instructions/{studentId} with their actual student ID). Either file extension is acceptable. IMPORTANT: If a global config file already exists, do not overwrite it — read it, merge in any missing settings, and add the \"instructions\" array only if it does not already contain the student's OpenCode School URL. Config changes require restarting OpenCode to take effect. After verifying, instruct the student to quit OpenCode Desktop so the new config takes effect next time they open it."
 ---
 
 import AgentPrompt from '../../components/AgentPrompt.astro'
@@ -13,7 +13,7 @@ Each lesson has a prompt you can copy and paste into OpenCode. The prompt includ
 
 In this lesson, you'll create a **global configuration file** that will apply to every OpenCode session across every project on your machine. It includes settings like which AI [model](/glossary#model) to use, what [permissions](/glossary#permissions) to grant, and how the [agent](/glossary#agent) should behave. You'll tweak your global configuration over time to make OpenCode work exactly the way you want.
 
-**If you've already created a global config file, that's great — it won't be overwritten.** Just make sure it contains `"permission": { "*": "allow" }` and you're all set.
+**If you've already created a global config file, that's great — it won't be overwritten.** OpenCode will merge in any missing settings.
 
 <AgentPrompt title="Configuration" />
 
@@ -74,11 +74,21 @@ Here's what your config file will look like:
   // Points to OpenCode's config schema — enables autocomplete in VS Code
   "$schema": "https://opencode.ai/config.json",
 
+  // Start new sessions in Plan mode instead of Build mode.
+  // Plan is read-only — it can read files and discuss your project,
+  // but won't make any changes until you switch to Build.
+  "default_agent": "plan",
+
   // Permissions control what OpenCode can do without asking first.
-  // "*": "allow" grants permission for everything automatically.
-  // We'll tighten this up in the next lesson.
+  // "*": "allow" lets most actions through automatically, but the
+  // bash rules below add guardrails for destructive commands.
   "permission": {
-    "*": "allow"
+    "*": "allow",
+    "bash": {
+      "*": "allow",
+      "rm *": "ask",
+      "rmdir *": "ask"
+    }
   },
 
   // Instructions are URLs or file paths that OpenCode loads at the start of
@@ -90,7 +100,11 @@ Here's what your config file will look like:
 }
 ```
 
-We'll substitute your actual student ID when we create the file. The instructions URL lets OpenCode fetch your school enrollment at the start of every session, so it has your student profile on hand even when you're working on something unrelated.
+We'll substitute your actual student ID when we create the file. A few things to note:
+
+- `"default_agent": "plan"` means every new session starts in [Plan mode](/glossary#agent) — a read-only agent that can read your files and discuss your project but won't make any changes. When you're ready to act, you switch to Build. We'll cover this in detail in the [Agents](/agents) lesson.
+- The `"bash"` block inside `"permission"` adds safety guardrails for shell commands. Most commands run automatically, but `rm` (delete files) and `rmdir` (remove directories) will pause and ask for your approval first. We'll add more permission rules in the next lesson.
+- The instructions URL lets OpenCode fetch your school enrollment at the start of every session, so it has your student profile on hand even when you're working on something unrelated.
 
 ## Restart OpenCode
 
@@ -117,4 +131,4 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 `}</script>
 
-The config also supports models, MCP servers, custom commands, themes, and keybinds — we'll get to those in later lessons. Full reference: [OpenCode config docs](https://opencode.ai/docs/config/).
+The config also supports models, MCP servers, custom commands, agents, themes, and keybinds — we'll get to those in later lessons. Full reference: [OpenCode config docs](https://opencode.ai/docs/config/).
