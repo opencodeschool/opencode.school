@@ -4,14 +4,14 @@ slug: permissions
 description: "Control what OpenCode can and can't do without asking."
 order: 4
 quiz: true
-agentInstructions: "Cover these four topics: (1) why granular permissions are better than a bare wildcard — they give you safety guardrails without constant interruptions, (2) the three permission levels: allow (runs immediately), ask (pauses for approval), and deny (blocked entirely), (3) how to write a granular rule — e.g. nesting a pattern like \"rm *\": \"ask\" inside the bash object, (4) the external_directory permission — it controls access to paths outside the project working directory, defaults to \"ask\", and can be configured with path patterns using ~ or $HOME (e.g. \"~/projects/**\": \"allow\"). After teaching and quizzing, verify completion by reading ~/.config/opencode/opencode.jsonc and confirming the \"permission\" object has at least one granular rule beyond a bare wildcard (e.g. a rule for rm, rmdir, or mv inside the bash object)."
+agentInstructions: "Cover these four topics: (1) the three permission levels — allow (runs immediately), ask (pauses for approval), and deny (blocked entirely); the student already has ask rules for rm and rmdir from the Configuration lesson, so build on that foundation, (2) git-specific guardrails — adding \"git push *\": \"ask\" and \"git checkout *\": \"ask\" inside the bash object to prevent accidental pushes to remote repos and discarding uncommitted changes without confirmation, (3) the external_directory permission — it controls access to paths outside the project working directory, defaults to \"ask\", and can be configured with path patterns using ~ or $HOME (e.g. \"~/projects/**\": \"allow\"), (4) per-project permissions — the student can create .opencode/opencode.jsonc in any project directory to override their global permissions for that project; useful for tightening or loosening rules in specific repos. After teaching and quizzing, verify completion by reading ~/.config/opencode/opencode.jsonc and confirming the bash object has at least one new granular rule beyond what was set up in the Configuration lesson — e.g. a \"git push *\": \"ask\" or \"git checkout *\": \"ask\" rule."
 ---
 
 import AgentPrompt from '../../components/AgentPrompt.astro'
 
 <AgentPrompt title="Permissions" />
 
-In the previous lesson, you set `"*": "allow"` in your config — which means OpenCode can do anything without asking for permission. That's convenient for learning, but in practice you'll want more control over what happens on your machine.
+In the Configuration lesson, you set up basic permissions with `"ask"` rules for destructive commands like `rm` and `rmdir`. Now let's go further — adding guardrails for Git operations and learning about per-project overrides.
 
 ## The three permission levels
 
@@ -23,39 +23,54 @@ Every action OpenCode takes is governed by one of three rules:
 | `ask`   | OpenCode pauses and asks for your approval before proceeding |
 | `deny`  | The action is blocked entirely                               |
 
-When OpenCode asks for permission, you'll see three options:
+You've already seen `allow` and `ask` in your config. The `deny` level blocks an action outright — OpenCode won't even attempt it. Use `deny` for things you never want to happen automatically, like `chmod` or `chown`.
+
+## When OpenCode asks for permission
+
+When OpenCode hits an `ask` rule, it pauses and shows you three options:
 
 - **Allow Once** — approve this specific action, just this time
 - **Always** — approve this action and similar ones for the rest of the session
 - **Reject** — deny this specific action
 
-## Tighten your permissions
+This is the flow you'll see whenever OpenCode tries to run `rm`, `rmdir`, or any other command gated by an `ask` rule.
 
-Let's edit your global config to add some safety guardrails. Ask OpenCode to replace the contents of `~/.config/opencode/opencode.jsonc` with:
+## Add Git guardrails
+
+Destructive file commands aren't the only thing worth guarding. Git operations can be just as consequential — an accidental `git push` to the wrong branch or a `git checkout` that discards uncommitted work. Let's add rules for those.
+
+Update the `bash` block in your global config:
 
 ```jsonc
+"bash": {
+  "*": "allow",
+  "rm *": "ask",
+  "rmdir *": "ask",
+  "git push *": "ask",
+  "git checkout *": "ask"
+}
+```
+
+Now OpenCode will pause before pushing to a remote or checking out a branch, giving you a chance to confirm.
+
+## Per-project permissions
+
+Your global config applies to every project, but sometimes you need different rules for different repos. You can create a `.opencode/opencode.jsonc` file in any project directory to override your global permissions for that project.
+
+For example, if you're working on a project where you trust the workflow and want OpenCode to push freely:
+
+```jsonc
+// .opencode/opencode.jsonc (in the project root)
 {
-  "$schema": "https://opencode.ai/config.json",
   "permission": {
-    // Allow most things by default
-    "*": "allow",
-    // But ask before running destructive shell commands
     "bash": {
-      "*": "allow",
-      "rm *": "ask",
-      "rmdir *": "ask",
-      "mv *": "ask"
-    },
-    // Ask before accessing files outside the project directory
-    "external_directory": "ask"
+      "git push *": "allow"
+    }
   }
 }
 ```
 
-Save the file. This config:
-
-- Allows most actions automatically (reading files, editing code, running safe commands)
-- Asks for your permission before deleting files (`rm`), removing directories (`rmdir`), or moving/renaming files (`mv`)
+Project-level settings are layered on top of global ones — they override only the specific rules you set, leaving everything else unchanged.
 
 ## Working outside the project
 
@@ -80,4 +95,4 @@ Paths allowed via `external_directory` inherit the same tool defaults as your pr
 
 For the full list of permissions and pattern syntax, see the [permissions documentation](https://opencode.ai/docs/permissions/).
 
-Once you've saved your updated config with at least one granular permission rule (like `"rm *": "ask"`), this lesson is complete.
+Once you've added at least one new permission rule (like `"git push *": "ask"`) to your global config, this lesson is complete.
