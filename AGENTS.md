@@ -1,3 +1,5 @@
+See [README.md](README.md) for setup instructions and [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute.
+
 ## Project overview
 
 OpenCode School (opencode.school) is an interactive course that teaches people how to use OpenCode. Built with Astro 6, deployed to Cloudflare Workers, with student progress tracked via Cloudflare KV.

@@ -6,6 +6,9 @@
   "assets": {
     "directory": "./dist"
   },
+  // The R2 bucket and KV namespace below are for the production deployment.
+  // You only need these if you're deploying to your own Cloudflare account.
+  // Local dev (`script/dev`) works fine without them.
   "r2_buckets": [
     {
       "binding": "ASSETS_BUCKET",
