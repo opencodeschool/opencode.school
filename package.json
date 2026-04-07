@@ -14,15 +14,19 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "node script/generate-og-images && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.1.1",
     "@astrojs/mdx": "^5.0.0",
+    "@fontsource/inter": "^5.2.8",
+    "@fontsource/jetbrains-mono": "^5.2.8",
+    "@resvg/resvg-js": "^2.6.2",
     "astro": "^6.0.4",
-    "marked": "^17.0.4"
+    "marked": "^17.0.4",
+    "satori": "^0.26.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.7",
