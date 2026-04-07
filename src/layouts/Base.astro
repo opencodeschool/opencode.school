@@ -13,9 +13,8 @@ interface Props {
 
 const { title, description = "Learn to use OpenCode, the free and open-source AI coding agent.", ogImage } = Astro.props;
 const pageTitle = title ? `${title} | OpenCode School` : "OpenCode School";
-const origin = Astro.url.origin;
-const canonicalUrl = `${origin}${Astro.url.pathname}`;
-const ogImageUrl = `${origin}${ogImage || "/og/default.png"}`;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
+const ogImageUrl = new URL(ogImage || "/og/default.png", Astro.site).href;
 
 const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b.data.order);
 const exercises = (await getCollection("exercises")).sort((a, b) => a.data.order - b.data.order);
