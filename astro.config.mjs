@@ -8,6 +8,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 
 export default defineConfig({
+	site: "https://opencode.school",
 	output: "server",
 	adapter: cloudflare(),
 	integrations: [mdx()],

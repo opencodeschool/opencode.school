@@ -4,3 +4,4 @@ dist/
 .wrangler/
 .env
 .dev.vars
+public/og/

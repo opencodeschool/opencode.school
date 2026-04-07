@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
 set -e
 cd "$(dirname "$0")/.."
+
+echo "Generating OG images..."
+node script/generate-og-images
+
 npx astro build
