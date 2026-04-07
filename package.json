@@ -2,7 +2,16 @@
   "name": "opencode-school",
   "type": "module",
   "version": "0.0.1",
+  "description": "A free, self-paced course for learning OpenCode, the open-source AI coding agent",
   "license": "Apache-2.0",
+  "homepage": "https://opencode.school",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/opencodeschool/opencode.school.git"
+  },
+  "bugs": {
+    "url": "https://github.com/opencodeschool/opencode.school/issues"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
