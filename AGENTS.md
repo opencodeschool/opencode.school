@@ -61,6 +61,10 @@ When adding a new OpenCode-based lesson with sufficient content:
 - Default to four quiz questions; vary only if the lesson has notably more or fewer natural topics
 - For stub lessons (`Coming soon.` body), set `quiz: false` until the lesson body is written
 
+### Title casing
+
+Exercise titles use sentence case ("Draft social posts"), not title case ("Draft Social Posts"). Lesson titles are single words, so casing is not a concern there.
+
 ## API endpoints
 
 See `src/pages/api/openapi.json.ts` for the full OpenAPI 3.1 spec, including all routes, request/response schemas, and examples. All endpoints return JSON with CORS headers. No authentication required.
