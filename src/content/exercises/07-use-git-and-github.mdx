@@ -1,0 +1,33 @@
+---
+title: "Use Git and GitHub"
+slug: use-git-and-github
+description: "Track and manage file changes with Git and GitHub Desktop."
+order: 7
+agentInstructions: "Guide the student through using Git and GitHub to track project changes. Adapt depth to their profile. Steps: (1) Check if Git is installed by running `git --version`. If not, recommend installing GitHub Desktop from https://desktop.github.com/ — it bundles Git, helps create a GitHub account, and authenticates the CLI automatically. If the student prefers, they can install Git directly: `brew install git` on macOS, or download from https://git-scm.com for other platforms. (2) Explain what Git is — a version control system that records every change to every file. Emphasize that Git is useful even locally with no remote: every commit is a snapshot you can return to, so nothing is ever truly lost. (3) Explain what GitHub is — a cloud platform for hosting Git repositories, backing up projects, collaborating, and sharing work. (4) Create or navigate to a project folder and initialize a Git repository with `git init`. Explain what this does (creates a hidden .git directory that stores the project's history). (5) Have the student create or edit a file, then walk them through the staging and commit workflow: `git add <file>`, `git commit -m \"message\"`. Explain what staging is and why commits need messages. (6) Make another change and show the diff: `git diff` on the command line, or use GitHub Desktop to visualize what changed. This is the key insight — when OpenCode edits files, Git lets you see exactly what was added, removed, or modified. (7) Help them create a repository on GitHub (via GitHub Desktop or `gh repo create`) and push their commits. Let them choose public or private. (8) Introduce branches: create a branch with `git checkout -b experiment`, make a change, commit it, then switch back to the main branch with `git checkout main` to show the change disappears. Explain this as a way to try things without affecting working code. After the core steps, suggest next steps: writing a `.gitignore` file, making a pull request, or exploring the repository on github.com. Verify completion by confirming the student has a local Git repository with at least two commits and has pushed it to GitHub."
+---
+
+import AgentPrompt from '../../components/AgentPrompt.astro'
+
+When OpenCode edits files in your project, you want to know exactly what changed. [Git](https://git-scm.com) gives you that visibility. It's a version control system that tracks every change to every file in a project — what was added, what was removed, and when. It's the tool software developers use to manage source code, and it's the backbone of nearly every open-source project.
+
+But you don't need to be a developer or share your work with anyone to benefit from Git. Even if you only use it locally, Git gives you a complete history of your project. Every commit is a snapshot you can return to. If OpenCode makes a change you don't like, you can revert it. You never have to worry about accidentally losing or overwriting work.
+
+[GitHub](https://github.com) is a platform for hosting Git repositories in the cloud. It makes it easy to back up your projects, share them publicly, and collaborate with others. Together, Git and GitHub form the standard toolkit for managing code — and they work just as well for any project with files you want to track.
+
+<AgentPrompt title="Use Git and GitHub" prompt='Let&#39;s work on the "Use Git and GitHub" exercise together!' />
+
+## Get started with GitHub Desktop
+
+The easiest way to get Git running is to install [GitHub Desktop](https://desktop.github.com/). It handles three things at once: installing Git on your machine, creating a GitHub account if you don't have one, and authenticating the Git CLI so commands like `git push` work automatically.
+
+If you already use Git from the command line, you can skip GitHub Desktop entirely — the exercise works either way.
+
+## What you'll do
+
+- **Initialize a repository** in a project folder so Git starts tracking changes
+- **Make commits** — save snapshots of your work with a short description of what changed
+- **Review diffs** — use GitHub Desktop or `git diff` to see exactly what OpenCode changed in your files
+- **Push to GitHub** — back up your repository to the cloud, public or private
+- **Create a branch** — try something experimental without affecting your main project
+
+Once the basics are working, you can go further: write a `.gitignore` to keep clutter out of your repository, open a pull request, or explore your project's commit history on github.com.
