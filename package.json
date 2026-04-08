@@ -26,6 +26,8 @@
     "@resvg/resvg-js": "^2.6.2",
     "astro": "^6.0.4",
     "marked": "^17.0.4",
+    "rehype-autolink-headings": "^7.1.0",
+    "rehype-slug": "^6.0.0",
     "satori": "^0.26.0"
   },
   "devDependencies": {

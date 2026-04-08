@@ -10,12 +10,8 @@ import glossaryRaw from "../../lessons/glossary.md?raw";
 
 const renderer = new marked.Renderer();
 renderer.heading = function ({ text, depth }) {
-  // Generate slug the same way marked does by default
   const slug = text.toLowerCase().replace(/[^\w]+/g, "-").replace(/(^-|-$)/g, "");
-  if (depth === 2) {
-    return `<h2 id="${slug}"><a href="#${slug}" class="glossary-term">${text}<span class="anchor-icon" aria-hidden="true">#</span></a></h2>`;
-  }
-  return `<h${depth}>${text}</h${depth}>`;
+  return `<h${depth} id="${slug}"><a href="#${slug}" class="heading-anchor">${text}</a></h${depth}>`;
 };
 
 const body = glossaryRaw.replace(/^---[\s\S]*?---\n/, "");
@@ -35,21 +31,4 @@ const html = await marked(body, { renderer });
   </header>
 
   <article class="prose dark:prose-invert max-w-none" set:html={html} />
-
-  <style is:global>
-    .glossary-term,
-    .glossary-term:hover {
-      text-decoration: none !important;
-      color: inherit !important;
-    }
-    .anchor-icon {
-      margin-left: 0.35em;
-      font-size: 0.65em;
-      color: var(--tw-prose-links);
-      visibility: hidden;
-    }
-    .glossary-term:hover .anchor-icon {
-      visibility: visible;
-    }
-  </style>
 </Base>

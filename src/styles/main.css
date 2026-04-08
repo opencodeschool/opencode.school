@@ -65,6 +65,29 @@
     --tw-prose-td-borders: theme(--color-stone-700);
   }
 
+  /* Anchor links on prose headings */
+  .prose :is(h2, h3, h4, h5, h6) {
+    scroll-margin-top: 5rem;
+  }
+
+  .prose .heading-anchor,
+  .prose .heading-anchor:hover {
+    text-decoration: none !important;
+    color: inherit !important;
+  }
+
+  .prose .heading-anchor::after {
+    content: "#";
+    margin-left: 0.35em;
+    font-size: 0.65em;
+    color: var(--tw-prose-links);
+    visibility: hidden;
+  }
+
+  .prose :is(h2, h3, h4, h5, h6):hover .heading-anchor::after {
+    visibility: visible;
+  }
+
   /* Ensure prose code blocks and inline code stay stone-toned in dark mode */
   .dark .prose pre {
     background-color: theme(--color-stone-800);
