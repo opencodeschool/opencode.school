@@ -40,9 +40,9 @@ The best way to install skills is with the [`skills` CLI](https://www.npmjs.com/
 
 You'll need [Node.js](https://nodejs.org) installed to run `npx skills`. If you don't have it, ask OpenCode to help you install it for your operating system.
 
-## Install three skill collections
+## Install four skills
 
-Run these three commands to install a useful set of global skills:
+Run these four commands to install a useful set of global skills:
 
 **Cloudflare** — skills for building on Workers, AI, KV, R2, D1, and the broader Cloudflare platform:
 
@@ -62,6 +62,12 @@ npx skills add replicate/skills
 npx skills add https://github.com/anthropics/skills --skill frontend-design
 ```
 
+**skill-creator** — create, test, and improve your own skills from any workflow you want to make repeatable:
+
+```
+npx skills add https://github.com/anthropics/skills --skill skill-creator
+```
+
 Run each command in your terminal. The CLI will detect which AI tools you have installed and set everything up.
 
 ## Restart OpenCode
@@ -69,6 +75,18 @@ Run each command in your terminal. The CLI will detect which AI tools you have i
 Skills are loaded when OpenCode starts. **Quit and reopen OpenCode** to pick up the newly installed skills. You can verify they loaded by prompting "list installed skills". Then use the prompt below to continue.
 
 <AgentPrompt title="Skills" prompt={`I've installed skills and restarted OpenCode. Let's verify the Skills lesson is complete.`} />
+
+## Create your own skills
+
+The `skill-creator` you just installed lets you turn any workflow into a reusable skill. After completing some process and wanting to make it repeatable, just tell OpenCode:
+
+> That worked! Let's create a global skill for it.
+
+Or if it's something specific to one project:
+
+> That worked! I don't want to have to repeat myself, so let's create a project skill for this task.
+
+Global skills live in `~/.config/opencode/skills/` and apply to every project. Project skills live in `.opencode/skills/` within a repo and only apply there.
 
 ## Find more skills
 
