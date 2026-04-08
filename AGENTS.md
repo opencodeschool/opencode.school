@@ -4,6 +4,8 @@ See [README.md](README.md) for setup instructions and [CONTRIBUTING.md](CONTRIBU
 
 OpenCode School (opencode.school) is an interactive course that teaches people how to use OpenCode. Built with Astro 6, deployed to Cloudflare Workers, with student progress tracked via Cloudflare KV.
 
+OpenCode is a general-purpose AI agent — not exclusively a coding tool. While it has strong capabilities for software development tasks, it can help with writing, research, data analysis, and many other non-coding tasks. When writing lesson content or agent instructions, avoid framing OpenCode as coding-only.
+
 ## Stack
 
 - [Astro](https://astro.build) — static site framework

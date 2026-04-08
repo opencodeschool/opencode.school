@@ -1,6 +1,6 @@
 # OpenCode School
 
-A free, self-paced course for learning [OpenCode](https://opencode.ai), the open-source AI coding agent.
+A free, self-paced course for learning [OpenCode](https://opencode.ai), the open-source AI agent.
 
 https://opencode.school
 
