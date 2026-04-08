@@ -63,7 +63,7 @@ When adding a new OpenCode-based lesson with sufficient content:
 
 ### Title casing
 
-Exercise titles use sentence case ("Draft social posts"), not title case ("Draft Social Posts"). Lesson titles are single words, so casing is not a concern there.
+Use sentence case for all titles on the site — page titles, exercise titles, headings, etc. ("Post to social media"), not title case ("Post to Social Media"). Exercise titles follow an imperative verb + object format that describes the action ("Build a website", "Edit videos", "Drive a browser"). Lesson titles are single words, so casing is not a concern there.
 
 ## API endpoints
 
