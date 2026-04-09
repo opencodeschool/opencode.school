@@ -289,6 +289,76 @@ export const GET: APIRoute = (context) => {
 						},
 					},
 				},
+				delete: {
+					summary: "Undo a completion or reset all progress",
+					description:
+						'Removes a lesson or exercise from the student\'s completed list, or resets all progress. Send { "lessonSlug": "..." } to uncomplete a lesson, { "exerciseSlug": "..." } to uncomplete an exercise, or { "reset": true } to clear all completions. Resetting preserves the student\'s profile, enrollment date, and device ID.',
+					parameters: [
+						{
+							name: "studentId",
+							in: "path",
+							required: true,
+							schema: { type: "string" },
+							example: "analytical-pilgrim-5076",
+						},
+					],
+					requestBody: {
+						required: true,
+						content: {
+							"application/json": {
+								schema: {
+									type: "object",
+									properties: {
+										lessonSlug: {
+											type: "string",
+											description:
+												"Slug of the lesson to mark incomplete. Provide this, exerciseSlug, or reset.",
+											example: "configuration",
+										},
+										exerciseSlug: {
+											type: "string",
+											description:
+												"Slug of the exercise to mark incomplete. Provide this, lessonSlug, or reset.",
+											example: "build-a-website",
+										},
+										reset: {
+											type: "boolean",
+											description:
+												"Set to true to clear all completed lessons and exercises. Preserves profile and enrollment metadata.",
+											example: true,
+										},
+									},
+								},
+							},
+						},
+					},
+					responses: {
+						"200": {
+							description: "Progress updated",
+							content: {
+								"application/json": {
+									schema: { $ref: "#/components/schemas/Progress" },
+								},
+							},
+						},
+						"400": {
+							description: "Invalid request",
+							content: {
+								"application/json": {
+									schema: { $ref: "#/components/schemas/Error" },
+								},
+							},
+						},
+						"404": {
+							description: "Student not found",
+							content: {
+								"application/json": {
+									schema: { $ref: "#/components/schemas/Error" },
+								},
+							},
+						},
+					},
+				},
 			},
 			"/api/profile/{studentId}": {
 				get: {

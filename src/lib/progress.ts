@@ -162,6 +162,67 @@ export async function markExerciseComplete(
 	return progress;
 }
 
+/**
+ * Mark a lesson as incomplete for a student. Removes the lesson from the
+ * completedLessons array. No-op if the lesson wasn't completed. Returns the
+ * updated progress, or null if the student doesn't exist.
+ */
+export async function markLessonIncomplete(
+	kv: KVNamespace,
+	studentId: string,
+	lessonSlug: string,
+): Promise<StudentProgress | null> {
+	const progress = await getProgress(kv, studentId);
+	if (!progress) return null;
+
+	progress.completedLessons = progress.completedLessons.filter(
+		(l) => l.slug !== lessonSlug,
+	);
+	progress.updatedAt = new Date().toISOString();
+	await kv.put(kvKey(studentId), JSON.stringify(progress));
+	return progress;
+}
+
+/**
+ * Mark an exercise as incomplete for a student. Removes the exercise from the
+ * completedExercises array. No-op if the exercise wasn't completed. Returns the
+ * updated progress, or null if the student doesn't exist.
+ */
+export async function markExerciseIncomplete(
+	kv: KVNamespace,
+	studentId: string,
+	exerciseSlug: string,
+): Promise<StudentProgress | null> {
+	const progress = await getProgress(kv, studentId);
+	if (!progress) return null;
+
+	progress.completedExercises = progress.completedExercises.filter(
+		(e) => e.slug !== exerciseSlug,
+	);
+	progress.updatedAt = new Date().toISOString();
+	await kv.put(kvKey(studentId), JSON.stringify(progress));
+	return progress;
+}
+
+/**
+ * Reset all progress for a student. Clears completedLessons and
+ * completedExercises but preserves profile, createdAt, and deviceId.
+ * Returns the updated progress, or null if the student doesn't exist.
+ */
+export async function resetProgress(
+	kv: KVNamespace,
+	studentId: string,
+): Promise<StudentProgress | null> {
+	const progress = await getProgress(kv, studentId);
+	if (!progress) return null;
+
+	progress.completedLessons = [];
+	progress.completedExercises = [];
+	progress.updatedAt = new Date().toISOString();
+	await kv.put(kvKey(studentId), JSON.stringify(progress));
+	return progress;
+}
+
 /** Fetch a student's profile from KV. Returns null if the student doesn't exist. */
 export async function getProfile(
 	kv: KVNamespace,

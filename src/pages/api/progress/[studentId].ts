@@ -8,13 +8,16 @@ import {
 	type CompletionSource,
 	getProgress,
 	markExerciseComplete,
+	markExerciseIncomplete,
 	markLessonComplete,
+	markLessonIncomplete,
+	resetProgress,
 } from "../../../lib/progress";
 import { isValidStudentId } from "../../../lib/student-id";
 
 const corsHeaders = {
 	"Access-Control-Allow-Origin": "*",
-	"Access-Control-Allow-Methods": "GET, PUT, OPTIONS",
+	"Access-Control-Allow-Methods": "GET, PUT, DELETE, OPTIONS",
 	"Access-Control-Allow-Headers": "Content-Type",
 };
 
@@ -96,6 +99,59 @@ export const PUT: APIRoute = async ({ params, request }) => {
 	const progress = hasExercise
 		? await markExerciseComplete(env.PROGRESS, studentId, slug, source, model)
 		: await markLessonComplete(env.PROGRESS, studentId, slug, source, model);
+	if (!progress) {
+		return notFound("Student not found");
+	}
+
+	return new Response(JSON.stringify(progress), {
+		headers: { "Content-Type": "application/json", ...corsHeaders },
+	});
+};
+
+export const DELETE: APIRoute = async ({ params, request }) => {
+	const { studentId } = params;
+	if (!studentId || !isValidStudentId(studentId)) {
+		return badRequest("Invalid student ID format");
+	}
+
+	let body: {
+		lessonSlug?: string;
+		exerciseSlug?: string;
+		reset?: boolean;
+	};
+	try {
+		body = await request.json();
+	} catch {
+		return badRequest("Invalid JSON body");
+	}
+
+	const isReset = body.reset === true;
+	const hasLesson =
+		typeof body.lessonSlug === "string" && body.lessonSlug.length > 0;
+	const hasExercise =
+		typeof body.exerciseSlug === "string" && body.exerciseSlug.length > 0;
+
+	if (!isReset && !hasLesson && !hasExercise) {
+		return badRequest('Provide "lessonSlug", "exerciseSlug", or "reset": true');
+	}
+
+	let progress: Awaited<ReturnType<typeof resetProgress>>;
+	if (isReset) {
+		progress = await resetProgress(env.PROGRESS, studentId);
+	} else if (hasExercise) {
+		progress = await markExerciseIncomplete(
+			env.PROGRESS,
+			studentId,
+			body.exerciseSlug as string,
+		);
+	} else {
+		progress = await markLessonIncomplete(
+			env.PROGRESS,
+			studentId,
+			body.lessonSlug as string,
+		);
+	}
+
 	if (!progress) {
 		return notFound("Student not found");
 	}

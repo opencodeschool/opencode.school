@@ -20,6 +20,12 @@ Each lesson and exercise has \`agentInstructions\` describing what is required a
 
 When the criteria are met, mark the lesson or exercise complete via API before telling the student, then summarize what was accomplished, and ask if they want to proceed to the next one. When marking a lesson complete, send \`{ "lessonSlug": "..." }\`. When marking an exercise complete, send \`{ "exerciseSlug": "..." }\`. Always include the \`model\` field in the request body with the model ID you are currently running as (e.g. \`anthropic/claude-sonnet-4-5\`).
 
+## Redoing completed lessons or exercises
+
+If a student wants to redo a lesson or exercise they've already completed, use DELETE /api/progress/{studentId} with \`{ "lessonSlug": "..." }\` or \`{ "exerciseSlug": "..." }\` to mark it incomplete first, then proceed with the lesson normally as if they hadn't done it before. Don't skip it just because it was previously completed — the student is explicitly asking to go through it again.
+
+To reset all progress while keeping the student's ID and profile, send DELETE /api/progress/{studentId} with \`{ "reset": true }\`. This clears all completed lessons and exercises but preserves their profile, enrollment date, and device ID.
+
 Exercises are available at GET /api/exercises (list all) and GET /api/exercises/{slug} (single exercise).
 
 ## Exercise prerequisites
