@@ -11,11 +11,74 @@ export interface ChangelogEntry {
 
 export const changelogEntries: ChangelogEntry[] = [
 	{
+		slug: "progress-reset",
+		date: "2026-04-09",
+		title: "Reset your progress",
+		description:
+			"Students can now undo individual lesson completions or reset all progress from the [disenroll](/disenroll) page.",
+	},
+	{
+		slug: "more-exercises",
+		date: "2026-04-08",
+		title: "Two new exercises",
+		description:
+			"[Use Git and GitHub](/exercises/use-git-and-github) and [Post to social media](/exercises/post-to-social-media) join the exercises lineup.",
+	},
+	{
+		slug: "ai-gateway",
+		date: "2026-04-08",
+		title: "Cloudflare AI Gateway in the models lesson",
+		description:
+			"The [Models](/lessons/models) lesson now covers Cloudflare AI Gateway and Workers AI as provider options.",
+	},
+	{
+		slug: "anchor-links",
+		date: "2026-04-08",
+		title: "Shareable heading links",
+		description:
+			"Prose headings throughout the site now have anchor links, making it easy to link to a specific section.",
+	},
+	{
+		slug: "plugins-lesson",
+		date: "2026-04-07",
+		title: "New lesson: Plugins",
+		description:
+			"A new [Plugins](/lessons/plugins) lesson on extending OpenCode with community and custom plugins.",
+	},
+	{
+		slug: "og-images",
+		date: "2026-04-07",
+		title: "OpenGraph images",
+		description:
+			"Every lesson and exercise page now has a unique OpenGraph image for better previews when shared on social media.",
+	},
+	{
+		slug: "skill-creator",
+		date: "2026-04-07",
+		title: "Skill creator in the skills lesson",
+		description:
+			"The [Skills](/lessons/skills) lesson now walks through building your own skill from scratch.",
+	},
+	{
+		slug: "not-just-coding",
+		date: "2026-04-07",
+		title: "OpenCode is not just for coding",
+		description:
+			"Lesson content and site copy now reflect that OpenCode is a general-purpose AI agent, not exclusively a coding tool.",
+	},
+	{
 		slug: "open-source",
 		date: "2026-04-07",
 		title: "OpenCode School is now open source",
 		description:
 			"The [source code](https://github.com/opencodeschool/opencode.school) is available on GitHub under the Apache 2.0 license. Contributions are welcome.",
+	},
+	{
+		slug: "plan-mode-default",
+		date: "2026-04-06",
+		title: "Plan mode as the default",
+		description:
+			"The [Configuration](/lessons/configuration) lesson now recommends starting in plan mode with defensive bash permissions, so new students can learn safely.",
 	},
 	{
 		slug: "tips-page",
