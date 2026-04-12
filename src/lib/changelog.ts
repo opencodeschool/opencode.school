@@ -11,6 +11,13 @@ export interface ChangelogEntry {
 
 export const changelogEntries: ChangelogEntry[] = [
 	{
+		slug: "external-directory-config",
+		date: "2026-04-12",
+		title: "External directory configuration",
+		description:
+			"The [Configuration](/lessons/configuration) lesson now covers the `external_directory` setting, and the [Tips](/tips) page includes guidance on opening higher-level directories for broader project access.",
+	},
+	{
 		slug: "agent-only-lessons",
 		date: "2026-04-12",
 		title: "Prevent skipping of agent-only lessons",
