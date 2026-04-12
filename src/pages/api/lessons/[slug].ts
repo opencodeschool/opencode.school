@@ -4,6 +4,7 @@
 
 import { getCollection } from "astro:content";
 import type { APIRoute } from "astro";
+import { CONFIG_VALIDATION_INSTRUCTIONS } from "../../../lib/config-validation-instructions";
 import { mdxToProse } from "../../../lib/mdx-to-prose";
 import { QUIZ_INSTRUCTIONS } from "../../../lib/quiz-instructions";
 
@@ -32,9 +33,13 @@ export const GET: APIRoute = async ({ params, request }) => {
 		});
 	}
 
-	const rawInstructions = lesson.data.quiz
-		? `${lesson.data.agentInstructions}\n\n${QUIZ_INSTRUCTIONS}`
-		: lesson.data.agentInstructions;
+	let rawInstructions = lesson.data.agentInstructions;
+	if (lesson.data.modifiesGlobalConfig) {
+		rawInstructions += `\n\n${CONFIG_VALIDATION_INSTRUCTIONS}`;
+	}
+	if (lesson.data.quiz) {
+		rawInstructions += `\n\n${QUIZ_INSTRUCTIONS}`;
+	}
 	const agentInstructions = rawInstructions.replaceAll("{origin}", origin);
 
 	const result = {

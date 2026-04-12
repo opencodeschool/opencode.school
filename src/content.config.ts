@@ -13,6 +13,7 @@ const lessons = defineCollection({
 		description: z.string(),
 		order: z.number(),
 		quiz: z.boolean(),
+		modifiesGlobalConfig: z.boolean().default(false),
 		agentOnly: z.boolean().default(false),
 		agentInstructions: z.string(),
 	}),
