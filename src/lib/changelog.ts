@@ -11,6 +11,13 @@ export interface ChangelogEntry {
 
 export const changelogEntries: ChangelogEntry[] = [
 	{
+		slug: "agent-only-lessons",
+		date: "2026-04-12",
+		title: "Prevent skipping of agent-only lessons",
+		description:
+			"Certain lessons like the [interview](/lessons/interview) can now only be completed from within OpenCode, preventing students from accidentally skipping important agent-based activities.",
+	},
+	{
 		slug: "config-backup-protection",
 		date: "2026-04-12",
 		title: "Safer configuration file handling",
