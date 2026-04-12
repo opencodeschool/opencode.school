@@ -11,6 +11,13 @@ export interface ChangelogEntry {
 
 export const changelogEntries: ChangelogEntry[] = [
 	{
+		slug: "desktop-provider-flow",
+		date: "2026-04-12",
+		title: "Updated provider setup instructions",
+		description:
+			"The [models lesson](/lessons/models) now describes how to add providers in OpenCode Desktop, with the terminal `/connect` command as an alternative.",
+	},
+	{
 		slug: "config-validation",
 		date: "2026-04-12",
 		title: "Improved config file validation",
