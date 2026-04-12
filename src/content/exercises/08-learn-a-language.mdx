@@ -1,0 +1,45 @@
+---
+title: "Learn a language"
+slug: learn-a-language
+description: "Translate phrases and hear them spoken aloud using ElevenLabs on Replicate."
+order: 8
+agentInstructions: "This exercise requires the Replicate skill. If the student does not have it installed (check ~/.config/opencode/skills/replicate/ or ~/.agents/skills/replicate/ for a SKILL.md file), stop and help them install it first with `npx skills add https://github.com/replicate/replicate-skill`. The skill must be loaded before proceeding. Guide the student through these steps, adapting depth to their profile: (1) Check that REPLICATE_API_TOKEN is set in the environment. If not, guide them to create a Replicate account at https://replicate.com (requires a GitHub account), generate an API token at https://replicate.com/account/api-tokens, and add `REPLICATE_API_TOKEN=r8_...` to their shell profile (~/.zshrc, ~/.bashrc, etc.) and to the current session with `export REPLICATE_API_TOKEN=r8_...`. They will need to restart OpenCode Desktop after adding the token. (2) Ask the student what language they want to learn. Default to Portuguese if they have no preference. Ask what kind of phrases they want to start with — greetings, travel phrases, food ordering, small talk, or something else. (3) Translate 3-5 English phrases to the target language. For each phrase, provide: the English original, the translation, and a phonetic pronunciation guide (approximate sounds using English letters so they know how to say it). Explain any grammar or cultural notes that would help the student understand the translation, not just memorize it. (4) For each translated phrase, use the elevenlabs/v3 model on Replicate to generate spoken audio. Set the `language_code` parameter to the appropriate code for the target language (e.g., 'pt' for Portuguese, 'es' for Spanish, 'fr' for French, 'ja' for Japanese). Use the default voice 'Rachel' or let the student pick a different voice. Save each audio file locally with a descriptive filename like `01-hello-ola.mp3`. Fire off multiple predictions concurrently when possible. Output URLs from Replicate expire after 1 hour, so download files promptly. (5) Create a vocabulary.md file that accumulates all phrases as the student progresses. Format it as a markdown table with columns: English, Translation, Pronunciation, and Notes. Add each new batch of phrases to this file. (6) Ask if the student wants to continue with more phrases, try a different topic, or switch languages. Repeat steps 3-5 for additional rounds. Encourage them to build up a useful phrasebook. Verify completion by confirming the student has at least 3 downloaded audio files and a vocabulary.md file with translated phrases in their working directory."
+---
+
+import AgentPrompt from '../../components/AgentPrompt.astro'
+
+Language models are natural translators — they understand dozens of languages and can move between them fluidly. In this exercise, you'll pair that translation ability with [ElevenLabs](https://elevenlabs.io) text-to-speech to create a personalized language tutor. Pick a language, learn useful phrases, and hear them pronounced correctly — all from OpenCode.
+
+You'll translate phrases with the LLM, then use [ElevenLabs v3](https://replicate.com/elevenlabs/v3) (their most expressive TTS model, supporting 70+ languages) on [Replicate](https://replicate.com) to generate audio you can listen to and practice with.
+
+<AgentPrompt title="Learn a language" prompt='Let&#39;s work on the "Learn a language" exercise together!' />
+
+## Prerequisites
+
+This exercise uses the same setup as [Run AI models](/exercises/run-ai-models). You need:
+
+- The **Replicate skill** installed. If you don't have it yet:
+
+```
+npx skills add https://github.com/replicate/replicate-skill
+```
+
+- A **Replicate API token** set in your environment. See the [Run AI models](/exercises/run-ai-models) exercise for setup instructions.
+
+Restart OpenCode Desktop after installing the skill or adding the token.
+
+## How it works
+
+The exercise combines two capabilities:
+
+- **Translation** — the LLM translates English phrases to your target language, with phonetic guides so you know how to pronounce them and grammar notes so you understand the structure
+- **Text-to-speech** — ElevenLabs v3 speaks the translated text in the target language, so you can hear correct pronunciation and intonation
+
+Portuguese is the default, but you can pick any language ElevenLabs supports — Spanish, French, Japanese, Korean, Hindi, Arabic, and [many more](https://replicate.com/elevenlabs/v3).
+
+## What you'll do
+
+- Choose a language and a topic (greetings, travel, food, small talk)
+- Get translations with pronunciation guides and grammar notes
+- Hear each phrase spoken aloud by ElevenLabs, with audio files saved locally
+- Build a vocabulary file that grows as you learn more phrases
