@@ -6,6 +6,17 @@ OpenCode School (opencode.school) is an interactive course that teaches people h
 
 OpenCode is a general-purpose AI agent — not exclusively a coding tool. While it has strong capabilities for software development tasks, it can help with writing, research, data analysis, and many other non-coding tasks. When writing lesson content or agent instructions, avoid framing OpenCode as coding-only.
 
+## OpenCode Desktop
+
+Students in this course primarily use OpenCode Desktop — a native Electron-based app with a graphical interface (GUI) where students interact using mouse and keyboard. It is different from the OpenCode TUI (terminal interface) and does not support TUI-specific features like the `/connect` slash command.
+
+Install methods:
+- macOS: `brew install --cask opencode-desktop` or download .dmg from opencode.ai/download
+- Windows: download installer from opencode.ai/download (WSL recommended)
+- Linux: download .deb or .rpm from opencode.ai/download
+
+Several lessons require students to quit and reopen Desktop for changes to take effect (e.g. after editing config, adding MCP servers, installing skills, or installing plugins). When writing lesson content or agent instructions that involve restarting, refer to "OpenCode Desktop" specifically, not just "OpenCode".
+
 ## Stack
 
 - [Astro](https://astro.build) — static site framework
