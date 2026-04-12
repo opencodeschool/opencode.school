@@ -9,9 +9,10 @@ interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
+  rssHref?: string;
 }
 
-const { title, description = "Learn to use OpenCode, the free and open-source AI coding agent.", ogImage } = Astro.props;
+const { title, description = "Learn to use OpenCode, the free and open-source AI coding agent.", ogImage, rssHref } = Astro.props;
 const pageTitle = title ? `${title} | OpenCode School` : "OpenCode School";
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 const ogImageUrl = new URL(ogImage || "/og/default.png", Astro.site).href;
@@ -41,6 +42,7 @@ const currentPath = Astro.url.pathname;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
     <title>{pageTitle}</title>
+    {rssHref && <link rel="alternate" type="application/rss+xml" title="OpenCode School Changelog" href={rssHref} />}
     <script is:inline>
       window.__schoolThemePalettes = {
         blue: {
@@ -645,6 +647,17 @@ const currentPath = Astro.url.pathname;
             ]}
           >
             Tips
+          </a>
+          <a
+            href="/changelog"
+            class:list={[
+              "block px-3 py-1.5 rounded-md text-sm transition-colors",
+              currentPath === "/changelog" || currentPath === "/changelog/"
+                ? "theme-active-nav font-medium"
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-stone-400 dark:hover:text-stone-200 dark:hover:bg-stone-800",
+            ]}
+          >
+            Changelog
           </a>
           <a
             href="/glossary"
