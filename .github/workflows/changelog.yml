@@ -1,0 +1,228 @@
+name: Changelog
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Check if commit should be skipped
+        id: skip
+        env:
+          COMMIT_MSG: ${{ github.event.head_commit.message }}
+        run: |
+          # Skip changelog update commits (direct or squash-merged)
+          if [[ "$COMMIT_MSG" == chore:\ update\ changelog* ]]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          # Skip merge commits from the changelog-updates branch
+          elif [[ "$COMMIT_MSG" == *changelog-updates* ]]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Gather commit and PR info
+        if: steps.skip.outputs.skip == 'false'
+        id: info
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMIT_SHA: ${{ github.event.head_commit.id }}
+        run: |
+          subject=$(git log -1 --format='%s' "$COMMIT_SHA")
+          body=$(git log -1 --format='%b' "$COMMIT_SHA")
+          files=$(git diff-tree --no-commit-id --name-status -r "$COMMIT_SHA" | head -30)
+
+          # Try to find the PR that introduced this commit
+          pr_body=""
+          pr_number=$(gh pr list --state merged --search "$COMMIT_SHA" --json number --jq '.[0].number' 2>/dev/null || true)
+          if [[ -n "$pr_number" ]]; then
+            pr_body=$(gh pr view "$pr_number" --json body --jq '.body' 2>/dev/null || true)
+          fi
+
+          # Write to files so the next step can read them without shell escaping issues
+          printf '%s' "$subject" > /tmp/commit_subject.txt
+          printf '%s' "$body" > /tmp/commit_body.txt
+          printf '%s' "$pr_body" > /tmp/pr_body.txt
+          printf '%s' "$files" > /tmp/changed_files.txt
+
+          echo "date=$(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
+
+      - name: Generate changelog entry via LLM
+        if: steps.skip.outputs.skip == 'false'
+        id: generate
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          subject=$(cat /tmp/commit_subject.txt)
+          body=$(cat /tmp/commit_body.txt)
+          pr_body=$(cat /tmp/pr_body.txt)
+          files=$(cat /tmp/changed_files.txt)
+
+          system_prompt='You write changelog entries for OpenCode School, a course website that teaches people how to use OpenCode.
+
+          Given a commit, generate a changelog entry as a JSON object:
+          {"slug": "kebab-case-id", "title": "Sentence case title", "description": "1-2 sentences with optional [markdown links](/to/pages)."}
+
+          Rules:
+          - slug: short kebab-case identifier derived from the change
+          - title: sentence case, concise (e.g. "New lesson: Plugins", "Shareable heading links")
+          - description: 1-2 sentences. May include inline markdown links to relevant site pages.
+          - If the change is trivial (dependency bumps, CI config tweaks, typo fixes, refactors with no user-visible effect, changelog updates), return exactly: null
+          - Do not invent page URLs. Only link to pages if the commit clearly relates to them.
+
+          Known site pages:
+          - Lessons: /lessons/installation, /lessons/interview, /lessons/first-task, /lessons/models, /lessons/context, /lessons/configuration, /lessons/files, /lessons/tools, /lessons/skills, /lessons/plugins, /lessons/permissions, /lessons/history, /lessons/images, /lessons/costs
+          - Exercises: /exercises, /exercises/build-a-website, /exercises/drive-a-browser, /exercises/edit-videos, /exercises/run-ai-models, /exercises/transcribe-speech, /exercises/use-git-and-github, /exercises/post-to-social-media
+          - Other: /about, /tips, /glossary, /troubleshooting, /disenroll, /changelog
+
+          Examples of good entries:
+          {"slug": "anchor-links", "title": "Shareable heading links", "description": "Prose headings throughout the site now have anchor links, making it easy to link to a specific section."}
+          {"slug": "progress-reset", "title": "Reset your progress", "description": "Students can now undo individual lesson completions or reset all progress from the [disenroll](/disenroll) page."}
+          {"slug": "plugins-lesson", "title": "New lesson: Plugins", "description": "A new [Plugins](/lessons/plugins) lesson on extending OpenCode with community and custom plugins."}
+
+          Respond with ONLY the JSON object or null. No markdown fences, no explanation.'
+
+          user_msg=$(printf 'Commit subject: %s\n\nCommit body:\n%s\n\nPR description:\n%s\n\nChanged files:\n%s' \
+            "$subject" "$body" "$pr_body" "$files")
+
+          response=$(curl -s https://api.anthropic.com/v1/messages \
+            -H "content-type: application/json" \
+            -H "x-api-key: $ANTHROPIC_API_KEY" \
+            -H "anthropic-version: 2023-06-01" \
+            -d "$(jq -n \
+              --arg system "$system_prompt" \
+              --arg user "$user_msg" \
+              '{
+                model: "claude-sonnet-4-20250514",
+                max_tokens: 300,
+                system: $system,
+                messages: [{role: "user", content: $user}]
+              }')")
+
+          entry=$(echo "$response" | jq -r '.content[0].text // empty')
+
+          if [[ -z "$entry" ]] || [[ "$entry" == "null" ]]; then
+            echo "LLM returned null or empty — skipping"
+            echo "has_entry=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Validate JSON with expected fields
+          if ! echo "$entry" | jq -e '.slug and .title and .description' > /dev/null 2>&1; then
+            echo "LLM response is not valid changelog JSON — skipping"
+            echo "$entry"
+            echo "has_entry=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "$entry" > /tmp/changelog_entry.json
+          echo "has_entry=true" >> "$GITHUB_OUTPUT"
+
+      - name: Update changelog and open PR
+        if: steps.skip.outputs.skip == 'false' && steps.generate.outputs.has_entry == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TODAY: ${{ steps.info.outputs.date }}
+        run: |
+          branch="changelog-updates"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # If the branch exists, check it out and rebase onto main.
+          # If rebase fails (conflict), delete and recreate from main (entries
+          # that were on the old branch but not yet merged are lost — they'll be
+          # regenerated on the next qualifying push or can be added manually).
+          if git ls-remote --exit-code origin "refs/heads/$branch" > /dev/null 2>&1; then
+            git fetch origin "$branch"
+            git checkout -B "$branch" origin/"$branch"
+            if ! git rebase origin/main; then
+              echo "Rebase failed — recreating branch from main"
+              git rebase --abort
+              git checkout -B "$branch" origin/main
+            fi
+          else
+            git checkout -b "$branch"
+          fi
+
+          # Use node to safely insert the entry (no shell interpolation of LLM output)
+          node -e '
+            const fs = require("fs");
+            const entry = JSON.parse(fs.readFileSync("/tmp/changelog_entry.json", "utf8"));
+            const today = process.env.TODAY;
+            const filePath = "src/lib/changelog.ts";
+            const content = fs.readFileSync(filePath, "utf8");
+
+            // Check for duplicate slug
+            if (content.includes(`slug: "${entry.slug}"`)) {
+              console.log(`Slug "${entry.slug}" already exists — skipping`);
+              process.exit(0);
+            }
+
+            // Escape double quotes in description for TS string
+            const desc = entry.description.replace(/"/g, "\\\"");
+            const titleEsc = entry.title.replace(/"/g, "\\\"");
+
+            const newEntry = [
+              "\t{",
+              `\t\tslug: "${entry.slug}",`,
+              `\t\tdate: "${today}",`,
+              `\t\ttitle: "${titleEsc}",`,
+              "\t\tdescription:",
+              `\t\t\t"${desc}",`,
+              "\t},"
+            ].join("\n");
+
+            const marker = "changelogEntries: ChangelogEntry[] = [";
+            const idx = content.indexOf(marker);
+            if (idx === -1) {
+              console.error("Could not find changelogEntries array");
+              process.exit(1);
+            }
+            const insertAt = content.indexOf("\n", idx) + 1;
+            const updated = content.slice(0, insertAt) + newEntry + "\n" + content.slice(insertAt);
+            fs.writeFileSync(filePath, updated);
+            console.log(`Inserted changelog entry: ${entry.slug}`);
+          '
+
+          # Check if anything changed
+          if git diff --quiet src/lib/changelog.ts; then
+            echo "No changes to changelog.ts — skipping"
+            exit 0
+          fi
+
+          title=$(jq -r '.title' /tmp/changelog_entry.json)
+
+          git add src/lib/changelog.ts
+          git commit -m "chore: update changelog — ${title}"
+          git push --force-with-lease origin "$branch"
+
+          # Create or update PR
+          existing_pr=$(gh pr list --head "$branch" --state open --json number --jq '.[0].number' 2>/dev/null || true)
+
+          if [[ -z "$existing_pr" ]]; then
+            pr_body="This PR adds new changelog entries generated from recent commits."
+            pr_body="${pr_body}"$'\n\n'"Review the entries in \`src/lib/changelog.ts\` and edit as needed before merging."
+            gh pr create \
+              --title "chore: update changelog" \
+              --body "$pr_body" \
+              --head "$branch" \
+              --base main
+          else
+            echo "Updated existing PR #${existing_pr}"
+          fi
