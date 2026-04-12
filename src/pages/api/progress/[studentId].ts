@@ -14,6 +14,7 @@ import {
 	resetProgress,
 } from "../../../lib/progress";
 import { isValidStudentId } from "../../../lib/student-id";
+import { getValidSlugs, validateSlug } from "../../../lib/valid-slugs";
 
 const corsHeaders = {
 	"Access-Control-Allow-Origin": "*",
@@ -96,6 +97,14 @@ export const PUT: APIRoute = async ({ params, request }) => {
 		? (body.exerciseSlug as string)
 		: (body.lessonSlug as string);
 
+	const { lessonSlugs, exerciseSlugs } = await getValidSlugs();
+	const slugError = hasExercise
+		? validateSlug(slug, exerciseSlugs, "exercise")
+		: validateSlug(slug, lessonSlugs, "lesson");
+	if (slugError) {
+		return badRequest(slugError);
+	}
+
 	const progress = hasExercise
 		? await markExerciseComplete(env.PROGRESS, studentId, slug, source, model)
 		: await markLessonComplete(env.PROGRESS, studentId, slug, source, model);
@@ -133,6 +142,19 @@ export const DELETE: APIRoute = async ({ params, request }) => {
 
 	if (!isReset && !hasLesson && !hasExercise) {
 		return badRequest('Provide "lessonSlug", "exerciseSlug", or "reset": true');
+	}
+
+	if (!isReset) {
+		const { lessonSlugs, exerciseSlugs } = await getValidSlugs();
+		const slug = hasExercise
+			? (body.exerciseSlug as string)
+			: (body.lessonSlug as string);
+		const slugError = hasExercise
+			? validateSlug(slug, exerciseSlugs, "exercise")
+			: validateSlug(slug, lessonSlugs, "lesson");
+		if (slugError) {
+			return badRequest(slugError);
+		}
 	}
 
 	let progress: Awaited<ReturnType<typeof resetProgress>>;

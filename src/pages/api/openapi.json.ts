@@ -215,7 +215,7 @@ export const GET: APIRoute = (context) => {
 				put: {
 					summary: "Mark a lesson or exercise as complete",
 					description:
-						"Marks a lesson or exercise as complete for the given student. Supply either lessonSlug or exerciseSlug (not both). Idempotent — marking an already-completed item has no effect.",
+						"Marks a lesson or exercise as complete for the given student. Supply either lessonSlug or exerciseSlug (not both). Idempotent — marking an already-completed item has no effect. The slug must match an existing lesson or exercise; unknown slugs are rejected with a 400 error.",
 					parameters: [
 						{
 							name: "studentId",
@@ -235,13 +235,13 @@ export const GET: APIRoute = (context) => {
 										lessonSlug: {
 											type: "string",
 											description:
-												"Slug of the lesson to mark complete. Provide this or exerciseSlug.",
+												"Slug of the lesson to mark complete. Must match an existing lesson. Provide this or exerciseSlug.",
 											example: "configuration",
 										},
 										exerciseSlug: {
 											type: "string",
 											description:
-												"Slug of the exercise to mark complete. Provide this or lessonSlug.",
+												"Slug of the exercise to mark complete. Must match an existing exercise. Provide this or lessonSlug.",
 											example: "build-a-website",
 										},
 										source: {
@@ -292,7 +292,7 @@ export const GET: APIRoute = (context) => {
 				delete: {
 					summary: "Undo a completion or reset all progress",
 					description:
-						'Removes a lesson or exercise from the student\'s completed list, or resets all progress. Send { "lessonSlug": "..." } to uncomplete a lesson, { "exerciseSlug": "..." } to uncomplete an exercise, or { "reset": true } to clear all completions. Resetting preserves the student\'s profile, enrollment date, and device ID.',
+						'Removes a lesson or exercise from the student\'s completed list, or resets all progress. Send { "lessonSlug": "..." } to uncomplete a lesson, { "exerciseSlug": "..." } to uncomplete an exercise, or { "reset": true } to clear all completions. Resetting preserves the student\'s profile, enrollment date, and device ID. The slug must match an existing lesson or exercise; unknown slugs are rejected with a 400 error.',
 					parameters: [
 						{
 							name: "studentId",
