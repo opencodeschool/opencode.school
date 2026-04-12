@@ -48,6 +48,24 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
     <Content />
   </article>
 
+  <!-- Agent-only notice: shown for lessons that can only be completed in OpenCode -->
+  {lesson.data.agentOnly && (
+    <div id="lesson-agent-only" class="mt-10 pt-6 border-t border-gray-200 dark:border-stone-800 hidden">
+      <p id="lesson-agent-only-text" class="text-center text-sm text-gray-500 dark:text-stone-500">
+        Complete this lesson in OpenCode to continue.
+      </p>
+      {next && (
+        <a
+          id="lesson-agent-only-next"
+          href={`/lessons/${next.data.slug}`}
+          class="theme-button mt-4 flex w-full justify-center cursor-pointer items-center gap-2 rounded-lg px-6 py-4 text-sm font-medium select-none hidden"
+        >
+          Next lesson: {next.data.title} &rarr;
+        </a>
+      )}
+    </div>
+  )}
+
   <!-- Lesson action: combined mark-complete + next-lesson button -->
   <div id="lesson-action" class="mt-10 pt-6 border-t border-gray-200 dark:border-stone-800 hidden">
     {next ? (
@@ -68,7 +86,7 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
     )}
   </div>
 
-  <script is:inline define:vars={{ lessonSlug: lesson.data.slug }}>
+  <script is:inline define:vars={{ lessonSlug: lesson.data.slug, agentOnly: lesson.data.agentOnly }}>
     (function() {
       var action = document.getElementById("lesson-action");
       var btn = document.getElementById("lesson-action-btn");
@@ -76,7 +94,10 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
       var banner = document.getElementById("lesson-completed-banner");
       var bannerText = document.getElementById("lesson-completed-text");
       var nudge = document.getElementById("lesson-enroll-nudge");
-      if (!action || !btn || !window.school) return;
+      var agentOnlyBlock = document.getElementById("lesson-agent-only");
+      var agentOnlyText = document.getElementById("lesson-agent-only-text");
+      var agentOnlyNext = document.getElementById("lesson-agent-only-next");
+      if (!window.school) return;
 
       // Show enroll nudge to unenrolled visitors, hide it once enrolled
       if (!window.school.getStudentId()) {
@@ -84,16 +105,10 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
         return;
       }
       if (nudge) nudge.classList.add("hidden");
-      action.classList.remove("hidden");
 
       // Record that this lesson has been visited
       window.school.markLessonVisited(lessonSlug);
 
-      var nextUrl = btn.getAttribute("data-next-url");
-      var originalLabel = label.textContent;
-      // Track whether this lesson was already complete when the page loaded.
-      // If so, we must not auto-redirect on subsequent progress polls — the
-      // student intentionally navigated here to review a completed lesson.
       var wasAlreadyComplete = window.school.isLessonComplete(lessonSlug);
 
       function formatBannerText(completion) {
@@ -112,6 +127,40 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
         if (bannerText) bannerText.textContent = formatBannerText(completion);
         banner.classList.remove("hidden");
       }
+
+      // Agent-only lessons: show the agent-only block instead of the action button
+      if (agentOnly && agentOnlyBlock) {
+        agentOnlyBlock.classList.remove("hidden");
+
+        if (window.school.isLessonComplete(lessonSlug)) {
+          showBanner();
+          if (agentOnlyText) agentOnlyText.textContent = "You completed this lesson in OpenCode.";
+          if (agentOnlyNext) agentOnlyNext.classList.remove("hidden");
+        }
+
+        var origUpdateAgentOnly = window.school.updateAllCheckmarks.bind(window.school);
+        window.school.updateAllCheckmarks = function() {
+          origUpdateAgentOnly();
+          if (nudge && window.school.getStudentId()) nudge.classList.add("hidden");
+          if (window.school.isLessonComplete(lessonSlug)) {
+            showBanner();
+            if (agentOnlyText) agentOnlyText.textContent = "You completed this lesson in OpenCode.";
+            if (agentOnlyNext) agentOnlyNext.classList.remove("hidden");
+            // Auto-navigate if just completed by agent during this page session
+            if (!wasAlreadyComplete && agentOnlyNext) {
+              window.location.href = agentOnlyNext.getAttribute("href");
+            }
+          }
+        };
+        return;
+      }
+
+      // Standard lessons: show the action button
+      if (!action || !btn) return;
+      action.classList.remove("hidden");
+
+      var nextUrl = btn.getAttribute("data-next-url");
+      var originalLabel = label.textContent;
 
       function setCompleted() {
         showBanner();

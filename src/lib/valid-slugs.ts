@@ -19,6 +19,16 @@ export async function getValidSlugs(): Promise<{
 }
 
 /**
+ * Returns the set of lesson slugs that can only be completed by an agent.
+ */
+export async function getAgentOnlySlugs(): Promise<Set<string>> {
+	const lessons = await getCollection("lessons");
+	return new Set(
+		lessons.filter((l) => l.data.agentOnly).map((l) => l.data.slug),
+	);
+}
+
+/**
  * Validate that a slug exists in the given set. Returns an error message
  * if invalid, or null if valid.
  */
