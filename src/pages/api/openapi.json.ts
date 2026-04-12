@@ -279,6 +279,15 @@ export const GET: APIRoute = (context) => {
 								},
 							},
 						},
+						"403": {
+							description:
+								"Lesson is agent-only and cannot be completed from the browser",
+							content: {
+								"application/json": {
+									schema: { $ref: "#/components/schemas/Error" },
+								},
+							},
+						},
 						"404": {
 							description: "Student not found",
 							content: {
@@ -524,6 +533,12 @@ export const GET: APIRoute = (context) => {
 							type: "string",
 							example: "Create a global configuration file for OpenCode.",
 						},
+						agentOnly: {
+							type: "boolean",
+							description:
+								"If true, this lesson can only be marked complete by an agent (source: agent). Browser-initiated completions are rejected with a 403.",
+							example: false,
+						},
 						agentInstructions: {
 							type: "string",
 							example:
@@ -540,6 +555,7 @@ export const GET: APIRoute = (context) => {
 						"slug",
 						"title",
 						"description",
+						"agentOnly",
 						"agentInstructions",
 						"content",
 					],

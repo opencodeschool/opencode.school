@@ -14,7 +14,11 @@ import {
 	resetProgress,
 } from "../../../lib/progress";
 import { isValidStudentId } from "../../../lib/student-id";
-import { getValidSlugs, validateSlug } from "../../../lib/valid-slugs";
+import {
+	getAgentOnlySlugs,
+	getValidSlugs,
+	validateSlug,
+} from "../../../lib/valid-slugs";
 
 const corsHeaders = {
 	"Access-Control-Allow-Origin": "*",
@@ -103,6 +107,22 @@ export const PUT: APIRoute = async ({ params, request }) => {
 		: validateSlug(slug, lessonSlugs, "lesson");
 	if (slugError) {
 		return badRequest(slugError);
+	}
+
+	// Agent-only lessons cannot be completed from the browser
+	if (hasLesson && source === "browser") {
+		const agentOnlySlugs = await getAgentOnlySlugs();
+		if (agentOnlySlugs.has(slug)) {
+			return new Response(
+				JSON.stringify({
+					error: "This lesson can only be completed via OpenCode",
+				}),
+				{
+					status: 403,
+					headers: { "Content-Type": "application/json", ...corsHeaders },
+				},
+			);
+		}
 	}
 
 	const progress = hasExercise
