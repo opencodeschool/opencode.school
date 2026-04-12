@@ -11,6 +11,13 @@ export interface ChangelogEntry {
 
 export const changelogEntries: ChangelogEntry[] = [
 	{
+		slug: "config-backup-protection",
+		date: "2026-04-12",
+		title: "Safer configuration file handling",
+		description:
+			"The [Configuration](/lessons/configuration) lesson now requires agents to create timestamped backups before modifying existing global OpenCode config files, preventing accidental overwrites.",
+	},
+	{
 		slug: "progress-reset",
 		date: "2026-04-09",
 		title: "Reset your progress",
