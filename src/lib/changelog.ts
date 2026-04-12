@@ -11,6 +11,13 @@ export interface ChangelogEntry {
 
 export const changelogEntries: ChangelogEntry[] = [
 	{
+		slug: "mcp-discovery-links",
+		date: "2026-04-12",
+		title: "Improved MCP server discovery guidance",
+		description:
+			"The [Tools](/lessons/tools) lesson now links directly to the official MCP registry and explains how OpenCode can help find and install servers.",
+	},
+	{
 		slug: "external-directory-config",
 		date: "2026-04-12",
 		title: "External directory configuration",
