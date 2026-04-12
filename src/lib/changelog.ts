@@ -11,6 +11,13 @@ export interface ChangelogEntry {
 
 export const changelogEntries: ChangelogEntry[] = [
 	{
+		slug: "config-validation",
+		date: "2026-04-12",
+		title: "Improved config file validation",
+		description:
+			"Lessons that modify the global OpenCode configuration now automatically validate the file format after each edit, preventing syntax errors that could break OpenCode on restart.",
+	},
+	{
 		slug: "mcp-discovery-links",
 		date: "2026-04-12",
 		title: "Improved MCP server discovery guidance",
