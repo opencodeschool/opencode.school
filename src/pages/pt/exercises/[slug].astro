@@ -2,18 +2,18 @@
 // Copyright (c) 2026 Cloudflare, Inc.
 // Licensed under the Apache 2.0 license found in the LICENSE file or at:
 //     https://opensource.org/licenses/Apache-2.0
-import Base from "../../layouts/Base.astro";
+import Base from "../../../layouts/Base.astro";
 import { render } from "astro:content";
-import { getLocaleFromPath, localePath } from "../../i18n/locales";
-import { getLocalizedExercises, getLocalizedExercise } from "../../i18n/content";
-import { t } from "../../i18n/ui";
+import { localePath } from "../../../i18n/locales";
+import { getLocalizedExercises, getLocalizedExercise } from "../../../i18n/content";
+import { t } from "../../../i18n/ui";
 
-const locale = getLocaleFromPath(Astro.url.pathname);
+const locale = "pt" as const;
 const slug = Astro.params.slug!;
 const exercise = await getLocalizedExercise(slug, locale);
 
 if (!exercise) {
-  return Astro.redirect("/404");
+  return Astro.redirect("/pt");
 }
 
 const { Content } = await render(exercise);
@@ -23,7 +23,7 @@ const currentIndex = allExercises.findIndex((e) => e.data.slug === exercise.data
 const next = currentIndex < allExercises.length - 1 ? allExercises[currentIndex + 1] : null;
 ---
 
-<Base title={exercise.data.title} description={exercise.data.description} ogImage={`/og/exercise/${exercise.data.slug}.png`}>
+<Base title={exercise.data.title} description={exercise.data.description} ogImage={`/og/exercise/${exercise.data.slug}.png`} locale={locale}>
   <div class="mb-6">
     <a href={localePath("/exercises", locale)} class="text-sm text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
       &larr; {t("exercise.allExercises", locale)}
@@ -50,7 +50,6 @@ const next = currentIndex < allExercises.length - 1 ? allExercises[currentIndex 
     <Content />
   </article>
 
-  <!-- Exercise action: combined mark-complete + next-exercise button -->
   <div id="exercise-action" class="mt-10 pt-6 border-t border-gray-200 dark:border-stone-800 hidden">
     {next ? (
       <button
@@ -80,7 +79,12 @@ const next = currentIndex < allExercises.length - 1 ? allExercises[currentIndex 
       var nudge = document.getElementById("exercise-enroll-nudge");
       if (!action || !btn || !window.school) return;
 
-      // Show enroll nudge to unenrolled visitors, hide it once enrolled
+      var loc = document.documentElement.getAttribute("data-locale") || "en";
+      var s = {
+        en: { completed: "You completed this exercise!", completedOn: "You completed this exercise on {date} {via}.", viaAgent: "via OpenCode", viaBrowser: "in the browser", exerciseComplete: "Exercise complete!", saving: "Saving..." },
+        pt: { completed: "Concluiu este exercício!", completedOn: "Concluiu este exercício a {date} {via}.", viaAgent: "via OpenCode", viaBrowser: "no navegador", exerciseComplete: "Exercício concluído!", saving: "A guardar..." }
+      }[loc] || { completed: "You completed this exercise!", completedOn: "You completed this exercise on {date} {via}.", viaAgent: "via OpenCode", viaBrowser: "in the browser", exerciseComplete: "Exercise complete!", saving: "Saving..." };
+
       if (!window.school.getStudentId()) {
         if (nudge) nudge.classList.remove("hidden");
         return;
@@ -93,11 +97,12 @@ const next = currentIndex < allExercises.length - 1 ? allExercises[currentIndex 
       var wasAlreadyComplete = window.school.isExerciseComplete && window.school.isExerciseComplete(exerciseSlug);
 
       function formatBannerText(completion) {
-        var text = "You completed this exercise!";
+        var text = s.completed;
         if (completion && completion.completedAt) {
-          var date = new Date(completion.completedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-          var via = completion.source === "agent" ? "via OpenCode" : "in the browser";
-          text = "You completed this exercise on " + date + " " + via + ".";
+          var dateLocale = loc === "pt" ? "pt-PT" : "en-US";
+          var date = new Date(completion.completedAt).toLocaleDateString(dateLocale, { month: "long", day: "numeric", year: "numeric" });
+          var via = completion.source === "agent" ? s.viaAgent : s.viaBrowser;
+          text = s.completedOn.replace("{date}", date).replace("{via}", via);
         }
         return text;
       }
@@ -123,24 +128,23 @@ const next = currentIndex < allExercises.length - 1 ? allExercises[currentIndex 
         if (nextUrl) {
           window.location.href = nextUrl;
         } else {
-          label.textContent = "Exercise complete!";
+          label.textContent = s.exerciseComplete;
           btn.disabled = true;
         }
       }
 
-      // If already complete, show the banner and make the button navigate directly
       if (window.school.isExerciseComplete && window.school.isExerciseComplete(exerciseSlug)) {
         showBanner();
         if (nextUrl) {
           btn.addEventListener("click", function() { window.location.href = nextUrl; });
         } else {
-          label.textContent = "Exercise complete!";
+          label.textContent = s.exerciseComplete;
           btn.disabled = true;
         }
       } else {
         btn.addEventListener("click", async function() {
           btn.disabled = true;
-          label.textContent = "Saving...";
+          label.textContent = s.saving;
           var progress = await window.school.markExerciseComplete(exerciseSlug);
           if (progress) {
             window.school.updateAllCheckmarks();
@@ -152,7 +156,6 @@ const next = currentIndex < allExercises.length - 1 ? allExercises[currentIndex 
         });
       }
 
-      // Update after progress fetch completes (in case cached state was stale)
       var origUpdate = window.school.updateAllCheckmarks.bind(window.school);
       window.school.updateAllCheckmarks = function() {
         origUpdate();

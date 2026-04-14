@@ -2,8 +2,9 @@
 // Licensed under the Apache 2.0 license found in the LICENSE file or at:
 //     https://opensource.org/licenses/Apache-2.0
 
-import { getCollection } from "astro:content";
 import type { APIRoute } from "astro";
+import { getLocalizedExercises } from "../../../i18n/content";
+import type { Locale } from "../../../i18n/locales";
 import { mdxToProse } from "../../../lib/mdx-to-prose";
 
 const corsHeaders = {
@@ -17,8 +18,10 @@ export const OPTIONS: APIRoute = async () => {
 };
 
 export const GET: APIRoute = async ({ params, request }) => {
-	const origin = new URL(request.url).origin;
-	const exercises = await getCollection("exercises");
+	const url = new URL(request.url);
+	const origin = url.origin;
+	const locale = (url.searchParams.get("locale") || "en") as Locale;
+	const exercises = await getLocalizedExercises(locale);
 	const exercise = exercises.find((e) => e.data.slug === params.slug);
 
 	if (!exercise) {
