@@ -11,6 +11,13 @@ export interface ChangelogEntry {
 
 export const changelogEntries: ChangelogEntry[] = [
 	{
+		slug: "json-config-default",
+		date: "2026-04-14",
+		title: "JSON now recommended over JSONC for config files",
+		description:
+			"The site now recommends `opencode.json` as the default config filename. Existing `opencode.jsonc` files continue to work as a fallback.",
+	},
+	{
 		slug: "desktop-provider-flow",
 		date: "2026-04-12",
 		title: "Updated provider setup instructions",
