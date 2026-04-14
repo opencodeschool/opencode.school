@@ -11,9 +11,9 @@ agentInstructions: |
   1. What the global config file is and why it applies to all OpenCode
      sessions across every project on the machine.
 
-  2. Where the config file lives: ~/.config/opencode/opencode.jsonc on
-     macOS/Linux, C:\Users\<Name>\.config\opencode\opencode.jsonc on
-     Windows.
+   2. Where the config file lives: ~/.config/opencode/opencode.json on
+      macOS/Linux, C:\Users\<Name>\.config\opencode\opencode.json on
+      Windows.
 
   3. What "default_agent": "plan" does: it starts every new session in
      Plan mode, which is read-only and safe. The student can switch to
@@ -31,11 +31,11 @@ agentInstructions: |
 
   CRITICAL: PROTECTING THE STUDENT'S GLOBAL OPENCODE CONFIG
 
-  If ~/.config/opencode/opencode.jsonc (or opencode.json) already exists,
+  If ~/.config/opencode/opencode.json (or opencode.jsonc) already exists,
   you MUST:
   (a) Read it first and store its full contents.
   (b) Create a timestamped backup copy (e.g.
-      opencode.jsonc.backup-2025-01-15T10-30-00) in the same directory.
+      opencode.json.backup-2025-01-15T10-30-00) in the same directory.
   (c) Tell the student where the backup is so they can restore it if
       needed.
 
@@ -48,11 +48,11 @@ agentInstructions: |
   OpenCode config file, not to other files created during lessons.
 
   After every write or edit to the config file, re-read it and validate it
-  is well-formed JSONC before proceeding.
+  is well-formed JSON before proceeding.
 
   After teaching and quizzing, verify completion by reading
-  ~/.config/opencode/opencode.jsonc (or ~/.config/opencode/opencode.json
-  if the .jsonc file does not exist) and confirming it contains:
+  ~/.config/opencode/opencode.json (or ~/.config/opencode/opencode.jsonc
+  if the .json file does not exist) and confirming it contains:
   - "default_agent": "plan"
   - A "permission" object with "*": "allow", "external_directory": "ask",
     and at least one "ask" rule inside a bash object (e.g. "rm *": "ask")
@@ -84,7 +84,7 @@ When OpenCode starts, it looks for a global config file in this location:
 <div id="config-location-macos" class="hidden">
 
 ```
-~/.config/opencode/opencode.jsonc
+~/.config/opencode/opencode.json
 ```
 
 The `~` is your home directory (`/Users/yourname`).
@@ -94,7 +94,7 @@ The `~` is your home directory (`/Users/yourname`).
 <div id="config-location-linux" class="hidden">
 
 ```
-~/.config/opencode/opencode.jsonc
+~/.config/opencode/opencode.json
 ```
 
 The `~` is your home directory (`/home/yourname`).
@@ -104,42 +104,33 @@ The `~` is your home directory (`/home/yourname`).
 <div id="config-location-windows" class="hidden">
 
 ```
-~/.config/opencode/opencode.jsonc
+~/.config/opencode/opencode.json
 ```
 
-That's inside your WSL home directory. On native Windows: `C:\Users\<YourName>\.config\opencode\opencode.jsonc`.
+That's inside your WSL home directory. On native Windows: `C:\Users\<YourName>\.config\opencode\opencode.json`.
 
 </div>
 
 <div id="config-location-other" class="hidden">
 
-- **macOS / Linux**: `~/.config/opencode/opencode.jsonc`
-- **Windows (WSL)**: `~/.config/opencode/opencode.jsonc` (inside your WSL home directory)
-- **Windows (native)**: `C:\Users\<YourName>\.config\opencode\opencode.jsonc`
+- **macOS / Linux**: `~/.config/opencode/opencode.json`
+- **Windows (WSL)**: `~/.config/opencode/opencode.json` (inside your WSL home directory)
+- **Windows (native)**: `C:\Users\<YourName>\.config\opencode\opencode.json`
 
 </div>
 
 </div>
 
-OpenCode config files can be written in JSON or JSONC — we'll use JSONC because it supports `//` comments, which are handy for keeping notes right in your config. OpenCode will create the directory and file for you. **If you see any confirmation prompts, choose "Allow Once."** You may see a couple of prompts during this step — approve each one.
+OpenCode will create the directory and file for you. **If you see any confirmation prompts, choose "Allow Once."** You may see a couple of prompts during this step, so approve each one.
 
 ## Set some basic configuration
 
 Here's what your config file will look like:
 
-```jsonc
+```json
 {
-  // Points to OpenCode's config schema — enables autocomplete in VS Code
   "$schema": "https://opencode.ai/config.json",
-
-  // Start new sessions in Plan mode instead of Build mode.
-  // Plan is read-only — it can read files and discuss your project,
-  // but won't make any changes until you switch to Build.
   "default_agent": "plan",
-
-  // Permissions control what OpenCode can do without asking first.
-  // "*": "allow" lets most actions through automatically, but the
-  // bash rules below add guardrails for destructive commands.
   "permission": {
     "*": "allow",
     "external_directory": "ask",
@@ -149,10 +140,6 @@ Here's what your config file will look like:
       "rmdir *": "ask"
     }
   },
-
-  // Instructions are URLs or file paths that OpenCode loads at the start of
-  // every session. Your personal OpenCode School URL tells OpenCode your
-  // student ID so it can look up your progress whenever you mention school.
   "instructions": [
     "https://<this-site>/api/instructions/<your-student-id>"
   ]

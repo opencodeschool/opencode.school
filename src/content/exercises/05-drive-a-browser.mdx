@@ -13,8 +13,8 @@ agentInstructions: |
      chrome://inspect/#remote-debugging in Chrome and enable the remote
      debugging feature.
 
-  2. Add the Chrome DevTools MCP server to the student's OpenCode global
-     config (~/.config/opencode/opencode.jsonc). Add a `mcp` section if
+   2. Add the Chrome DevTools MCP server to the student's OpenCode global
+      config (~/.config/opencode/opencode.json). Add a `mcp` section if
      it doesn't exist, with:
      `"chrome-devtools": { "type": "local", "command": ["npx", "-y", "chrome-devtools-mcp@latest", "--autoConnect"] }`.
      The student needs to restart OpenCode after adding this.
@@ -64,9 +64,9 @@ Two things need to happen:
 chrome://inspect/#remote-debugging
 ```
 
-**Add the MCP server to your OpenCode config** — add this to your global config (`~/.config/opencode/opencode.jsonc`):
+**Add the MCP server to your OpenCode config** — add this to your global config (`~/.config/opencode/opencode.json`):
 
-```jsonc
+```json
 {
   "mcp": {
     "chrome-devtools": {

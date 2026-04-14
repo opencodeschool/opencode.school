@@ -68,17 +68,19 @@ To stop sharing and remove the data:
 
 ### Sharing modes
 
-The default behavior is **manual** — sessions are private unless you explicitly run `/share`. You can change this in your config:
+The default behavior is **manual** — sessions are private unless you explicitly run `/share`. You can change this in your config to share every session automatically:
 
-```jsonc
-// Share every session automatically
+```json
 { "share": "auto" }
+```
 
-// Disable sharing entirely
+Or disable sharing entirely:
+
+```json
 { "share": "disabled" }
 ```
 
-Disabling sharing is a good idea for sessions that involve sensitive or proprietary information. To enforce this across a team, add `"share": "disabled"` to your project's `opencode.jsonc` and commit it.
+Disabling sharing is a good idea for sessions that involve sensitive or proprietary information. To enforce this across a team, add `"share": "disabled"` to your project's `opencode.json` and commit it.
 
 ## Listing and exporting sessions
 
