@@ -97,10 +97,10 @@ export const MyPlugin = async () => {
   return {
     tool: {
       greet: tool({
-        description: "Say hello",
+        description: "Dizer olá",
         args: { name: tool.schema.string() },
         async execute(args) {
-          return `Hello, ${args.name}!`
+          return `Olá, ${args.name}!`
         },
       }),
     },

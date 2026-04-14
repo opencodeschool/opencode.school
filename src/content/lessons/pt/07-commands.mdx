@@ -50,9 +50,9 @@ Crie um ficheiro `.md` em `~/.config/opencode/commands/` (global, disponível em
 
 ```markdown
 ---
-description: Summarize the current project
+description: Resumir o projeto atual
 ---
-Give me a brief overview of this project. What is it? What are the main files and folders? What does it seem to be for?
+Dá-me uma visão geral deste projeto. O que é? Quais são os ficheiros e pastas principais? Para que parece servir?
 ```
 
 Agora pode executar `/summarize` em qualquer sessão do OpenCode.
@@ -66,8 +66,8 @@ Também pode definir comandos diretamente no seu ficheiro de configuração:
   "$schema": "https://opencode.ai/config.json",
   "command": {
     "summarize": {
-      "description": "Summarize the current project",
-      "template": "Give me a brief overview of this project. What is it? What are the main files and folders? What does it seem to be for?"
+      "description": "Resumir o projeto atual",
+      "template": "Dá-me uma visão geral deste projeto. O que é? Quais são os ficheiros e pastas principais? Para que parece servir?"
     }
   }
 }
@@ -81,9 +81,9 @@ Peça ao OpenCode para criar o ficheiro `~/.config/opencode/commands/summarize.m
 
 ```markdown
 ---
-description: Summarize the current project
+description: Resumir o projeto atual
 ---
-Give me a brief overview of this project. What is it? What are the main files and folders? What does it seem to be for?
+Dá-me uma visão geral deste projeto. O que é? Quais são os ficheiros e pastas principais? Para que parece servir?
 ```
 
 **Depois reinicie o OpenCode.** Os comandos são carregados no arranque, por isso novos ficheiros de comandos não aparecerão até reabrir a aplicação.
@@ -96,9 +96,9 @@ Adicione um marcador `$ARGUMENTS` ao seu template e pode passar contexto extra a
 
 ```markdown
 ---
-description: Explain a file
+description: Explicar um ficheiro
 ---
-Explain what $ARGUMENTS does in plain language.
+Explica o que $ARGUMENTS faz em linguagem simples.
 ```
 
 Depois execute como `/explain src/index.ts` e `$ARGUMENTS` é substituído por `src/index.ts`.
