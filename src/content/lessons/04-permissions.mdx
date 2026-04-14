@@ -5,7 +5,36 @@ description: "Control what OpenCode can and can't do without asking."
 order: 4
 quiz: true
 modifiesGlobalConfig: true
-agentInstructions: "Cover these four topics: (1) the three permission levels — allow (runs immediately), ask (pauses for approval), and deny (blocked entirely); the student already has ask rules for rm and rmdir from the Configuration lesson, so build on that foundation, (2) git-specific guardrails — adding \"git push *\": \"ask\" and \"git checkout *\": \"ask\" inside the bash object to prevent accidental pushes to remote repos and discarding uncommitted changes without confirmation, (3) the external_directory permission — it controls access to paths outside the project working directory, defaults to \"ask\", and can be configured with path patterns using ~ or $HOME (e.g. \"~/projects/**\": \"allow\"), (4) per-project permissions — the student can create .opencode/opencode.jsonc in any project directory to override their global permissions for that project; useful for tightening or loosening rules in specific repos. After every write or edit to the config file, re-read it and validate it is well-formed JSONC before proceeding. After teaching and quizzing, verify completion by reading ~/.config/opencode/opencode.jsonc and confirming the bash object has at least one new granular rule beyond what was set up in the Configuration lesson — e.g. a \"git push *\": \"ask\" or \"git checkout *\": \"ask\" rule."
+agentInstructions: |
+  Cover these four topics:
+
+  1. The three permission levels: allow (runs immediately), ask (pauses
+     for approval), and deny (blocked entirely). The student already has
+     ask rules for rm and rmdir from the Configuration lesson, so build
+     on that foundation.
+
+  2. Git-specific guardrails: adding "git push *": "ask" and
+     "git checkout *": "ask" inside the bash object to prevent accidental
+     pushes to remote repos and discarding uncommitted changes without
+     confirmation.
+
+  3. The external_directory permission: it controls access to paths
+     outside the project working directory, defaults to "ask", and can be
+     configured with path patterns using ~ or $HOME (e.g.
+     "~/projects/**": "allow").
+
+  4. Per-project permissions: the student can create
+     .opencode/opencode.jsonc in any project directory to override their
+     global permissions for that project. Useful for tightening or
+     loosening rules in specific repos.
+
+  After every write or edit to the config file, re-read it and validate it
+  is well-formed JSONC before proceeding.
+
+  After teaching and quizzing, verify completion by reading
+  ~/.config/opencode/opencode.jsonc and confirming the bash object has at
+  least one new granular rule beyond what was set up in the Configuration
+  lesson, e.g. a "git push *": "ask" or "git checkout *": "ask" rule.
 ---
 
 import AgentPrompt from '../../components/AgentPrompt.astro'

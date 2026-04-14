@@ -3,7 +3,48 @@ title: "Run AI models"
 slug: run-ai-models
 description: "Generate images and video using AI models on Replicate."
 order: 2
-agentInstructions: "This exercise requires the Replicate skill. If the student does not have it installed (check ~/.config/opencode/skills/replicate/ or ~/.agents/skills/replicate/ for a SKILL.md file), stop and help them install it first with `npx skills add https://github.com/replicate/replicate-skill`. The skill must be loaded before proceeding. Guide the student through these steps, adapting depth to their profile: (1) Check that REPLICATE_API_TOKEN is set in the environment. If not, guide them to create a Replicate account at https://replicate.com (requires a GitHub account — help them create one at https://github.com/signup if needed), then generate an API token at https://replicate.com/account/api-tokens and add `REPLICATE_API_TOKEN=r8_...` to their shell profile (~/.zshrc, ~/.bashrc, etc.) and to the current session with `export REPLICATE_API_TOKEN=r8_...`. They will need to restart OpenCode after adding the token for it to take effect. (2) Generate images with google/nano-banana-2. Start with a text-to-image prompt — ask the student what they want to create and help them write a descriptive prompt. Run the model and show the result. Then try image editing: have the student provide an existing image (photo, screenshot, anything) and use nano-banana-2 to transform it with a text prompt. Experiment with different aspect ratios and styles. (3) Generate a video from one of the images using google/veo-3.1-fast. Use the image_url input to pass one of the generated images, and write a prompt describing the motion or scene. The video takes a minute or two to generate. (4) Save the outputs locally — download the generated images and video to the student's machine. Use the Replicate skill's API knowledge to create predictions, poll for results, and handle output URLs. Do not use the Replicate CLI or Node.js SDK — work directly with the API via the skill. Fire off multiple predictions concurrently when possible. Output URLs expire after 1 hour, so download files promptly. Verify completion by confirming the student has at least one generated image and one generated video saved locally."
+agentInstructions: |
+  This exercise requires the Replicate skill. If the student does not have
+  it installed (check ~/.config/opencode/skills/replicate/ or
+  ~/.agents/skills/replicate/ for a SKILL.md file), stop and help them
+  install it first with
+  `npx skills add https://github.com/replicate/replicate-skill`. The
+  skill must be loaded before proceeding.
+
+  Guide the student through these steps, adapting depth to their profile:
+
+  1. Check that REPLICATE_API_TOKEN is set in the environment. If not,
+     guide them to create a Replicate account at https://replicate.com
+     (requires a GitHub account, help them create one at
+     https://github.com/signup if needed), then generate an API token at
+     https://replicate.com/account/api-tokens and add
+     `REPLICATE_API_TOKEN=r8_...` to their shell profile (~/.zshrc,
+     ~/.bashrc, etc.) and to the current session with
+     `export REPLICATE_API_TOKEN=r8_...`. They will need to restart
+     OpenCode after adding the token for it to take effect.
+
+  2. Generate images with google/nano-banana-2. Start with a
+     text-to-image prompt: ask the student what they want to create and
+     help them write a descriptive prompt. Run the model and show the
+     result. Then try image editing: have the student provide an existing
+     image (photo, screenshot, anything) and use nano-banana-2 to
+     transform it with a text prompt. Experiment with different aspect
+     ratios and styles.
+
+  3. Generate a video from one of the images using google/veo-3.1-fast.
+     Use the image_url input to pass one of the generated images, and
+     write a prompt describing the motion or scene. The video takes a
+     minute or two to generate.
+
+  4. Save the outputs locally: download the generated images and video to
+     the student's machine. Use the Replicate skill's API knowledge to
+     create predictions, poll for results, and handle output URLs. Do not
+     use the Replicate CLI or Node.js SDK, work directly with the API via
+     the skill. Fire off multiple predictions concurrently when possible.
+     Output URLs expire after 1 hour, so download files promptly.
+
+  Verify completion by confirming the student has at least one generated
+  image and one generated video saved locally.
 ---
 
 import AgentPrompt from '../../components/AgentPrompt.astro'

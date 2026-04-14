@@ -3,7 +3,56 @@ title: "Use Git and GitHub"
 slug: use-git-and-github
 description: "Track and manage file changes with Git and GitHub Desktop."
 order: 7
-agentInstructions: "Guide the student through using Git and GitHub to track project changes. Adapt depth to their profile. Steps: (1) Check if Git is installed by running `git --version`. If not, recommend installing GitHub Desktop from https://desktop.github.com/ — it bundles Git, helps create a GitHub account, and authenticates the CLI automatically. If the student prefers, they can install Git directly: `brew install git` on macOS, or download from https://git-scm.com for other platforms. (2) Explain what Git is — a version control system that records every change to every file. Emphasize that Git is useful even locally with no remote: every commit is a snapshot you can return to, so nothing is ever truly lost. (3) Explain what GitHub is — a cloud platform for hosting Git repositories, backing up projects, collaborating, and sharing work. (4) Create or navigate to a project folder and initialize a Git repository with `git init`. Explain what this does (creates a hidden .git directory that stores the project's history). (5) Have the student create or edit a file, then walk them through the staging and commit workflow: `git add <file>`, `git commit -m \"message\"`. Explain what staging is and why commits need messages. (6) Make another change and show the diff: `git diff` on the command line, or use GitHub Desktop to visualize what changed. This is the key insight — when OpenCode edits files, Git lets you see exactly what was added, removed, or modified. (7) Help them create a repository on GitHub (via GitHub Desktop or `gh repo create`) and push their commits. Let them choose public or private. (8) Introduce branches: create a branch with `git checkout -b experiment`, make a change, commit it, then switch back to the main branch with `git checkout main` to show the change disappears. Explain this as a way to try things without affecting working code. After the core steps, suggest next steps: writing a `.gitignore` file, making a pull request, or exploring the repository on github.com. Verify completion by confirming the student has a local Git repository with at least two commits and has pushed it to GitHub."
+agentInstructions: |
+  Guide the student through using Git and GitHub to track project changes.
+  Adapt depth to their profile.
+
+  Steps:
+
+  1. Check if Git is installed by running `git --version`. If not,
+     recommend installing GitHub Desktop from https://desktop.github.com/,
+     which bundles Git, helps create a GitHub account, and authenticates
+     the CLI automatically. If the student prefers, they can install Git
+     directly: `brew install git` on macOS, or download from
+     https://git-scm.com for other platforms.
+
+  2. Explain what Git is: a version control system that records every
+     change to every file. Emphasize that Git is useful even locally with
+     no remote: every commit is a snapshot you can return to, so nothing
+     is ever truly lost.
+
+  3. Explain what GitHub is: a cloud platform for hosting Git
+     repositories, backing up projects, collaborating, and sharing work.
+
+  4. Create or navigate to a project folder and initialize a Git
+     repository with `git init`. Explain what this does (creates a hidden
+     .git directory that stores the project's history).
+
+  5. Have the student create or edit a file, then walk them through the
+     staging and commit workflow: `git add <file>`,
+     `git commit -m "message"`. Explain what staging is and why commits
+     need messages.
+
+  6. Make another change and show the diff: `git diff` on the command
+     line, or use GitHub Desktop to visualize what changed. This is the
+     key insight: when OpenCode edits files, Git lets you see exactly what
+     was added, removed, or modified.
+
+  7. Help them create a repository on GitHub (via GitHub Desktop or
+     `gh repo create`) and push their commits. Let them choose public or
+     private.
+
+  8. Introduce branches: create a branch with
+     `git checkout -b experiment`, make a change, commit it, then switch
+     back to the main branch with `git checkout main` to show the change
+     disappears. Explain this as a way to try things without affecting
+     working code.
+
+  After the core steps, suggest next steps: writing a `.gitignore` file,
+  making a pull request, or exploring the repository on github.com.
+
+  Verify completion by confirming the student has a local Git repository
+  with at least two commits and has pushed it to GitHub.
 ---
 
 import AgentPrompt from '../../components/AgentPrompt.astro'

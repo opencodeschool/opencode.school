@@ -46,7 +46,7 @@ Each lesson is an MDX file in `src/content/lessons/`. The frontmatter schema (de
 - `title`, `slug`, `description`, `order` — standard metadata
 - `agentInstructions` (required) — describes what "done" looks like and how to verify it; used by agents to evaluate and mark completion
 
-When editing lessons, keep `agentInstructions` accurate. It should describe both the verifiable end state and the steps an agent should take to confirm it.
+When editing lessons, keep `agentInstructions` accurate. It should describe both the verifiable end state and the steps an agent should take to confirm it. Always use YAML literal block scalars (`|`) for `agentInstructions`, never quoted strings. This keeps instructions readable, produces line-level diffs, and allows paragraph breaks between logical sections.
 
 ## Lesson authoring guidelines
 

@@ -4,7 +4,43 @@ slug: models
 description: "Choose and configure AI models in OpenCode."
 order: 6
 quiz: true
-agentInstructions: "Cover these five topics: (1) the cost vs. capability tradeoff — state-of-the-art models from Anthropic and OpenAI deliver better results on complex tasks but cost money per request; open-source alternatives are faster and cheaper but less capable; using OpenCode well means finding the right balance for what you're trying to do, (2) where the current model is shown in OpenCode (just below the text input) and how to change it — click the model name or type /model to open the model picker, (3) the free built-in models via OpenCode Zen and their limitations — most lack vision support and may be less capable on complex tasks, (4) Cloudflare as a model provider — AI Gateway is a proxy that routes requests to providers like OpenAI and Anthropic through a single Cloudflare bill via Unified Billing so you don't need separate API keys for each provider; Workers AI is a separate option that runs open-source models directly on Cloudflare's network but is more limited since it only hosts certain models; both are useful if you already have a Cloudflare account, (5) context windows — what they are (the amount of text a model can see at once, measured in tokens), how they differ between models (large flagship models often have 128K–1M token windows, while smaller/cheaper models may have 8K–32K), why it matters (as a conversation grows, older context can be lost or the model slows down), what compaction is (OpenCode summarizes old context to free up space when the window fills), and the practical guidance: with big models you rarely need to worry; with smaller models, keep sessions focused, start fresh sessions for new tasks, and watch for signs the model is losing track. This lesson has no file-system verification step — completion is confirmed by the student demonstrating understanding through the quiz."
+agentInstructions: |
+  Cover these five topics:
+
+  1. The cost vs. capability tradeoff: state-of-the-art models from
+     Anthropic and OpenAI deliver better results on complex tasks but cost
+     money per request. Open-source alternatives are faster and cheaper
+     but less capable. Using OpenCode well means finding the right balance
+     for what you're trying to do.
+
+  2. Where the current model is shown in OpenCode (just below the text
+     input) and how to change it: click the model name or type /model to
+     open the model picker.
+
+  3. The free built-in models via OpenCode Zen and their limitations: most
+     lack vision support and may be less capable on complex tasks.
+
+  4. Cloudflare as a model provider: AI Gateway is a proxy that routes
+     requests to providers like OpenAI and Anthropic through a single
+     Cloudflare bill via Unified Billing, so you don't need separate API
+     keys for each provider. Workers AI is a separate option that runs
+     open-source models directly on Cloudflare's network but is more
+     limited since it only hosts certain models. Both are useful if you
+     already have a Cloudflare account.
+
+  5. Context windows: what they are (the amount of text a model can see at
+     once, measured in tokens), how they differ between models (large
+     flagship models often have 128K-1M token windows, while
+     smaller/cheaper models may have 8K-32K), why it matters (as a
+     conversation grows, older context can be lost or the model slows
+     down), what compaction is (OpenCode summarizes old context to free up
+     space when the window fills), and practical guidance: with big models
+     you rarely need to worry; with smaller models, keep sessions focused,
+     start fresh sessions for new tasks, and watch for signs the model is
+     losing track.
+
+  This lesson has no file-system verification step. Completion is
+  confirmed by the student demonstrating understanding through the quiz.
 ---
 
 import AgentPrompt from '../../components/AgentPrompt.astro'

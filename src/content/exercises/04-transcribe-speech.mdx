@@ -3,7 +3,52 @@ title: "Transcribe speech"
 slug: transcribe-speech
 description: "Transcribe audio to text locally using Whisper."
 order: 4
-agentInstructions: "Guide the student through local speech-to-text transcription using whisper-cpp. Adapt depth to their profile. Steps: (1) Install whisper-cpp and ffmpeg. On macOS: `brew install whisper-cpp ffmpeg`. On Linux: use the system package manager or build from source (https://github.com/ggerganov/whisper.cpp). Verify with `whisper-cpp --help` and `ffmpeg -version`. (2) Download a Whisper model. Use the ggml-large-v3-q5_0 model (good balance of quality and size, ~1GB): `curl -o ggml-large-v3-q5_0.bin -L 'https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large-v3-q5_0.bin?download=true'`. Explain that Whisper has multiple model sizes and this is a quantized version of the large model. (3) Get an audio source. Offer the student three options: (a) record a short clip using their microphone — on macOS they can use QuickTime Player or `say` to generate speech, (b) if they did the Edit Videos exercise, use the audio file they already extracted, (c) download a sample — a podcast clip, speech recording, or any audio with speech. Help them with whichever option they choose. (4) Convert the audio to 16kHz WAV format (required by whisper-cpp): `ffmpeg -i input.mp3 -ar 16000 input.wav`. Explain why 16kHz is needed. (5) Run transcription: `whisper-cpp -m ggml-large-v3-q5_0.bin input.wav --output-txt`. This produces a timestamped transcript on stdout and saves a plain text file. Walk through the output together. (6) Try a different output format — SRT subtitles (`--output-srt`) or VTT (`--output-vtt`). Explain what these formats are used for (video subtitles, closed captions). After the basics, mention that whisper-cpp can also translate from other languages to English using the `--translate` flag — if the student has audio in another language or wants to try it, help them do so. Verify completion by confirming the student has a transcription output file (txt, srt, or vtt) in their working directory."
+agentInstructions: |
+  Guide the student through local speech-to-text transcription using
+  whisper-cpp. Adapt depth to their profile.
+
+  Steps:
+
+  1. Install whisper-cpp and ffmpeg. On macOS:
+     `brew install whisper-cpp ffmpeg`. On Linux: use the system package
+     manager or build from source
+     (https://github.com/ggerganov/whisper.cpp). Verify with
+     `whisper-cpp --help` and `ffmpeg -version`.
+
+  2. Download a Whisper model. Use the ggml-large-v3-q5_0 model (good
+     balance of quality and size, ~1GB):
+     `curl -o ggml-large-v3-q5_0.bin -L 'https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large-v3-q5_0.bin?download=true'`.
+     Explain that Whisper has multiple model sizes and this is a quantized
+     version of the large model.
+
+  3. Get an audio source. Offer the student three options:
+     (a) Record a short clip using their microphone. On macOS they can use
+         QuickTime Player or `say` to generate speech.
+     (b) If they did the Edit Videos exercise, use the audio file they
+         already extracted.
+     (c) Download a sample: a podcast clip, speech recording, or any
+         audio with speech.
+     Help them with whichever option they choose.
+
+  4. Convert the audio to 16kHz WAV format (required by whisper-cpp):
+     `ffmpeg -i input.mp3 -ar 16000 input.wav`. Explain why 16kHz is
+     needed.
+
+  5. Run transcription:
+     `whisper-cpp -m ggml-large-v3-q5_0.bin input.wav --output-txt`. This
+     produces a timestamped transcript on stdout and saves a plain text
+     file. Walk through the output together.
+
+  6. Try a different output format: SRT subtitles (`--output-srt`) or VTT
+     (`--output-vtt`). Explain what these formats are used for (video
+     subtitles, closed captions).
+
+  After the basics, mention that whisper-cpp can also translate from other
+  languages to English using the `--translate` flag. If the student has
+  audio in another language or wants to try it, help them do so.
+
+  Verify completion by confirming the student has a transcription output
+  file (txt, srt, or vtt) in their working directory.
 ---
 
 import AgentPrompt from '../../components/AgentPrompt.astro'

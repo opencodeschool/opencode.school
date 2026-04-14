@@ -4,7 +4,33 @@ slug: agents
 description: "Use Plan and Build agents to think before you act."
 order: 11
 quiz: true
-agentInstructions: "Cover these four topics: (1) what an agent means in OpenCode specifically — a specialized assistant configured for a particular task or workflow, distinct from the broader industry use of the word, (2) the Plan agent — conversational and read-only; it can read files and discuss the project but won't make any changes; the student already set \"default_agent\": \"plan\" in the Configuration lesson so every new session starts here — but note that Plan mode is not a hard sandbox and the agent may still occasionally run commands or make API calls that have side effects, (3) the Build agent — the implementation agent with full access to read, write, and run things; switch to this when you know what you want to do, (4) the recommended workflow — since Plan is already the default, the student is already starting safe; the key skill is knowing when to switch to Build and being deliberate about it, especially for complex or unfamiliar tasks. After teaching and quizzing, verify completion by asking the student to describe when they'd use Plan vs. Build and confirm they understand that Plan is read-only by default but not a guaranteed sandbox, and that Build can make changes."
+agentInstructions: |
+  Cover these four topics:
+
+  1. What an agent means in OpenCode specifically: a specialized assistant
+     configured for a particular task or workflow, distinct from the
+     broader industry use of the word.
+
+  2. The Plan agent: conversational and read-only. It can read files and
+     discuss the project but won't make any changes. The student already
+     set "default_agent": "plan" in the Configuration lesson so every new
+     session starts here, but note that Plan mode is not a hard sandbox
+     and the agent may still occasionally run commands or make API calls
+     that have side effects.
+
+  3. The Build agent: the implementation agent with full access to read,
+     write, and run things. Switch to this when you know what you want
+     to do.
+
+  4. The recommended workflow: since Plan is already the default, the
+     student is already starting safe. The key skill is knowing when to
+     switch to Build and being deliberate about it, especially for complex
+     or unfamiliar tasks.
+
+  After teaching and quizzing, verify completion by asking the student to
+  describe when they'd use Plan vs. Build and confirm they understand that
+  Plan is read-only by default but not a guaranteed sandbox, and that
+  Build can make changes.
 ---
 
 import AgentPrompt from '../../components/AgentPrompt.astro'

@@ -3,7 +3,52 @@ title: "Edit videos"
 slug: edit-videos
 description: "Edit videos from the command line using FFMPEG and yt-dlp."
 order: 3
-agentInstructions: "Guide the student through video editing with FFMPEG and yt-dlp. Adapt depth to their profile. Steps: (1) Install FFMPEG and yt-dlp. On macOS use Homebrew: `brew install ffmpeg yt-dlp`. On Linux: use the system package manager (apt, dnf, etc.) or Homebrew. On Windows: guide them to download from ffmpeg.org and github.com/yt-dlp/yt-dlp. Verify both are installed by running `ffmpeg -version` and `yt-dlp --version`. (2) Find a Creative Commons video on YouTube. Teach them how: go to youtube.com, search for something interesting (nature, city, music, etc.), click Filters, and under Features select Creative Commons. Help them pick a short video (under 5 minutes is ideal). (3) Download the video using yt-dlp. Use `yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]' -o 'source.mp4' URL` to get an MP4 file. Explain what the format selector does. (4) Inspect the video with `ffprobe source.mp4` to see its resolution, duration, codecs, and frame rate. Explain the key fields in the output. (5) Extract frames at one per second: `ffmpeg -i source.mp4 -vf fps=1 frames/frame_%04d.jpg`. Create the frames/ directory first. Explain the fps filter. (6) Extract the audio track: `ffmpeg -i source.mp4 -vn -acodec copy audio.m4a` (or convert to mp3 with `-acodec libmp3lame`). Explain -vn and -acodec. (7) Extract a clip by specifying a start time and duration: `ffmpeg -i source.mp4 -ss 00:00:10 -t 5 -c copy clip.mp4`. Explain -ss, -t, and -c copy. After completing the basics, suggest creative next steps the student might try: making a GIF from the frames, adding a text watermark, creating a slow-motion or sped-up version, combining clips, or extracting a still frame at a specific timestamp. Let the student choose what sounds fun and help them do it. Verify completion by confirming the student has the source video, extracted frames directory, audio file, and video clip in their working directory."
+agentInstructions: |
+  Guide the student through video editing with FFMPEG and yt-dlp. Adapt
+  depth to their profile.
+
+  Steps:
+
+  1. Install FFMPEG and yt-dlp. On macOS use Homebrew:
+     `brew install ffmpeg yt-dlp`. On Linux: use the system package
+     manager (apt, dnf, etc.) or Homebrew. On Windows: guide them to
+     download from ffmpeg.org and github.com/yt-dlp/yt-dlp. Verify both
+     are installed by running `ffmpeg -version` and `yt-dlp --version`.
+
+  2. Find a Creative Commons video on YouTube. Teach them how: go to
+     youtube.com, search for something interesting (nature, city, music,
+     etc.), click Filters, and under Features select Creative Commons.
+     Help them pick a short video (under 5 minutes is ideal).
+
+  3. Download the video using yt-dlp. Use
+     `yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]' -o 'source.mp4' URL`
+     to get an MP4 file. Explain what the format selector does.
+
+  4. Inspect the video with `ffprobe source.mp4` to see its resolution,
+     duration, codecs, and frame rate. Explain the key fields in the
+     output.
+
+  5. Extract frames at one per second:
+     `ffmpeg -i source.mp4 -vf fps=1 frames/frame_%04d.jpg`. Create the
+     frames/ directory first. Explain the fps filter.
+
+  6. Extract the audio track:
+     `ffmpeg -i source.mp4 -vn -acodec copy audio.m4a` (or convert to
+     mp3 with `-acodec libmp3lame`). Explain -vn and -acodec.
+
+  7. Extract a clip by specifying a start time and duration:
+     `ffmpeg -i source.mp4 -ss 00:00:10 -t 5 -c copy clip.mp4`. Explain
+     -ss, -t, and -c copy.
+
+  After completing the basics, suggest creative next steps the student
+  might try: making a GIF from the frames, adding a text watermark,
+  creating a slow-motion or sped-up version, combining clips, or
+  extracting a still frame at a specific timestamp. Let the student choose
+  what sounds fun and help them do it.
+
+  Verify completion by confirming the student has the source video,
+  extracted frames directory, audio file, and video clip in their working
+  directory.
 ---
 
 import AgentPrompt from '../../components/AgentPrompt.astro'

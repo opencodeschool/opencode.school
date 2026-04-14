@@ -3,7 +3,47 @@ title: "Drive a browser"
 slug: drive-a-browser
 description: "Automate your real browser using Chrome DevTools MCP."
 order: 5
-agentInstructions: "Guide the student through setting up and using Chrome DevTools MCP to automate their real browser from OpenCode. Adapt depth to their profile. Steps: (1) Enable remote debugging in Chrome. Have the student navigate to chrome://inspect/#remote-debugging in Chrome and enable the remote debugging feature. (2) Add the Chrome DevTools MCP server to the student's OpenCode global config (~/.config/opencode/opencode.jsonc). Add a `mcp` section if it doesn't exist, with: `\"chrome-devtools\": { \"type\": \"local\", \"command\": [\"npx\", \"-y\", \"chrome-devtools-mcp@latest\", \"--autoConnect\"] }`. The student needs to restart OpenCode after adding this. (3) Recommend starting in Plan Mode for safety — the agent should describe what it intends to do before acting in the browser. Show the student how to switch to Plan Mode in OpenCode. (4) Start with something simple: take a screenshot of whatever tab the student has open. This verifies the connection works. (5) Try a Lighthouse audit on a page the student has open — run an accessibility or performance audit and review the results together. (6) Ask the student what they want to automate. Give them ideas: extract data from a page they're logged into, fill out a form, navigate through a multi-step workflow, compare prices across tabs, summarize a long article, check their bank or school portal. The key insight is that their agent inherits their existing browser session — they're already logged in everywhere, so sites that were never designed for automation become automatable. Help them accomplish whatever they want to try. (7) After completing at least one meaningful browser automation task, discuss what went well and what the limitations are. Verify completion by confirming the student has successfully used the Chrome DevTools MCP to perform at least one browser automation task (screenshot, audit, data extraction, form interaction, etc.)."
+agentInstructions: |
+  Guide the student through setting up and using Chrome DevTools MCP to
+  automate their real browser from OpenCode. Adapt depth to their profile.
+
+  Steps:
+
+  1. Enable remote debugging in Chrome. Have the student navigate to
+     chrome://inspect/#remote-debugging in Chrome and enable the remote
+     debugging feature.
+
+  2. Add the Chrome DevTools MCP server to the student's OpenCode global
+     config (~/.config/opencode/opencode.jsonc). Add a `mcp` section if
+     it doesn't exist, with:
+     `"chrome-devtools": { "type": "local", "command": ["npx", "-y", "chrome-devtools-mcp@latest", "--autoConnect"] }`.
+     The student needs to restart OpenCode after adding this.
+
+  3. Recommend starting in Plan Mode for safety: the agent should describe
+     what it intends to do before acting in the browser. Show the student
+     how to switch to Plan Mode in OpenCode.
+
+  4. Start with something simple: take a screenshot of whatever tab the
+     student has open. This verifies the connection works.
+
+  5. Try a Lighthouse audit on a page the student has open: run an
+     accessibility or performance audit and review the results together.
+
+  6. Ask the student what they want to automate. Give them ideas: extract
+     data from a page they're logged into, fill out a form, navigate
+     through a multi-step workflow, compare prices across tabs, summarize
+     a long article, check their bank or school portal. The key insight is
+     that their agent inherits their existing browser session, so they're
+     already logged in everywhere, and sites that were never designed for
+     automation become automatable. Help them accomplish whatever they want
+     to try.
+
+  7. After completing at least one meaningful browser automation task,
+     discuss what went well and what the limitations are.
+
+  Verify completion by confirming the student has successfully used the
+  Chrome DevTools MCP to perform at least one browser automation task
+  (screenshot, audit, data extraction, form interaction, etc.).
 ---
 
 import AgentPrompt from '../../components/AgentPrompt.astro'

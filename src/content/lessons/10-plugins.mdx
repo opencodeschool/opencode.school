@@ -4,7 +4,48 @@ slug: plugins
 description: "Extend OpenCode with plugins that add tools, hook into events, and integrate external services."
 order: 10
 quiz: true
-agentInstructions: "Cover these four topics: (1) what plugins are — JavaScript or TypeScript modules that extend OpenCode by hooking into events, adding custom tools, or integrating external services; they go beyond MCP servers (covered in the Tools lesson) by letting you modify OpenCode's behavior itself rather than just exposing external tools; reference the Tools lesson so the student sees the progression, (2) where plugins live — two scopes: project-level in .opencode/plugins/ and global in ~/.config/opencode/plugins/; can also install npm packages via the plugin array in opencode.json; dependencies go in a package.json in the same config directory and OpenCode runs bun install automatically at startup, (3) what plugins can do — subscribe to lifecycle events like session.idle or tool.execute.before; add custom tools using the tool() helper from @opencode-ai/plugin with Zod schemas for arguments; inject environment variables; modify tool behavior with before/after hooks; plugins can also ship companion skills that inject workflow guidance into the agent prompt, (4) installing a real plugin — walk through installing the Replicate plugin as a hands-on example: first get a Replicate API token from replicate.com/account/api-tokens, add export REPLICATE_API_TOKEN=r8_your_token_here to their shell profile (.bashrc or .zshrc), then run the quick-install script with curl -sSL https://raw.githubusercontent.com/lucataco/replicate-opencode-plugin/main/install.sh | bash from the project root, which downloads the plugin, a companion skill, and a package.json into the .opencode/ directory; after restarting OpenCode, verify by asking 'What is my Replicate username?' and confirming the agent calls replicate_whoami and returns account info. After teaching and quizzing, verify completion by reading .opencode/plugins/replicate.ts and confirming it exists. After marking the lesson complete, do NOT suggest moving on to the next lesson. Instead, tell the student: plugins are loaded at startup, so they need to quit OpenCode Desktop and reopen it for the new plugin to be fully available — and they can move on to the next lesson after restarting."
+agentInstructions: |
+  Cover these four topics:
+
+  1. What plugins are: JavaScript or TypeScript modules that extend
+     OpenCode by hooking into events, adding custom tools, or integrating
+     external services. They go beyond MCP servers (covered in the Tools
+     lesson) by letting you modify OpenCode's behavior itself rather than
+     just exposing external tools. Reference the Tools lesson so the
+     student sees the progression.
+
+  2. Where plugins live: two scopes: project-level in .opencode/plugins/
+     and global in ~/.config/opencode/plugins/. Can also install npm
+     packages via the plugin array in opencode.json. Dependencies go in a
+     package.json in the same config directory and OpenCode runs
+     bun install automatically at startup.
+
+  3. What plugins can do: subscribe to lifecycle events like session.idle
+     or tool.execute.before. Add custom tools using the tool() helper from
+     @opencode-ai/plugin with Zod schemas for arguments. Inject
+     environment variables. Modify tool behavior with before/after hooks.
+     Plugins can also ship companion skills that inject workflow guidance
+     into the agent prompt.
+
+  4. Installing a real plugin: walk through installing the Replicate
+     plugin as a hands-on example. First get a Replicate API token from
+     replicate.com/account/api-tokens, add
+     `export REPLICATE_API_TOKEN=r8_your_token_here` to their shell
+     profile (.bashrc or .zshrc), then run the quick-install script with
+     `curl -sSL https://raw.githubusercontent.com/lucataco/replicate-opencode-plugin/main/install.sh | bash`
+     from the project root, which downloads the plugin, a companion skill,
+     and a package.json into the .opencode/ directory. After restarting
+     OpenCode, verify by asking "What is my Replicate username?" and
+     confirming the agent calls replicate_whoami and returns account info.
+
+  After teaching and quizzing, verify completion by reading
+  .opencode/plugins/replicate.ts and confirming it exists.
+
+  After marking the lesson complete, do NOT suggest moving on to the next
+  lesson. Instead, tell the student: plugins are loaded at startup, so
+  they need to quit OpenCode Desktop and reopen it for the new plugin to
+  be fully available, and they can move on to the next lesson after
+  restarting.
 ---
 
 import AgentPrompt from '../../components/AgentPrompt.astro'
