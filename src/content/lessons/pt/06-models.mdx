@@ -1,0 +1,128 @@
+---
+title: "Models"
+slug: models
+description: "Escolha e configure modelos de IA no OpenCode."
+order: 6
+quiz: true
+agentInstructions: |
+  Cover these five topics:
+
+  1. The cost vs. capability tradeoff: state-of-the-art models from
+     Anthropic and OpenAI deliver better results on complex tasks but cost
+     money per request. Open-source alternatives are faster and cheaper
+     but less capable. Using OpenCode well means finding the right balance
+     for what you're trying to do.
+
+  2. Where the current model is shown in OpenCode (just below the text
+     input) and how to change it: click the model name or type /model to
+     open the model picker.
+
+  3. The free built-in models via OpenCode Zen and their limitations: most
+     lack vision support and may be less capable on complex tasks.
+
+  4. Cloudflare as a model provider: AI Gateway is a proxy that routes
+     requests to providers like OpenAI and Anthropic through a single
+     Cloudflare bill via Unified Billing, so you don't need separate API
+     keys for each provider. Workers AI is a separate option that runs
+     open-source models directly on Cloudflare's network but is more
+     limited since it only hosts certain models. Both are useful if you
+     already have a Cloudflare account.
+
+  5. Context windows: what they are (the amount of text a model can see at
+     once, measured in tokens), how they differ between models (large
+     flagship models often have 128K-1M token windows, while
+     smaller/cheaper models may have 8K-32K), why it matters (as a
+     conversation grows, older context can be lost or the model slows
+     down), what compaction is (OpenCode summarizes old context to free up
+     space when the window fills), and practical guidance: with big models
+     you rarely need to worry; with smaller models, keep sessions focused,
+     start fresh sessions for new tasks, and watch for signs the model is
+     losing track.
+
+  This lesson has no file-system verification step. Completion is
+  confirmed by the student demonstrating understanding through the quiz.
+---
+
+import AgentPrompt from '../../../components/AgentPrompt.astro'
+
+O modelo que escolhe é provavelmente o fator mais importante para o sucesso das suas sessões no OpenCode. Os modelos de última geração da Anthropic e da OpenAI são altamente capazes — escrevem melhor código, raciocinam sobre problemas complexos e cometem menos erros. Mas custam dinheiro por pedido. As alternativas open-source são mais rápidas e mais baratas, por vezes gratuitas, mas não igualam os modelos de topo em tarefas difíceis. Utilizar bem o OpenCode significa encontrar o equilíbrio certo entre custo e capacidade para o que está a tentar fazer.
+
+Um [modelo](/glossary#model) de IA é o motor por detrás dessa capacidade. Quando escreve uma mensagem, é um modelo que a lê e descobre como responder — seja a escrever código, a explicar um erro ou a executar um comando.
+
+<AgentPrompt title="Models" />
+
+## Ver que modelo está a utilizar
+
+O seu modelo atual é mostrado logo abaixo da caixa de texto na aplicação Desktop. Quando instala o OpenCode pela primeira vez, tem acesso a modelos gratuitos através do [OpenCode Zen](https://opencode.ai/zen) — um conjunto curado de modelos fornecidos pela equipa do OpenCode que foram testados para funcionar bem com o OpenCode. Estes são bons para começar, mas têm limitações — a maioria não tem funcionalidades como visão (a capacidade de interpretar imagens) e podem ser menos capazes em tarefas complexas de programação.
+
+## Mudar o modelo
+
+Para mudar de modelo, clique no nome do modelo abaixo da caixa de texto para abrir o seletor de modelos. Também pode escrever `/model` para ver a lista completa de modelos disponíveis de todos os seus fornecedores configurados.
+
+## Modelos integrados
+
+O OpenCode Zen inclui vários modelos gratuitos de origem. No momento em que escrevemos, estes incluem:
+
+- [Big Pickle](https://opencode.ai/docs/zen/) — Um modelo stealth otimizado para agentes de programação. Atualmente gratuito enquanto a equipa do OpenCode recolhe feedback.
+- [GPT-5 Nano](https://openai.com/index/introducing-gpt-5-4-mini-and-nano/) — O modelo mais pequeno e rápido da OpenAI. Bom para tarefas rápidas, mas menos capaz em raciocínio complexo.
+- [Nemotron 3 Super Free](https://developer.nvidia.com/blog/introducing-nemotron-3-super-an-open-hybrid-mamba-transformer-moe-for-agentic-reasoning/) — Modelo open-weight da NVIDIA com uma [janela de contexto](/glossary#context-window) de 1M tokens, concebido para fluxos de trabalho agênticos.
+- [MiMo V2 Flash Free](https://mimo-v2-flash.org/) — Modelo open-source da Xiaomi, um dos mais rápidos disponíveis. Forte em programação e raciocínio.
+- [MiniMax M2.5 Free](https://www.minimax.io/news/minimax-m25) — Modelo open-weight da MiniMax. Forte em programação e utilização agêntica de ferramentas.
+
+Os modelos específicos podem mudar ao longo do tempo.
+
+Estes modelos não custam nada, o que os torna excelentes para aprender e experimentar. Mas têm contrapartidas: a maioria não tem suporte para visão e tendem a ser menos capazes em tarefas complexas comparados com opções pagas. Se sentir que o OpenCode está com dificuldades em algo, mudar para um modelo melhor é frequentemente a solução.
+
+Para configurar o Zen, clique no nome do modelo abaixo do prompt e depois no botão de definições (na aplicação de terminal, escreva `/connect`), selecione "OpenCode Zen" e siga as instruções.
+
+## OpenCode Go
+
+O [OpenCode Go](https://opencode.ai/go) é um plano de subscrição que lhe dá acesso a modelos open-source capazes por $10/mês ($5 no primeiro mês). Atualmente inclui quatro modelos:
+
+- GLM-5
+- Kimi K2.5
+- MiniMax M2.5
+- MiniMax M2.7
+
+Vale a pena destacar o Kimi K2.5 — tem suporte para visão, o que significa que consegue interpretar imagens que cole na conversa. Isto é útil para tarefas como implementar um design a partir de uma captura de ecrã, depurar uma interface ou ler texto de uma imagem.
+
+Para configurar o Go, clique no nome do modelo abaixo do prompt e depois no botão de definições (na aplicação de terminal, escreva `/connect`), selecione "OpenCode Go" e siga as instruções.
+
+## Cloudflare
+
+Se já tem uma conta Cloudflare, pode utilizá-la como fornecedor de modelos no OpenCode. Uma fatura, sem subscrições adicionais.
+
+**AI Gateway** é um proxy que se posiciona entre o OpenCode e fornecedores como OpenAI, Anthropic, Google AI Studio e outros. Com o [Unified Billing](https://developers.cloudflare.com/ai-gateway/features/unified-billing/), carrega créditos na sua conta Cloudflare e acede a modelos de vários fornecedores sem precisar de chaves API separadas para cada um. Recebe uma única fatura da Cloudflare em vez de gerir contas com cada fornecedor individualmente.
+
+A Cloudflare também oferece **Workers AI**, que executa modelos open-source diretamente na rede da Cloudflare. É mais limitado que o AI Gateway (apenas os modelos que a Cloudflare aloja), mas está disponível se o quiser utilizar.
+
+Para configurar qualquer um dos fornecedores, consulte as secções [Cloudflare AI Gateway](https://opencode.ai/docs/providers/#cloudflare-ai-gateway) e [Cloudflare Workers AI](https://opencode.ai/docs/providers/#cloudflare-workers-ai) da documentação de fornecedores.
+
+## Contexto e janelas de contexto
+
+Cada modelo tem uma [janela de contexto](/glossary#context-window) — a quantidade máxima de texto que consegue "ver" de uma só vez durante uma conversa. Isto inclui as suas mensagens, conteúdo de ficheiros partilhados, resultados de ferramentas e as próprias respostas do modelo. É medida em tokens (aproximadamente ¾ de uma palavra em inglês).
+
+À medida que uma conversa cresce, a janela de contexto enche. Quando está cheia, uma de várias coisas pode acontecer: o modelo pode começar a esquecer partes anteriores da conversa, as respostas podem abrandar, ou o OpenCode pode ativar a **compactação** — resumindo automaticamente partes mais antigas da conversa para libertar espaço. Isto permite que a sessão continue, mas o modelo passa a trabalhar a partir de um resumo em vez do contexto original completo.
+
+Os tamanhos das janelas de contexto variam bastante entre modelos:
+
+- **Modelos principais de grande escala** (Claude, GPT-5, Gemini) têm tipicamente janelas de contexto de 128K tokens ou mais — alguns chegam a 1 milhão de tokens. A essa escala, pode trabalhar em sessões longas, colar ficheiros grandes e executar muitas chamadas de ferramentas sem se preocupar em ficar sem espaço.
+- **Modelos mais pequenos e mais baratos** têm frequentemente janelas de contexto de 8K–32K tokens. Isso é suficiente para tarefas focadas, mas enche-se rapidamente se estiver a colar ficheiros grandes ou a ter uma conversa longa.
+
+### O que isto significa na prática
+
+Com um modelo principal de grande escala, muitas vezes não precisa de pensar no contexto. A janela é grande o suficiente para que sessões típicas — mesmo as complexas — não cheguem perto de a encher.
+
+Com um modelo mais pequeno, a gestão do contexto importa mais. Algumas dicas:
+
+- **Mantenha as sessões focadas.** Uma tarefa por sessão é mais fácil para a janela de contexto do que tentar fazer tudo numa só conversa longa.
+- **Comece de novo para novas tarefas.** Se terminou algo e quer passar para algo não relacionado, inicie uma nova sessão em vez de continuar a antiga.
+- **Esteja atento a sinais de desvio.** Se o modelo começar a dar respostas que parecem ignorar instruções ou contexto anteriores, a janela pode estar a ficar cheia. Iniciar uma nova sessão geralmente resolve.
+
+## Outros fornecedores
+
+O OpenCode suporta mais de 75 fornecedores de modelos. Se já utiliza Anthropic, OpenAI, Google ou outro fornecedor, pode ligá-lo ao OpenCode. Clique no nome do modelo abaixo do prompt e depois no botão de definições (na aplicação de terminal, escreva `/connect`) e selecione o seu fornecedor da lista.
+
+**Os modelos principais mais recentes da Anthropic e da OpenAI são geralmente as opções mais capazes disponíveis. Se puder utilizá-los, obterá melhores resultados.**
+
+Para detalhes completos de configuração, consulte a [documentação de fornecedores](https://opencode.ai/docs/providers/).

@@ -1,0 +1,126 @@
+---
+title: "Permissions"
+slug: permissions
+description: "Controle o que o OpenCode pode e não pode fazer sem pedir."
+order: 4
+quiz: true
+modifiesGlobalConfig: true
+agentInstructions: |
+  Cover these four topics:
+
+  1. The three permission levels: allow (runs immediately), ask (pauses
+     for approval), and deny (blocked entirely). The student already has
+     ask rules for rm and rmdir from the Configuration lesson, so build
+     on that foundation.
+
+  2. Git-specific guardrails: adding "git push *": "ask" and
+     "git checkout *": "ask" inside the bash object to prevent accidental
+     pushes to remote repos and discarding uncommitted changes without
+     confirmation.
+
+  3. The external_directory permission: it controls access to paths
+     outside the project working directory, defaults to "ask", and can be
+     configured with path patterns using ~ or $HOME (e.g.
+     "~/projects/**": "allow").
+
+   4. Per-project permissions: the student can create
+      .opencode/opencode.json in any project directory to override their
+      global permissions for that project. Useful for tightening or
+      loosening rules in specific repos.
+
+  After every write or edit to the config file, re-read it and validate it
+  is well-formed JSON before proceeding.
+
+  After teaching and quizzing, verify completion by reading
+  ~/.config/opencode/opencode.json (or opencode.jsonc) and confirming the bash object has at
+  least one new granular rule beyond what was set up in the Configuration
+  lesson, e.g. a "git push *": "ask" or "git checkout *": "ask" rule.
+---
+
+import AgentPrompt from '../../../components/AgentPrompt.astro'
+
+<AgentPrompt title="Permissions" />
+
+Na lição de Configuração, definiu permissões básicas com regras `"ask"` para comandos destrutivos como `rm` e `rmdir`. Agora vamos ir mais longe, adicionando salvaguardas para operações Git e aprendendo sobre substituições por projeto.
+
+## Os três níveis de permissão
+
+Todas as ações que o OpenCode executa são regidas por uma de três regras:
+
+| Nível   | O que acontece                                                      |
+| ------- | ------------------------------------------------------------------- |
+| `allow` | A ação é executada imediatamente, sem perguntas                     |
+| `ask`   | O OpenCode pausa e pede a sua aprovação antes de prosseguir         |
+| `deny`  | A ação é bloqueada por completo                                     |
+
+Já viu `allow` e `ask` na sua configuração. O nível `deny` bloqueia uma ação totalmente — o OpenCode nem sequer a tenta executar. Utilize `deny` para coisas que nunca quer que aconteçam automaticamente, como `chmod` ou `chown`.
+
+## Quando o OpenCode pede permissão
+
+Quando o OpenCode encontra uma regra `ask`, pausa e mostra-lhe três opções:
+
+- **Allow Once** — aprova esta ação específica, apenas desta vez
+- **Always** — aprova esta ação e semelhantes pelo resto da sessão
+- **Reject** — recusa esta ação específica
+
+Este é o fluxo que verá sempre que o OpenCode tentar executar `rm`, `rmdir`, ou qualquer outro comando limitado por uma regra `ask`.
+
+## Adicionar salvaguardas para Git
+
+Comandos destrutivos de ficheiros não são a única coisa que vale a pena proteger. Operações Git podem ser igualmente consequentes — um `git push` acidental para o ramo errado ou um `git checkout` que descarta trabalho não guardado. Vamos adicionar regras para isso.
+
+Atualize o bloco `bash` na sua configuração global:
+
+```json
+"bash": {
+  "*": "allow",
+  "rm *": "ask",
+  "rmdir *": "ask",
+  "git push *": "ask",
+  "git checkout *": "ask"
+}
+```
+
+Agora o OpenCode irá pausar antes de fazer push para um repositório remoto ou mudar de ramo, dando-lhe oportunidade de confirmar.
+
+## Permissões por projeto
+
+A sua configuração global aplica-se a todos os projetos, mas por vezes precisa de regras diferentes para repositórios diferentes. Pode criar um ficheiro `.opencode/opencode.json` em qualquer diretório de projeto para substituir as suas permissões globais para esse projeto.
+
+Por exemplo, se estiver a trabalhar num projeto em que confia no fluxo de trabalho e quer que o OpenCode faça push livremente:
+
+```json
+{
+  "permission": {
+    "bash": {
+      "git push *": "allow"
+    }
+  }
+}
+```
+
+As definições ao nível do projeto são sobrepostas às globais — substituem apenas as regras específicas que definir, deixando tudo o resto inalterado.
+
+## Trabalhar fora do projeto
+
+O OpenCode está limitado ao diretório onde o iniciou. Se precisar de ler ou editar um ficheiro noutro local da sua máquina, a permissão `external_directory` entra em ação.
+
+Por predefinição, `external_directory` está definido como `"ask"` — o OpenCode irá pausar e perguntar antes de tocar em qualquer coisa fora do projeto. Este é um bom comportamento predefinido: impede que um agente vá parar a diretórios não relacionados sem o seu conhecimento.
+
+Se trabalha regularmente em vários repositórios, pode permitir caminhos externos específicos:
+
+```json
+{
+  "permission": {
+    "external_directory": {
+      "~/projects/**": "allow"
+    }
+  }
+}
+```
+
+Os caminhos permitidos via `external_directory` herdam as mesmas predefinições de ferramentas do seu projeto. Portanto, se `read` estiver definido como `"allow"`, as leituras também são permitidas nesses diretórios externos. Pode adicionar regras adicionais por cima — por exemplo, permitir leituras mas negar edições em caminhos externos.
+
+Para a lista completa de permissões e sintaxe de padrões, consulte a [documentação de permissões](https://opencode.ai/docs/permissions/).
+
+Quando tiver adicionado pelo menos uma nova regra de permissão (como `"git push *": "ask"`) à sua configuração global, esta lição está completa.

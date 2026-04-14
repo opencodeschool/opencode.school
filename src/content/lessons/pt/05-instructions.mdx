@@ -1,0 +1,103 @@
+---
+title: "Instructions"
+slug: instructions
+description: "Escreva instruções personalizadas que o OpenCode segue em todas as sessões."
+order: 5
+quiz: true
+agentInstructions: |
+  Cover these four topics:
+
+  1. What AGENTS.md does: it gives OpenCode standing instructions that
+     apply to every session.
+
+  2. The difference between the global file (~/.config/opencode/AGENTS.md)
+     and a project-level file (AGENTS.md in a project root): global is
+     personal and not committed to git, project-level is shared with
+     teammates.
+
+  3. What makes a good custom instruction: specific, actionable rules like
+     preferred languages, commit message style, or safety guardrails.
+
+  4. How OpenCode loads the file: it reads both global and project
+     AGENTS.md at session start, with project rules layered on top of
+     global ones.
+
+  After teaching and quizzing, verify completion by reading
+  ~/.config/opencode/AGENTS.md and confirming it exists with at least one
+  meaningful custom instruction (not just a placeholder or empty file).
+---
+
+import AgentPrompt from '../../../components/AgentPrompt.astro'
+
+Cada vez que o OpenCode inicia uma nova [sessão](/glossary#session), procura um ficheiro chamado `AGENTS.md` e lê as instruções que lá escreveu. Pense nele como um conjunto de ordens permanentes para o seu assistente de IA — preferências, regras e contexto que se aplicam a tudo o que faz.
+
+O AGENTS.md emergiu como o padrão mais próximo de uma norma da indústria para ficheiros de instrução de IA. Muitas ferramentas de IA de programação — não apenas o OpenCode — procuram um ficheiro com este nome e utilizam o seu conteúdo como instruções permanentes. Ao escrever um AGENTS.md, está a criar algo portátil que funciona em várias ferramentas.
+
+## Global vs. projeto
+
+Existem dois tipos de ficheiros AGENTS.md:
+
+- **Global** (`~/.config/opencode/AGENTS.md`) — Aplica-se a todas as sessões do OpenCode na sua máquina. Este é o seu ficheiro de preferências pessoais. Não é registado no Git nem partilhado com ninguém.
+- **Projeto** (`AGENTS.md` na raiz de um projeto) — Aplica-se apenas quando está a trabalhar nesse projeto. Este normalmente regista-se no Git para que toda a equipa beneficie das mesmas instruções.
+
+Ambos podem existir ao mesmo tempo. Quando isso acontece, o OpenCode lê ambos — primeiro as regras globais, depois as do projeto por cima.
+
+Nesta lição, vamos criar o global.
+
+## Criar o seu AGENTS.md
+
+<AgentPrompt title="Instructions" />
+
+O OpenCode irá criar o ficheiro e preenchê-lo com conteúdo inicial. Aprove quaisquer pedidos de permissão que apareçam.
+
+## O que colocar no ficheiro
+
+Eis um exemplo do que um AGENTS.md global pode conter:
+
+```markdown
+## Communication
+
+- Be concise and direct. Avoid unnecessary filler.
+- Explain what you're about to do before making changes.
+- If you're unsure about something, ask instead of guessing.
+
+## Safety
+
+- Ask before deleting any files or directories.
+- Don't modify .env files without explicit permission.
+- Don't push to git without asking first.
+
+## Style
+
+- Use TypeScript when possible.
+- Prefer named exports over default exports.
+- Write comments only when the code isn't self-explanatory.
+```
+
+Este é apenas um ponto de partida. A beleza do AGENTS.md é que pode torná-lo tão específico quanto quiser. Prefere tabs em vez de espaços? Diga-o. Quer que o OpenCode escreva sempre testes? Adicione essa regra. Detesta emojis em mensagens de commit? Ponha isso por escrito.
+
+Quanto mais específicas forem as suas instruções, melhor o OpenCode funcionará para si.
+
+## Editá-lo a qualquer momento
+
+O seu AGENTS.md é um ficheiro de texto simples. Peça ao OpenCode para o atualizar sempre que quiser adicionar, alterar ou remover regras. As alterações entram em vigor na próxima sessão.
+
+Por exemplo:
+
+```
+Add a rule to my global AGENTS.md: always use semantic commit messages when making git commits.
+```
+
+## Inicializar um AGENTS.md de projeto
+
+Quando começa a trabalhar num projeto com o OpenCode, pode gerar um AGENTS.md específico do projeto utilizando o comando `/init`. Este analisa a sua base de código e cria um AGENTS.md que descreve a estrutura, convenções e stack tecnológica do seu projeto.
+
+```
+/init
+```
+
+O AGENTS.md do projeto deve ser registado no Git. Ajuda o OpenCode (e as sessões do OpenCode dos seus colegas) a compreender melhor o projeto.
+
+Para mais detalhes, consulte a [documentação de regras](https://opencode.ai/docs/rules/).
+
+Quando o seu AGENTS.md global existir em `~/.config/opencode/AGENTS.md`, esta lição está completa.

@@ -1,0 +1,170 @@
+---
+title: "Plugins"
+slug: plugins
+description: "Expande o OpenCode com plugins que adicionam ferramentas, reagem a eventos e integram serviços externos."
+order: 10
+quiz: true
+agentInstructions: |
+  Cover these four topics:
+
+  1. What plugins are: JavaScript or TypeScript modules that extend
+     OpenCode by hooking into events, adding custom tools, or integrating
+     external services. They go beyond MCP servers (covered in the Tools
+     lesson) by letting you modify OpenCode's behavior itself rather than
+     just exposing external tools. Reference the Tools lesson so the
+     student sees the progression.
+
+  2. Where plugins live: two scopes: project-level in .opencode/plugins/
+     and global in ~/.config/opencode/plugins/. Can also install npm
+     packages via the plugin array in opencode.json. Dependencies go in a
+     package.json in the same config directory and OpenCode runs
+     bun install automatically at startup.
+
+  3. What plugins can do: subscribe to lifecycle events like session.idle
+     or tool.execute.before. Add custom tools using the tool() helper from
+     @opencode-ai/plugin with Zod schemas for arguments. Inject
+     environment variables. Modify tool behavior with before/after hooks.
+     Plugins can also ship companion skills that inject workflow guidance
+     into the agent prompt.
+
+  4. Installing a real plugin: walk through installing the Replicate
+     plugin as a hands-on example. First get a Replicate API token from
+     replicate.com/account/api-tokens, add
+     `export REPLICATE_API_TOKEN=r8_your_token_here` to their shell
+     profile (.bashrc or .zshrc), then run the quick-install script with
+     `curl -sSL https://raw.githubusercontent.com/lucataco/replicate-opencode-plugin/main/install.sh | bash`
+     from the project root, which downloads the plugin, a companion skill,
+     and a package.json into the .opencode/ directory. After restarting
+     OpenCode, verify by asking "What is my Replicate username?" and
+     confirming the agent calls replicate_whoami and returns account info.
+
+  After teaching and quizzing, verify completion by reading
+  .opencode/plugins/replicate.ts and confirming it exists.
+
+  After marking the lesson complete, do NOT suggest moving on to the next
+  lesson. Instead, tell the student: plugins are loaded at startup, so
+  they need to quit OpenCode Desktop and reopen it for the new plugin to
+  be fully available, and they can move on to the next lesson after
+  restarting.
+---
+
+import AgentPrompt from '../../../components/AgentPrompt.astro'
+
+Na lição Tools, adicionaste um servidor MCP para dar ao OpenCode acesso a uma ferramenta externa. O MCP é ótimo para ligar a serviços, mas e se quiseres ir mais longe? E se quiseres interagir com o ciclo de vida do OpenCode, modificar o comportamento das ferramentas, injetar variáveis de ambiente ou registar ferramentas inteiramente novas escritas em TypeScript?
+
+É para isso que servem os plugins. Um plugin é um módulo JavaScript ou TypeScript que o OpenCode carrega ao iniciar. Pode subscrever-se a eventos, adicionar ferramentas personalizadas e alterar o funcionamento do OpenCode — não apenas as ferramentas a que tem acesso, mas a forma como as utiliza.
+
+<AgentPrompt title="Plugins" />
+
+## Onde ficam os plugins
+
+Os plugins podem ser instalados em dois níveis:
+
+**Plugins ao nível do projeto** ficam em `.opencode/plugins/` dentro do teu projeto. Estão disponíveis apenas quando trabalhas nesse projeto.
+
+**Plugins globais** ficam em `~/.config/opencode/plugins/`. Estão disponíveis em todos os projetos.
+
+Também podes instalar plugins a partir do npm adicionando-os à tua configuração `opencode.json`:
+
+```json
+{
+  "plugin": ["opencode-helicone-session", "@my-org/custom-plugin"]
+}
+```
+
+Se o teu plugin precisar de pacotes externos, adiciona um `package.json` ao mesmo diretório (`.opencode/package.json` para nível de projeto, ou `~/.config/opencode/package.json` para global). O OpenCode executa `bun install` automaticamente ao iniciar para resolver dependências.
+
+## O que os plugins podem fazer
+
+Na sua forma mais simples, um plugin é uma função que devolve um objeto de hooks:
+
+```ts
+export const MyPlugin = async ({ project, client, $ }) => {
+  return {
+    "session.idle": async ({ event }) => {
+      // Fazer algo quando uma sessão termina
+    },
+  }
+}
+```
+
+Os plugins podem subscrever-se a dezenas de eventos — `session.idle`, `tool.execute.before`, `file.edited`, e muitos mais. Também podem registar ferramentas personalizadas que a IA pode chamar, usando o helper `tool()` do pacote `@opencode-ai/plugin`:
+
+```ts
+import { tool } from "@opencode-ai/plugin"
+
+export const MyPlugin = async () => {
+  return {
+    tool: {
+      greet: tool({
+        description: "Say hello",
+        args: { name: tool.schema.string() },
+        async execute(args) {
+          return `Hello, ${args.name}!`
+        },
+      }),
+    },
+  }
+}
+```
+
+Ferramentas definidas desta forma aparecem ao lado das ferramentas integradas do OpenCode. A IA pode chamá-las sempre que decidir que são relevantes — tal como as ferramentas MCP que configuraste na lição Tools.
+
+Alguns plugins também incluem uma **skill complementar** — um ficheiro markdown em `.opencode/skills/` que injeta orientações de fluxo de trabalho no prompt do sistema do agente, ensinando-o a usar eficazmente as ferramentas do plugin.
+
+Para a lista completa de eventos e tipos de hooks, consulta a [documentação de plugins do OpenCode](https://opencode.ai/docs/plugins/).
+
+## Instalar o plugin Replicate
+
+Vamos instalar um plugin real. O [plugin Replicate](https://github.com/lucataco/replicate-opencode-plugin) dá ao OpenCode a capacidade de pesquisar, explorar e executar modelos de machine learning no [Replicate](https://replicate.com) — diretamente a partir do terminal. Regista quatro ferramentas (`replicate_search`, `replicate_schema`, `replicate_run` e `replicate_whoami`) e inclui uma skill complementar que ensina ao agente um fluxo de trabalho de pesquisar-e-executar.
+
+### Obter um token de API do Replicate
+
+Vai a [replicate.com/account/api-tokens](https://replicate.com/account/api-tokens) e cria um token. Depois adiciona-o ao teu perfil de shell para que fique disponível sempre que abrires um terminal:
+
+```bash
+# Adiciona esta linha ao teu ~/.bashrc ou ~/.zshrc
+export REPLICATE_API_TOKEN=r8_your_token_here
+```
+
+Depois de guardares o ficheiro, abre um novo terminal ou executa `source ~/.bashrc` (ou `source ~/.zshrc`) para o carregar.
+
+### Executar o script de instalação
+
+A partir da raiz do teu projeto, executa:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/lucataco/replicate-opencode-plugin/main/install.sh | bash
+```
+
+Isto transfere três coisas para o teu diretório `.opencode/`:
+
+- `plugins/replicate.ts` — o próprio plugin, que regista quatro ferramentas do Replicate
+- `skills/replicate/SKILL.md` — uma skill complementar com orientações de fluxo de trabalho para o agente
+- `package.json` — declara a dependência `@opencode-ai/plugin` (não substitui um existente)
+
+O plugin é instalado ao nível do projeto. Também podes instalá-lo globalmente copiando os ficheiros para `~/.config/opencode/` — consulta o [README do plugin](https://github.com/lucataco/replicate-opencode-plugin) para detalhes.
+
+## Reiniciar o OpenCode
+
+Os plugins são carregados ao iniciar. **Fecha e reabre o OpenCode Desktop**, depois usa o prompt abaixo para continuar.
+
+<AgentPrompt title="Plugins" prompt={`I've installed the Replicate plugin and restarted OpenCode. Let's verify the Plugins lesson is complete.`} />
+
+## Experimenta
+
+Depois de voltares, pergunta ao OpenCode algo como:
+
+> Qual é o meu nome de utilizador no Replicate?
+
+O agente deve chamar a ferramenta `replicate_whoami` e devolver as informações da tua conta. Isto confirma que o plugin está carregado e o teu token de API está a funcionar.
+
+Agora tenta algo mais interessante:
+
+> Gera um vídeo de um gato num fato espacial
+
+Observa como o agente procura um modelo de geração de imagens, verifica o seu esquema de entrada, executa uma previsão e apresenta o resultado — tudo através das ferramentas do plugin, guiado pela skill complementar.
+
+## Encontrar mais plugins
+
+A [página de ecossistema do OpenCode](https://opencode.ai/docs/ecosystem/) lista plugins criados pela comunidade para logging, notificações, análises e mais. Qualquer pessoa pode criar e partilhar um plugin — se construíste algo útil, considera publicá-lo para outros usarem.

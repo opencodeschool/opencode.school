@@ -1,0 +1,108 @@
+---
+title: "Publicar nas redes sociais"
+slug: post-to-social-media
+description: "Faz brainstorming e cria rascunhos de publicações usando o Typefully."
+order: 6
+agentInstructions: |
+  This exercise requires the Typefully skill. If the student does not have
+  it installed (check ~/.config/opencode/skills/typefully/ or
+  ~/.agents/skills/typefully/ for a SKILL.md file), stop and help them
+  install it first with `npx skills add typefully/agent-skills`. The skill
+  must be loaded before proceeding.
+
+  Guide the student through these steps, adapting depth to their profile:
+
+  1. Check that TYPEFULLY_API_KEY is set in the environment. If not, guide
+     them to create a free Typefully account at https://typefully.com
+     (they can sign up with Google, X/Twitter, or LinkedIn, no credit card
+     needed). After signing up, they should connect at least one social
+     platform (X, LinkedIn, Threads, Bluesky, or Mastodon). Then generate
+     an API key at https://typefully.com/?settings=api and add
+     `TYPEFULLY_API_KEY=your_key_here` to their shell profile (~/.zshrc,
+     ~/.bashrc, etc.) and to the current session with
+     `export TYPEFULLY_API_KEY=your_key_here`. They will need to restart
+     OpenCode after adding the key for it to take effect.
+
+  2. Brainstorm a post with the student. Ask what they want to post
+     about: it could be something they learned recently, a project they're
+     working on, an opinion, a question, anything. Help them shape the
+     idea into a concise, engaging post. Adapt the tone to what feels
+     natural for them.
+
+  3. Create the post as a Typefully draft using the skill. The draft will
+     appear in their Typefully account at typefully.com, where they can
+     review it, edit it, choose which platforms to publish to, and
+     schedule or publish it. Do not publish directly: always create as a
+     draft so the student has a chance to review.
+
+  4. Optionally, try creating a thread: a multi-post series on a topic.
+     Threads work well for explaining a process, telling a story, or
+     breaking down a complex idea. Help the student outline the thread and
+     create it as a draft.
+
+  5. Verify completion by confirming the student has at least one draft
+     visible in their Typefully account (they can check at
+     typefully.com). Ask the student to confirm they can see the draft.
+---
+
+import AgentPrompt from '../../../components/AgentPrompt.astro'
+
+Neste exercício, vais usar o OpenCode para fazer brainstorming e criar rascunhos de publicações nas redes sociais, e depois enviá-los para o [Typefully](https://typefully.com) onde podes rever e publicá-los. O Typefully suporta cinco plataformas: X (Twitter), LinkedIn, Threads, Bluesky e Mastodon — podes publicar em qualquer combinação a partir de um único rascunho.
+
+O fluxo de trabalho é conversacional: discutes ideias com o teu agente, refinam a redação em conjunto, e o agente cria o rascunho no Typefully. Nada é publicado sem a tua revisão.
+
+<AgentPrompt title="Publicar nas redes sociais" prompt='Let&#39;s work on the "Post to social media" exercise together!' />
+
+## Pré-requisitos
+
+Este exercício requer a **skill Typefully** para o OpenCode. Se completaste a [lição de Skills](/lessons/skills), já sabes como instalar skills. Executa:
+
+```
+npx skills add typefully/agent-skills
+```
+
+Também precisas de uma **conta Typefully** e chave de API:
+
+1. Regista-te em [typefully.com](https://typefully.com) — é gratuito, e podes usar a tua conta Google, X ou LinkedIn existente
+2. Liga pelo menos uma plataforma social (X, LinkedIn, Threads, Bluesky ou Mastodon)
+3. Gera uma chave de API em [Definições > API](https://typefully.com/?settings=api)
+4. Adiciona a chave ao teu perfil de shell (`~/.zshrc` ou `~/.bashrc`):
+
+```
+export TYPEFULLY_API_KEY=your_key_here
+```
+
+Reinicia o OpenCode depois de adicionares a chave para que a nova variável de ambiente seja reconhecida.
+
+## O que vais fazer
+
+**Brainstorming** — Diz ao teu agente sobre o que queres publicar. Pode ser algo que aprendeste, um projeto em que estás a trabalhar, uma opinião controversa, uma pergunta — qualquer coisa. O agente ajuda-te a dar forma à ideia e a escrever o texto.
+
+**Rascunho** — O agente cria a tua publicação como rascunho no Typefully. Vais vê-la na aplicação web do Typefully, onde podes editar o texto, escolher em que plataformas publicar, e agendar para uma hora específica ou publicar imediatamente.
+
+**Thread** (opcional) — Se tens uma ideia maior, experimenta criar uma thread — uma série de publicações ligadas que contam uma história ou explicam algo passo a passo. As threads funcionam bem no X e LinkedIn.
+
+As publicações vão sempre primeiro para rascunhos, nunca diretamente para publicação. O Typefully é o passo de revisão onde decides o que vai para o ar e onde.
+
+## Dicas de escrita
+
+Boas publicações nas redes sociais tendem a partilhar alguns traços:
+
+- Começa com um gancho — a primeira linha decide se alguém lê o resto
+- Escreve como falas. Linguagem rígida e formal é rapidamente ignorada.
+- Mantém o foco. Uma ideia por publicação. Se tens três ideias, são três publicações.
+- Faz uma pergunta ou partilha uma opinião — publicações que convidam a uma resposta geram mais interação do que anúncios
+
+O teu agente pode ajudar-te a reescrever e a apertar os teus rascunhos. Não te conformes com a primeira versão.
+
+## Agendamento
+
+O Typefully tem um agendador — podes dizer ao teu agente para agendar uma publicação para uma data e hora específicas em vez de a guardar apenas como rascunho. Isto é útil para publicar nas horas de maior afluência ou preparar o conteúdo de uma semana inteira de uma só vez.
+
+## Ir mais longe
+
+A API do Typefully consegue fazer mais do que criar rascunhos de texto. Algumas coisas para experimentar:
+
+- Anexar imagens, vídeos, GIFs ou PDFs às tuas publicações
+- Organizar rascunhos com etiquetas (útil se publicas sobre vários temas)
+- Publicar o mesmo conteúdo em diferentes plataformas com texto específico para cada uma — por exemplo, uma versão mais curta para o X e uma mais longa para o LinkedIn

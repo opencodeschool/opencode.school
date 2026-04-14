@@ -1,0 +1,87 @@
+---
+title: "Images"
+slug: images
+description: "Partilha imagens e capturas de ecrã com o OpenCode."
+order: 13
+quiz: true
+agentInstructions: |
+  Cover these four topics:
+
+  1. What vision capability is: some models can interpret images pasted
+     into the conversation. They can describe photos, extract text from
+     screenshots, and read UI details including layout, spacing,
+     typography, and color.
+
+  2. How to add images: drag and drop an image into the OpenCode window,
+     or paste with Cmd+V (Mac) or Ctrl+V (Windows/Linux). Images are sent
+     as part of the conversation just like text.
+
+  3. Which models support vision: all Claude models (Haiku, Sonnet, Opus),
+     all GPT-4 and GPT-5 family models, and Gemini models all have
+     confirmed vision support. Kimi K2.5 via OpenCode Go is the most
+     affordable confirmed vision model. The free Zen models (Big Pickle,
+     MiMo, Nemotron, MiniMax Free) do not have confirmed vision support.
+     If a model doesn't acknowledge your image, switch to a
+     vision-capable model.
+
+  4. What vision is useful for: pasting a screenshot of an inspiring UI to
+     replicate, pasting a screenshot of a bug to help diagnose it, pasting
+     a design mockup to implement. The model can interpret colors,
+     spacing, typography, and content from images.
+
+  After teaching and quizzing, verify completion by confirming the student
+  has pasted or attached an image and received a response that references
+  its contents.
+---
+
+import AgentPrompt from '../../../components/AgentPrompt.astro'
+
+Uma das formas mais eficazes de dar contexto útil ao OpenCode é colar uma imagem. Uma imagem vale mesmo mais do que mil palavras — em vez de descreveres um design de que gostas ou um erro que estás a ver, podes simplesmente mostrá-lo.
+
+Isto só funciona se o modelo que estás a usar tiver capacidade de **visão**. Os modelos com visão conseguem olhar para uma imagem e compreender o que nela está: podem descrever fotografias, extrair texto de capturas de ecrã e interpretar detalhes de interface como layout, espaçamento, tipografia e cor.
+
+<AgentPrompt title="Images" />
+
+## Como adicionar uma imagem
+
+Existem duas formas de adicionar uma imagem à tua conversa no OpenCode:
+
+- **Arrastar e largar** — arrasta um ficheiro de imagem do teu ambiente de trabalho ou gestor de ficheiros diretamente para a janela do OpenCode
+- **Colar** — copia uma imagem para a área de transferência e prime `Cmd+V` (Mac) ou `Ctrl+V` (Windows/Linux)
+
+É só isso. A imagem é adicionada à tua mensagem tal como texto. Podes combinar uma imagem com um prompt na mesma mensagem.
+
+## Que modelos suportam visão
+
+Nem todos os modelos conseguem interpretar imagens. Eis o que está confirmado:
+
+| Família de modelos | Fornecedor | Suporte de visão |
+|---|---|---|
+| Claude (Haiku, Sonnet, Opus — qualquer versão) | Anthropic / Zen | Sim |
+| GPT-4, GPT-4.1, GPT-5 family | OpenAI / Zen | Sim |
+| Gemini 3 Flash, Gemini 3.1 Pro | Google / Zen | Sim |
+| Kimi K2.5 | OpenCode Go | Sim |
+| Big Pickle, MiMo, Nemotron, MiniMax Free | Zen (nível gratuito) | Não confirmado |
+
+Se estiveres num modelo Zen gratuito e o modelo não reconhecer a tua imagem ou parecer ignorá-la, é esperado — muda para um modelo com visão confirmada. O Kimi K2.5 via OpenCode Go (10$/mês) é a opção confirmada mais acessível. Qualquer modelo Claude ou GPT-4+ da tua própria chave Anthropic ou OpenAI também funciona.
+
+## Para que é útil a visão
+
+Eis algumas formas concretas em que as imagens ajudam:
+
+**Replicar um design** — cola uma captura de ecrã de uma interface que admiras e pede ao OpenCode para a recriar. O modelo consegue ler o layout, as cores, o espaçamento e a tipografia da imagem.
+
+**Depurar um erro visual** — cola uma captura de ecrã de algo que parece errado. O modelo consegue ver o que estás a ver e ajudar a diagnosticar sem que tenhas de descrever cada detalhe.
+
+**Implementar um mockup** — cola um wireframe ou exportação de ficheiro de design e pede ao OpenCode para o construir. Isto é frequentemente mais rápido e mais preciso do que tentar descrever o design por palavras.
+
+**Extrair texto de uma imagem** — cola uma captura de ecrã contendo texto (um menu, uma caixa de diálogo, uma mensagem de erro) e o modelo consegue lê-lo por ti.
+
+## Experimenta
+
+Certifica-te de que estás a usar um modelo com capacidade de visão e depois tenta um destes:
+
+- Tira uma captura de ecrã de qualquer página web ou aplicação e pergunta: *O que vês nesta imagem?*
+- Cola uma captura de ecrã de uma interface e pergunta: *Como descreverias o design desta interface?*
+
+Se o modelo responder com detalhes da imagem, a visão está a funcionar.

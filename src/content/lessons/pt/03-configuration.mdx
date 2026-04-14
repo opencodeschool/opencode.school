@@ -1,0 +1,181 @@
+---
+title: "Configuration"
+slug: configuration
+description: "Crie um ficheiro de configuração global para o OpenCode."
+order: 3
+quiz: true
+modifiesGlobalConfig: true
+agentInstructions: |
+  Cover these four topics:
+
+  1. What the global config file is and why it applies to all OpenCode
+     sessions across every project on the machine.
+
+   2. Where the config file lives: ~/.config/opencode/opencode.json on
+      macOS/Linux, C:\Users\<Name>\.config\opencode\opencode.json on
+      Windows.
+
+  3. What "default_agent": "plan" does: it starts every new session in
+     Plan mode, which is read-only and safe. The student can switch to
+     Build mode when they're ready to make changes.
+
+  4. Permission basics and the instructions URL: "*": "allow" lets most
+     actions through automatically. "external_directory": "ask" means
+     OpenCode will pause and ask before touching files outside the project
+     directory (this is the default, but setting it explicitly makes the
+     config self-documenting). The bash object adds "ask" rules for
+     destructive commands like rm and rmdir so OpenCode pauses before
+     running them. The "instructions" array loads the student's personal
+     OpenCode School URL ({origin}/api/instructions/{studentId}) so
+     OpenCode always knows who they are.
+
+  CRITICAL: PROTECTING THE STUDENT'S GLOBAL OPENCODE CONFIG
+
+  If ~/.config/opencode/opencode.json (or opencode.jsonc) already exists,
+  you MUST:
+  (a) Read it first and store its full contents.
+  (b) Create a timestamped backup copy (e.g.
+      opencode.json.backup-2025-01-15T10-30-00) in the same directory.
+  (c) Tell the student where the backup is so they can restore it if
+      needed.
+
+  NEVER use the Write tool to replace the student's existing global config
+  wholesale. Instead, use the Edit tool to make surgical changes: add
+  missing keys, append to arrays, etc. If no global config file exists
+  yet, you may create one from scratch. If the student explicitly asks you
+  to overwrite their global config, still create a backup first and
+  mention its path. This protection applies only to the student's global
+  OpenCode config file, not to other files created during lessons.
+
+  After every write or edit to the config file, re-read it and validate it
+  is well-formed JSON before proceeding.
+
+  After teaching and quizzing, verify completion by reading
+  ~/.config/opencode/opencode.json (or ~/.config/opencode/opencode.jsonc
+  if the .json file does not exist) and confirming it contains:
+  - "default_agent": "plan"
+  - A "permission" object with "*": "allow", "external_directory": "ask",
+    and at least one "ask" rule inside a bash object (e.g. "rm *": "ask")
+  - An "instructions" array that includes the student's personal OpenCode
+    School instructions URL ({origin}/api/instructions/{studentId} with
+    their actual student ID)
+
+  Either file extension is acceptable. Config changes require restarting
+  OpenCode to take effect. After verifying, instruct the student to quit
+  OpenCode Desktop so the new config takes effect next time they open it.
+---
+
+import AgentPrompt from '../../../components/AgentPrompt.astro'
+
+Cada lição tem um prompt que pode copiar e colar no OpenCode. O prompt inclui o seu ID de estudante e uma hiperligação para este site, o que dá ao OpenCode tudo o que precisa para ensinar a lição e acompanhar o seu progresso.
+
+Nesta lição, vai criar um **ficheiro de configuração global** que será aplicado a todas as sessões do OpenCode em todos os projetos na sua máquina. Inclui definições como qual [modelo](/glossary#model) de IA utilizar, que [permissões](/glossary#permissions) conceder e como o [agente](/glossary#agent) se deve comportar. Vai ajustar a sua configuração global ao longo do tempo para que o OpenCode funcione exatamente como pretende.
+
+**Se já criou um ficheiro de configuração global, ótimo — não será substituído.** O OpenCode irá fundir as definições em falta.
+
+<AgentPrompt title="Configuration" />
+
+## Criar o ficheiro de configuração global
+
+Quando o OpenCode inicia, procura um ficheiro de configuração global nesta localização:
+
+<div id="config-location-section">
+
+<div id="config-location-macos" class="hidden">
+
+```
+~/.config/opencode/opencode.json
+```
+
+O `~` é o seu diretório pessoal (`/Users/seunome`).
+
+</div>
+
+<div id="config-location-linux" class="hidden">
+
+```
+~/.config/opencode/opencode.json
+```
+
+O `~` é o seu diretório pessoal (`/home/seunome`).
+
+</div>
+
+<div id="config-location-windows" class="hidden">
+
+```
+~/.config/opencode/opencode.json
+```
+
+Isto fica dentro do seu diretório pessoal do WSL. No Windows nativo: `C:\Users\<SeuNome>\.config\opencode\opencode.json`.
+
+</div>
+
+<div id="config-location-other" class="hidden">
+
+- **macOS / Linux**: `~/.config/opencode/opencode.json`
+- **Windows (WSL)**: `~/.config/opencode/opencode.json` (dentro do seu diretório pessoal do WSL)
+- **Windows (nativo)**: `C:\Users\<SeuNome>\.config\opencode\opencode.json`
+
+</div>
+
+</div>
+
+O OpenCode irá criar o diretório e o ficheiro por si. **Se vir algum pedido de confirmação, escolha "Allow Once."** Poderá ver alguns pedidos durante este passo, por isso aprove cada um.
+
+## Definir alguma configuração básica
+
+Eis como o seu ficheiro de configuração ficará:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "plan",
+  "permission": {
+    "*": "allow",
+    "external_directory": "ask",
+    "bash": {
+      "*": "allow",
+      "rm *": "ask",
+      "rmdir *": "ask"
+    }
+  },
+  "instructions": [
+    "https://<this-site>/api/instructions/<your-student-id>"
+  ]
+}
+```
+
+Vamos substituir o seu ID de estudante real quando criarmos o ficheiro. Algumas notas:
+
+- `"default_agent": "plan"` significa que cada nova sessão começa em [modo Plan](/glossary#agent), um agente apenas de leitura que pode ler os seus ficheiros e discutir o seu projeto mas não fará alterações. Quando estiver pronto para agir, muda para Build. Vamos abordar isto em detalhe na lição [Agents](/agents).
+- `"external_directory": "ask"` significa que o OpenCode irá pausar e perguntar antes de ler ou editar ficheiros fora do diretório do projeto atual. Este é o comportamento predefinido, mas defini-lo explicitamente torna a configuração auto-documentada.
+- O bloco `"bash"` dentro de `"permission"` adiciona salvaguardas para comandos do terminal. A maioria dos comandos executa automaticamente, mas `rm` (apagar ficheiros) e `rmdir` (remover diretórios) irão pausar e pedir a sua aprovação primeiro. Vamos adicionar mais regras de permissão na próxima lição.
+- O URL de instruções permite ao OpenCode obter a sua inscrição na escola no início de cada sessão, para que tenha o seu perfil de estudante disponível mesmo quando está a trabalhar noutro assunto.
+
+## Reiniciar o OpenCode
+
+As alterações de configuração entram em vigor na próxima vez que o OpenCode iniciar. Quando o ficheiro estiver criado, **feche o OpenCode Desktop** e reabra-o, depois volte a esta sessão de chat para que o OpenCode possa verificar a sua configuração.
+
+## Verificar se a configuração está a funcionar
+
+Vamos pedir ao OpenCode para verificar que o ficheiro de configuração existe e está a ser aplicado corretamente.
+
+<AgentPrompt title="Configuration" prompt={`Let's check that the "Configuration" lesson is complete.`} />
+
+<script>{`
+document.addEventListener("DOMContentLoaded", function() {
+  var ua = navigator.userAgent;
+  var os = "other";
+  if (/Macintosh|Mac OS X/.test(ua)) os = "macos";
+  else if (/Windows/.test(ua)) os = "windows";
+  else if (/Linux/.test(ua)) os = "linux";
+
+  ["config-location"].forEach(function(prefix) {
+    var el = document.getElementById(prefix + "-" + os);
+    if (el) el.classList.remove("hidden");
+  });
+});
+`}</script>
+
+A configuração também suporta modelos, servidores MCP, comandos personalizados, agentes, temas e atalhos de teclado — abordaremos esses temas em lições posteriores. Referência completa: [documentação de configuração do OpenCode](https://opencode.ai/docs/config/).
