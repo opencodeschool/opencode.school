@@ -12,8 +12,8 @@ agentInstructions: |
 
   2. The two ways to define them: markdown files in
      ~/.config/opencode/commands/ (global) or .opencode/commands/
-     (per-project), or as JSON entries in opencode.jsonc under the
-     "command" key.
+      (per-project), or as JSON entries in opencode.json under the
+      "command" key.
 
   3. The $ARGUMENTS placeholder: how to pass arguments when invoking a
      command so the same command can be adapted at runtime.
@@ -57,11 +57,11 @@ Give me a brief overview of this project. What is it? What are the main files an
 
 Now you can run `/summarize` in any OpenCode session.
 
-### JSON in opencode.jsonc
+### JSON in opencode.json
 
 You can also define commands directly in your config file:
 
-```jsonc
+```json
 {
   "$schema": "https://opencode.ai/config.json",
   "command": {

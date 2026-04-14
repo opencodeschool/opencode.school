@@ -29,10 +29,10 @@ agentInstructions: |
      selective about how many you enable.
 
   After every write or edit to the config file, re-read it and validate it
-  is well-formed JSONC before proceeding.
+  is well-formed JSON before proceeding.
 
   After teaching and quizzing, verify completion by reading
-  ~/.config/opencode/opencode.jsonc and confirming an "mcp" block exists
+  ~/.config/opencode/opencode.json (or opencode.jsonc) and confirming an "mcp" block exists
   with at least one server entry.
 
   After marking the lesson complete, do NOT suggest moving on to the next
@@ -70,9 +70,9 @@ OpenCode comes with built-in tools for things like reading files, editing code, 
 
 Let's install a local MCP server that fetches live weather data from [Open-Meteo](https://open-meteo.com) — a free, public weather API with no account or API key required.
 
-Even though MCP servers are managed in the global OpenCode config, you don't have to edit the file yourself — you can just ask OpenCode to do it. Try asking it to add the following to your `~/.config/opencode/opencode.jsonc`:
+Even though MCP servers are managed in the global OpenCode config, you don't have to edit the file yourself — you can just ask OpenCode to do it. Try asking it to add the following to your `~/.config/opencode/opencode.json`:
 
-```jsonc
+```json
 "mcp": {
   "open-meteo": {
     "type": "local",

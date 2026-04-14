@@ -23,16 +23,16 @@ agentInstructions: |
      configured with path patterns using ~ or $HOME (e.g.
      "~/projects/**": "allow").
 
-  4. Per-project permissions: the student can create
-     .opencode/opencode.jsonc in any project directory to override their
-     global permissions for that project. Useful for tightening or
-     loosening rules in specific repos.
+   4. Per-project permissions: the student can create
+      .opencode/opencode.json in any project directory to override their
+      global permissions for that project. Useful for tightening or
+      loosening rules in specific repos.
 
   After every write or edit to the config file, re-read it and validate it
-  is well-formed JSONC before proceeding.
+  is well-formed JSON before proceeding.
 
   After teaching and quizzing, verify completion by reading
-  ~/.config/opencode/opencode.jsonc and confirming the bash object has at
+  ~/.config/opencode/opencode.json (or opencode.jsonc) and confirming the bash object has at
   least one new granular rule beyond what was set up in the Configuration
   lesson, e.g. a "git push *": "ask" or "git checkout *": "ask" rule.
 ---
@@ -71,7 +71,7 @@ Destructive file commands aren't the only thing worth guarding. Git operations c
 
 Update the `bash` block in your global config:
 
-```jsonc
+```json
 "bash": {
   "*": "allow",
   "rm *": "ask",
@@ -85,12 +85,11 @@ Now OpenCode will pause before pushing to a remote or checking out a branch, giv
 
 ## Per-project permissions
 
-Your global config applies to every project, but sometimes you need different rules for different repos. You can create a `.opencode/opencode.jsonc` file in any project directory to override your global permissions for that project.
+Your global config applies to every project, but sometimes you need different rules for different repos. You can create a `.opencode/opencode.json` file in any project directory to override your global permissions for that project.
 
 For example, if you're working on a project where you trust the workflow and want OpenCode to push freely:
 
-```jsonc
-// .opencode/opencode.jsonc (in the project root)
+```json
 {
   "permission": {
     "bash": {
@@ -110,11 +109,10 @@ By default, `external_directory` is set to `"ask"` — OpenCode will pause and a
 
 If you regularly work across multiple repos, you can allow specific external paths:
 
-```jsonc
+```json
 {
   "permission": {
     "external_directory": {
-      // Allow access to sibling projects
       "~/projects/**": "allow"
     }
   }

@@ -542,7 +542,7 @@ export const GET: APIRoute = (context) => {
 						agentInstructions: {
 							type: "string",
 							example:
-								"Verify completion by reading ~/.config/opencode/opencode.jsonc and confirming it contains the expected keys.",
+								"Verify completion by reading ~/.config/opencode/opencode.json and confirming it contains the expected keys.",
 						},
 						content: {
 							type: "string",

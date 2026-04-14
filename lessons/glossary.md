@@ -22,7 +22,7 @@ A slash-prefixed action you can run inside OpenCode, like `/models` to switch AI
 
 ## config
 
-Short for configuration. A file (usually `opencode.jsonc`) where you define preferences for how OpenCode behaves — which [model](#model) to use, what [permissions](#permissions) to grant, which [MCP servers](#mcp) to connect, and more. Config files can be global (applying to all sessions) or per-project.
+Short for configuration. A file (usually `opencode.json`) where you define preferences for how OpenCode behaves — which [model](#model) to use, what [permissions](#permissions) to grant, which [MCP servers](#mcp) to connect, and more. Config files can be global (applying to all sessions) or per-project.
 
 ## context window
 
