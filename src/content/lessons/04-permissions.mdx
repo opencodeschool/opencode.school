@@ -65,6 +65,13 @@ When OpenCode hits an `ask` rule, it pauses and shows you three options:
 
 This is the flow you'll see whenever OpenCode tries to run `rm`, `rmdir`, or any other command gated by an `ask` rule.
 
+<figure class="text-center my-8">
+  <img src="/images/allow-always-keyboard.jpg" alt="A novelty Apple keyboard with three oversized keys: Allow once, Allow always, and Reject" class="rounded-lg mx-auto" />
+  <figcaption class="mt-2 text-sm text-gray-500 dark:text-stone-400">
+    <a href="https://x.com/mattrothenberg/status/2031383560062370235" target="_blank" rel="noopener noreferrer">Permission fatigue is real.</a>
+  </figcaption>
+</figure>
+
 ## Add Git guardrails
 
 Destructive file commands aren't the only thing worth guarding. Git operations can be just as consequential — an accidental `git push` to the wrong branch or a `git checkout` that discards uncommitted work. Let's add rules for those.
