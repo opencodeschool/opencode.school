@@ -11,6 +11,13 @@ export interface ChangelogEntry {
 
 export const changelogEntries: ChangelogEntry[] = [
 	{
+		slug: "github-corner-icon",
+		date: "2026-04-15",
+		title: "GitHub corner icon",
+		description:
+			"Added a fixed-position Octocat icon in the top-right corner on desktop to make it easier to discover that OpenCode School is open source.",
+	},
+	{
 		slug: "inbox-zero-exercise",
 		date: "2026-04-15",
 		title: "New exercise: Achieve inbox zero",
