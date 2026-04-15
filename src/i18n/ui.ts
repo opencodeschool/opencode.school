@@ -178,6 +178,11 @@ const ui = {
 
 		// Language switcher
 		"lang.switch": "Language",
+
+		// Language detection banner (shown in the *detected* language)
+		"lang.banner.pt":
+			'Este site está disponível em Português. <a href="/pt/" class="underline underline-offset-2 font-medium">Ver em Português</a>',
+		"lang.bannerDismiss": "Dismiss",
 	},
 
 	pt: {
@@ -354,6 +359,11 @@ const ui = {
 
 		// Language switcher
 		"lang.switch": "Idioma",
+
+		// Language detection banner
+		"lang.banner.pt":
+			'Este site está disponível em Português. <a href="/pt/" class="underline underline-offset-2 font-medium">Ver em Português</a>',
+		"lang.bannerDismiss": "Fechar",
 	},
 } as const;
 

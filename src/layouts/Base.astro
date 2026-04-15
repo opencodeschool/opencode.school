@@ -750,6 +750,10 @@ const currentPath = Astro.url.pathname;
 
       <!-- Main content -->
       <main class="flex-1 min-w-0 p-6 lg:p-12 max-w-3xl">
+        <div id="locale-banner" class="hidden mb-6 rounded-lg border border-gray-200 dark:border-stone-700 bg-gray-50 dark:bg-stone-900/50 px-4 py-3 text-sm text-gray-600 dark:text-stone-400 flex items-center justify-between gap-3">
+          <span id="locale-banner-text"></span>
+          <button id="locale-banner-dismiss" class="shrink-0 text-gray-400 dark:text-stone-500 hover:text-gray-600 dark:hover:text-stone-300 cursor-pointer" aria-label="Dismiss">&times;</button>
+        </div>
         <slot />
       </main>
     </div>
@@ -812,6 +816,50 @@ const currentPath = Astro.url.pathname;
             });
           }, 1000);
         }
+
+        // Language detection banner: suggest available locale if the user's
+        // browser language matches and they haven't dismissed the banner.
+        (function() {
+          var currentLocale = document.documentElement.getAttribute("data-locale") || "en";
+          if (currentLocale !== "en") return; // Only show on default locale pages
+          if (localStorage.getItem("locale-banner-dismissed")) return;
+
+          var bannerMessages = {
+            pt: 'Este site está disponível em Português. <a href="/pt/" class="underline underline-offset-2 font-medium">Ver em Português</a>'
+          };
+
+          var detected = null;
+          var langs = navigator.languages || [navigator.language || ""];
+          for (var i = 0; i < langs.length; i++) {
+            var code = langs[i].split("-")[0].toLowerCase();
+            if (code !== "en" && bannerMessages[code]) {
+              detected = code;
+              break;
+            }
+          }
+          if (!detected) return;
+
+          var banner = document.getElementById("locale-banner");
+          var bannerText = document.getElementById("locale-banner-text");
+          var dismissBtn = document.getElementById("locale-banner-dismiss");
+          if (!banner || !bannerText) return;
+
+          bannerText.innerHTML = bannerMessages[detected];
+          banner.classList.remove("hidden");
+
+          function dismissBanner() {
+            banner.classList.add("hidden");
+            localStorage.setItem("locale-banner-dismissed", "true");
+          }
+
+          if (dismissBtn) dismissBtn.addEventListener("click", dismissBanner);
+
+          // Also dismiss when clicking the locale link
+          var link = bannerText.querySelector("a");
+          if (link) link.addEventListener("click", function() {
+            localStorage.setItem("locale-banner-dismissed", "true");
+          });
+        })();
       })();
     </script>
   </body>
