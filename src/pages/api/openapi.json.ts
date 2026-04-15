@@ -626,6 +626,12 @@ export const GET: APIRoute = (context) => {
 					description:
 						"Student preferences and background from the interview lesson. All fields are optional.",
 					properties: {
+						language: {
+							type: "string",
+							enum: ["en", "pt"],
+							description:
+								"Preferred language for course content and agent responses. Set during enrollment and confirmed during the interview.",
+						},
 						codingExperience: {
 							type: "string",
 							enum: ["rookie", "dabbler", "builder", "sage"],

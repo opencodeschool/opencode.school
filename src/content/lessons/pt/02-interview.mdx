@@ -12,13 +12,18 @@ agentInstructions: |
 
   Present ALL of the following questions at once in a single message using multiple question tool calls in parallel. Include a "Skip" option in every question. This keeps things fast — the student answers everything in one pass instead of waiting between questions.
 
-  After the student responds, check whether they answered "Builder" or "Sage" for the coding experience question. If so, ask one follow-up question about programming languages (see Question 7 below). If not, skip it.
+  After the student responds, check whether they answered "Builder" or "Sage" for the coding experience question. If so, ask one follow-up question about programming languages (see Question 8 below). If not, skip it.
 
-  Question 1 — How much programming experience do you have?
+  Question 1 — What language would you like the course in?
+  Single select. Options: English, Português.
+  Default to the language the student used in their prompt (if the prompt says "Responde-me em português" or is otherwise in Portuguese, default to Português; otherwise default to English). Pre-select the default but let the student change it.
+  API value for language: "en" or "pt".
+
+  Question 2 — How much programming experience do you have?
   Single select. Options: Rookie (I've never written code before), Dabbler (I've tinkered a bit), Builder (I build things regularly), Sage (I live in the code).
   API value for codingExperience: "rookie", "dabbler", "builder", or "sage".
 
-  Question 2 — Which AI tools have you used?
+  Question 3 — Which AI tools have you used?
   Multi-select (select all that apply). Include "None of these" as an option. Use these labels and descriptions:
   - ChatGPT (OpenAI's chat assistant)
   - Gemini (Google's chat assistant)
@@ -28,24 +33,24 @@ agentInstructions: |
   - GitHub Copilot (Editor autocomplete)
   API value for aiTools: array of "chatgpt", "gemini", "claude", "claude-code", "openai-codex", "copilot". Send an empty array if they select "None of these" or skip.
 
-  Question 3 — What code editor do you use?
+  Question 4 — What code editor do you use?
   Single select. Options: VS Code, Cursor, Windsurf, Zed, Vim, Emacs, Other, I don't have one yet.
   API value for editor: "vscode", "cursor", "windsurf", "zed", "vim", "emacs", "other", or "none".
 
-  Question 4 — How comfortable are you with the terminal?
+  Question 5 — How comfortable are you with the terminal?
   Single select. Options: Not at all, I can get around, Very comfortable.
   API value for terminalComfort: "none", "some", or "very".
 
-  Question 5 — How do you prefer to learn?
+  Question 6 — How do you prefer to learn?
   Single select. Options: Explain concepts first, Jump into hands-on tasks, Show me examples.
   API value for learningStyle: "concepts-first", "hands-on", or "examples".
 
-  Question 6 — How much detail do you want in explanations?
+  Question 7 — How much detail do you want in explanations?
   Single select. Options: Keep it brief, Some context is nice, Give me all the details.
   API value for depthPreference: "brief", "some-context", or "all-details".
 
-  Question 7 — What programming languages do you use? (CONDITIONAL — only ask as a follow-up)
-  Only ask this if the student answered "Builder" or "Sage" for question 1. Skip it entirely for Rookie, Dabbler, or if question 1 was skipped.
+  Question 8 — What programming languages do you use? (CONDITIONAL — only ask as a follow-up)
+  Only ask this if the student answered "Builder" or "Sage" for question 2. Skip it entirely for Rookie, Dabbler, or if question 2 was skipped.
   Multi-select (select all that apply). Options: JavaScript/TypeScript, Python, Go, Rust.
   API value for languages: array of "javascript", "typescript", "python", "go", "rust". For "JavaScript/TypeScript" send both "javascript" and "typescript".
 

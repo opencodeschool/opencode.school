@@ -412,10 +412,11 @@ const currentPath = Astro.url.pathname;
 
         async enroll() {
           const deviceId = this.getDeviceId();
+          const language = document.documentElement.getAttribute("data-locale") || "en";
           const res = await fetch("/api/enroll", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ deviceId }),
+            body: JSON.stringify({ deviceId, language }),
           });
           if (!res.ok) throw new Error("Enrollment failed");
           const data = await res.json();

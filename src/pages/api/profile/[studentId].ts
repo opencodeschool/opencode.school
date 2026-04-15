@@ -51,6 +51,7 @@ export const GET: APIRoute = async ({ params }) => {
 	});
 };
 
+const VALID_LOCALE = ["en", "pt"];
 const VALID_CODING_EXPERIENCE = ["rookie", "dabbler", "builder", "sage"];
 const VALID_AI_TOOLS = [
 	"chatgpt",
@@ -81,6 +82,16 @@ function validateProfile(body: Record<string, unknown>): {
 } {
 	const profile: Partial<StudentProfile> = {};
 	const errors: string[] = [];
+
+	if ("language" in body) {
+		if (VALID_LOCALE.includes(body.language as string)) {
+			profile.language = body.language as string;
+		} else {
+			errors.push(
+				`Invalid language: must be one of ${VALID_LOCALE.join(", ")}`,
+			);
+		}
+	}
 
 	if ("codingExperience" in body) {
 		if (VALID_CODING_EXPERIENCE.includes(body.codingExperience as string)) {
