@@ -52,31 +52,38 @@ OpenCode will create the file and populate it with starter content. Approve any 
 
 ## What to put in it
 
-Here's an example of what a global AGENTS.md might look like:
+Here's an example of what a global AGENTS.md might look like. Notice it's not just technical rules: it includes personal context, communication preferences, and writing style alongside coding conventions:
 
 ```markdown
+## About me
+
+- My name is Ren. I'm a frontend developer based in Melbourne.
+- My GitHub username is `rendev` and my email is `ren@example.com`.
+- I primarily work in TypeScript and Python.
+
 ## Communication
 
-- Be concise and direct. Avoid unnecessary filler.
-- Explain what you're about to do before making changes.
-- If you're unsure about something, ask instead of guessing.
+- Be concise. Don't oversell changes or use fancy words like
+  "comprehensive", "utilize", "streamline", or "leverage".
+- Never use em dashes. Use commas, colons, or separate sentences instead.
+- If your last message included URLs, list them at the end so I can
+  open them easily.
 
-## Safety
+## Writing
 
-- Ask before deleting any files or directories.
-- Don't modify .env files without explicit permission.
-- Don't push to git without asking first.
+- When writing pull request descriptions, start with "This PR..." and
+  keep it to 2-3 sentences.
+- When writing markdown, avoid headings smaller than H2 and don't
+  use bold for emphasis.
 
-## Style
+## Working with Git
 
-- Use TypeScript when possible.
-- Prefer named exports over default exports.
-- Write comments only when the code isn't self-explanatory.
+- Always use semantic commit prefixes (feat:, fix:, docs:, etc.).
+- Never push to the main branch. Always push to a feature branch.
+- Run the project's lint script before committing, if one exists.
 ```
 
-This is just a starting point. The beauty of AGENTS.md is that you can make it as specific as you want. Prefer tabs over spaces? Say so. Want OpenCode to always write tests? Add that rule. Hate emoji in commit messages? Put it in writing.
-
-The more specific your instructions, the better OpenCode will work for you.
+This is just a starting point. Your instructions can cover anything: how you like to communicate, your preferred tools, personal context the agent should know, writing style, safety rules, or coding conventions. The more specific your instructions, the better OpenCode will work for you.
 
 ## Edit it anytime
 
