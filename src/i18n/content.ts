@@ -6,71 +6,51 @@ import { getCollection } from "astro:content";
 import { defaultLocale, type Locale } from "./locales";
 
 /**
- * Astro's glob loader generates content collection IDs from the file path
- * relative to the base directory, stripping numeric prefixes. For files in
- * `src/content/lessons/en/01-installation.mdx`, the ID might be just
- * "installation" or "en/installation" depending on the Astro version.
+ * Get lessons for a specific locale with per-item fallback.
  *
- * We detect the ID format at runtime and filter accordingly. If no items
- * have a locale prefix in their ID (because Astro strips directory structure),
- * we return all items (since they're all from the default locale).
- */
-
-function hasLocalePrefix(
-	items: Array<{ id: string }>,
-	locale: string,
-): boolean {
-	return items.some(
-		(item) =>
-			item.id.startsWith(`${locale}/`) || item.id.startsWith(`${locale}\\`),
-	);
-}
-
-/**
- * Get lessons for a specific locale, falling back to the default locale.
+ * For each English lesson, use the translated version if it exists in the
+ * requested locale. Otherwise fall back to the English version. This ensures
+ * new English content is visible on all locale pages even before it's
+ * translated.
  */
 export async function getLocalizedLessons(locale: Locale) {
 	const all = await getCollection("lessons");
 
-	// If items have locale prefixes in their IDs, filter by locale
-	if (hasLocalePrefix(all, locale)) {
-		return all
-			.filter((l) => l.id.startsWith(`${locale}/`))
-			.sort((a, b) => a.data.order - b.data.order);
-	}
-
-	// If requesting non-default locale and those items exist with prefix, use them
-	if (locale !== defaultLocale && hasLocalePrefix(all, defaultLocale)) {
-		// Fall back to default locale items
+	if (locale === defaultLocale) {
 		return all
 			.filter((l) => l.id.startsWith(`${defaultLocale}/`))
 			.sort((a, b) => a.data.order - b.data.order);
 	}
 
-	// No locale prefix detected: return all items sorted by order
-	// This happens when all content is in the default locale
-	return all.sort((a, b) => a.data.order - b.data.order);
+	const enLessons = all.filter((l) => l.id.startsWith(`${defaultLocale}/`));
+	const localeLessons = all.filter((l) => l.id.startsWith(`${locale}/`));
+	const localeBySlug = new Map(localeLessons.map((l) => [l.data.slug, l]));
+
+	// For each English lesson, prefer the locale version if available
+	return enLessons
+		.map((en) => localeBySlug.get(en.data.slug) || en)
+		.sort((a, b) => a.data.order - b.data.order);
 }
 
 /**
- * Get exercises for a specific locale, falling back to the default locale.
+ * Get exercises for a specific locale with per-item fallback.
  */
 export async function getLocalizedExercises(locale: Locale) {
 	const all = await getCollection("exercises");
 
-	if (hasLocalePrefix(all, locale)) {
-		return all
-			.filter((e) => e.id.startsWith(`${locale}/`))
-			.sort((a, b) => a.data.order - b.data.order);
-	}
-
-	if (locale !== defaultLocale && hasLocalePrefix(all, defaultLocale)) {
+	if (locale === defaultLocale) {
 		return all
 			.filter((e) => e.id.startsWith(`${defaultLocale}/`))
 			.sort((a, b) => a.data.order - b.data.order);
 	}
 
-	return all.sort((a, b) => a.data.order - b.data.order);
+	const enExercises = all.filter((e) => e.id.startsWith(`${defaultLocale}/`));
+	const localeExercises = all.filter((e) => e.id.startsWith(`${locale}/`));
+	const localeBySlug = new Map(localeExercises.map((e) => [e.data.slug, e]));
+
+	return enExercises
+		.map((en) => localeBySlug.get(en.data.slug) || en)
+		.sort((a, b) => a.data.order - b.data.order);
 }
 
 /**

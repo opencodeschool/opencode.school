@@ -52,31 +52,38 @@ O OpenCode irá criar o ficheiro e preenchê-lo com conteúdo inicial. Aprove qu
 
 ## O que colocar no ficheiro
 
-Eis um exemplo do que um AGENTS.md global pode conter:
+Eis um exemplo do que um AGENTS.md global pode conter. Repare que não são apenas regras técnicas: inclui contexto pessoal, preferências de comunicação e estilo de escrita ao lado de convenções de código:
 
 ```markdown
+## Sobre mim
+
+- Chamo-me Ren. Sou developer de frontend baseado em Melbourne.
+- O meu nome de utilizador no GitHub é `rendev` e o meu email é `ren@example.com`.
+- Trabalho principalmente em TypeScript e Python.
+
 ## Comunicação
 
-- Sê conciso e direto. Evita texto desnecessário.
-- Explica o que vais fazer antes de fazer alterações.
-- Se não tens a certeza de algo, pergunta em vez de adivinhar.
+- Sê conciso. Não exageres as alterações nem uses palavras
+  rebuscadas como "abrangente", "utilizar", "otimizar" ou "alavancar".
+- Nunca uses travessões. Usa vírgulas, dois pontos ou frases separadas.
+- Se a tua última mensagem incluiu URLs, lista-os no final para que
+  eu possa abri-los facilmente.
 
-## Segurança
+## Escrita
 
-- Pergunta antes de apagar ficheiros ou diretórios.
-- Não modifiques ficheiros .env sem permissão explícita.
-- Não faças push para o git sem perguntar primeiro.
+- Ao escrever descrições de pull requests, começa com "Este PR..." e
+  mantém 2-3 frases.
+- Ao escrever markdown, evita cabeçalhos menores que H2 e não
+  uses negrito para ênfase.
 
-## Estilo
+## Trabalhar com Git
 
-- Usa TypeScript sempre que possível.
-- Prefere named exports a default exports.
-- Escreve comentários apenas quando o código não é autoexplicativo.
+- Usa sempre prefixos semânticos nos commits (feat:, fix:, docs:, etc.).
+- Nunca faças push para o branch principal. Usa sempre um branch de feature.
+- Executa o script de lint do projeto antes de fazer commit, se existir.
 ```
 
-Este é apenas um ponto de partida. A beleza do AGENTS.md é que pode torná-lo tão específico quanto quiser. Prefere tabs em vez de espaços? Diga-o. Quer que o OpenCode escreva sempre testes? Adicione essa regra. Detesta emojis em mensagens de commit? Ponha isso por escrito.
-
-Quanto mais específicas forem as suas instruções, melhor o OpenCode funcionará para si.
+Este é apenas um ponto de partida. As tuas instruções podem abranger qualquer coisa: como gostas de comunicar, as tuas ferramentas preferidas, contexto pessoal que o agente deve saber, estilo de escrita, regras de segurança ou convenções de código. Quanto mais específicas forem as suas instruções, melhor o OpenCode funcionará para si.
 
 ## Editá-lo a qualquer momento
 

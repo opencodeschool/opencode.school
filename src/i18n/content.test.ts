@@ -13,7 +13,6 @@ function parseFrontmatter(content: string): Record<string, string> {
 	const match = content.match(/^---\n([\s\S]*?)\n---/);
 	if (!match) return {};
 	const result: Record<string, string> = {};
-	// Simple line-by-line parse for scalar values (not multi-line)
 	for (const line of match[1].split("\n")) {
 		const kv = line.match(/^(\w+):\s*(.+)/);
 		if (kv) {
@@ -39,14 +38,32 @@ const ptLessons = listMdx(join(lessonsDir, "pt"));
 const enExercises = listMdx(join(exercisesDir, "en"));
 const ptExercises = listMdx(join(exercisesDir, "pt"));
 
+// Build slug sets for fallback tests
+function slugsFromDir(dir: string, files: string[]): Set<string> {
+	const slugs = new Set<string>();
+	for (const file of files) {
+		const content = readFileSync(join(dir, file), "utf-8");
+		const fm = parseFrontmatter(content);
+		if (fm.slug) slugs.add(fm.slug);
+	}
+	return slugs;
+}
+
+const enLessonSlugs = slugsFromDir(join(lessonsDir, "en"), enLessons);
+const ptLessonSlugs = slugsFromDir(join(lessonsDir, "pt"), ptLessons);
+const enExerciseSlugs = slugsFromDir(join(exercisesDir, "en"), enExercises);
+const ptExerciseSlugs = slugsFromDir(join(exercisesDir, "pt"), ptExercises);
+
+// ── Portuguese lesson files ─────────────────────────────────────────
+
 describe("Portuguese lesson content files", () => {
-	it("has the same number of files as English", () => {
-		expect(ptLessons.length).toBe(enLessons.length);
+	it("does not have more files than English (no orphaned translations)", () => {
+		expect(ptLessons.length).toBeLessThanOrEqual(enLessons.length);
 	});
 
-	it("has a Portuguese file for every English lesson", () => {
-		for (const file of enLessons) {
-			expect(ptLessons).toContain(file);
+	it("has no orphaned PT lessons (every PT slug exists in EN)", () => {
+		for (const slug of ptLessonSlugs) {
+			expect(enLessonSlugs.has(slug)).toBe(true);
 		}
 	});
 
@@ -91,14 +108,16 @@ describe("Portuguese lesson content files", () => {
 	});
 });
 
+// ── Portuguese exercise files ───────────────────────────────────────
+
 describe("Portuguese exercise content files", () => {
-	it("has the same number of files as English", () => {
-		expect(ptExercises.length).toBe(enExercises.length);
+	it("does not have more files than English (no orphaned translations)", () => {
+		expect(ptExercises.length).toBeLessThanOrEqual(enExercises.length);
 	});
 
-	it("has a Portuguese file for every English exercise", () => {
-		for (const file of enExercises) {
-			expect(ptExercises).toContain(file);
+	it("has no orphaned PT exercises (every PT slug exists in EN)", () => {
+		for (const slug of ptExerciseSlugs) {
+			expect(enExerciseSlugs.has(slug)).toBe(true);
 		}
 	});
 
@@ -139,6 +158,41 @@ describe("Portuguese exercise content files", () => {
 			const enFm = parseFrontmatter(enContent);
 			const ptFm = parseFrontmatter(ptContent);
 			expect(ptFm.order).toBe(enFm.order);
+		}
+	});
+});
+
+// ── Per-item fallback contract ──────────────────────────────────────
+
+describe("per-item fallback contract", () => {
+	it("PT lesson slugs are a subset of EN lesson slugs", () => {
+		for (const slug of ptLessonSlugs) {
+			expect(enLessonSlugs.has(slug)).toBe(true);
+		}
+	});
+
+	it("PT exercise slugs are a subset of EN exercise slugs", () => {
+		for (const slug of ptExerciseSlugs) {
+			expect(enExerciseSlugs.has(slug)).toBe(true);
+		}
+	});
+
+	it("at least one EN exercise lacks a PT translation (fallback is exercised)", () => {
+		// This confirms the per-item fallback path is real: at least one
+		// English exercise has no Portuguese counterpart and will fall back
+		// to English content on /pt/ pages. Remove this test if/when all
+		// exercises are fully translated.
+		const untranslated = [...enExerciseSlugs].filter(
+			(s) => !ptExerciseSlugs.has(s),
+		);
+		expect(untranslated.length).toBeGreaterThan(0);
+	});
+
+	it("all EN lessons currently have PT translations", () => {
+		// All 14 lessons are translated. If a new lesson is added without
+		// a translation, update this test or remove it.
+		for (const slug of enLessonSlugs) {
+			expect(ptLessonSlugs.has(slug)).toBe(true);
 		}
 	});
 });
