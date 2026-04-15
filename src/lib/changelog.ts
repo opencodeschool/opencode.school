@@ -11,6 +11,13 @@ export interface ChangelogEntry {
 
 export const changelogEntries: ChangelogEntry[] = [
 	{
+		slug: "ai-gateway-exercise",
+		date: "2026-04-15",
+		title: "New exercise: Use an AI gateway",
+		description:
+			"A new exercise walks students through setting up Cloudflare AI Gateway with Unified Billing to route model requests through a single endpoint. The [Models](/lessons/models) lesson now links to this upcoming exercise.",
+	},
+	{
 		slug: "permission-keyboard-image",
 		date: "2026-04-15",
 		title: "Permission fatigue keyboard image",
