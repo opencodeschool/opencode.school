@@ -11,6 +11,13 @@ export interface ChangelogEntry {
 
 export const changelogEntries: ChangelogEntry[] = [
 	{
+		slug: "realistic-agents-example",
+		date: "2026-04-15",
+		title: "Updated AGENTS.md example with realistic instructions",
+		description:
+			"The [Instructions](/lessons/instructions) lesson now shows a more comprehensive AGENTS.md example covering personal context, communication preferences, and writing style alongside technical rules.",
+	},
+	{
 		slug: "json-config-default",
 		date: "2026-04-14",
 		title: "JSON now recommended over JSONC for config files",
