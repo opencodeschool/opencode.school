@@ -24,7 +24,7 @@ export const POST: APIRoute = async ({ request }) => {
 	const studentId = await generateStudentId(kv);
 
 	let deviceId: string | undefined;
-	let language: string | undefined;
+	let language: "en" | "pt" | undefined;
 	try {
 		const body = await request.json();
 		if (typeof body?.deviceId === "string") deviceId = body.deviceId;
@@ -32,7 +32,7 @@ export const POST: APIRoute = async ({ request }) => {
 			typeof body?.language === "string" &&
 			VALID_LOCALE.includes(body.language)
 		) {
-			language = body.language;
+			language = body.language as "en" | "pt";
 		}
 	} catch {
 		// Body is optional; ignore parse errors

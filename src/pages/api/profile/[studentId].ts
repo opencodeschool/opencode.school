@@ -85,7 +85,7 @@ function validateProfile(body: Record<string, unknown>): {
 
 	if ("language" in body) {
 		if (VALID_LOCALE.includes(body.language as string)) {
-			profile.language = body.language as string;
+			profile.language = body.language as StudentProfile["language"];
 		} else {
 			errors.push(
 				`Invalid language: must be one of ${VALID_LOCALE.join(", ")}`,

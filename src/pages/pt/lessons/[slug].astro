@@ -13,7 +13,7 @@ const slug = Astro.params.slug!;
 const lesson = await getLocalizedLesson(slug, locale);
 
 if (!lesson) {
-  return Astro.redirect("/pt");
+  return new Response("Not found", { status: 404 });
 }
 
 const { Content } = await render(lesson);

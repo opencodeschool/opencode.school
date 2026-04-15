@@ -12,7 +12,7 @@ export interface CompletedLesson {
 }
 
 export interface StudentProfile {
-	language?: string;
+	language?: "en" | "pt";
 	codingExperience?: "rookie" | "dabbler" | "builder" | "sage";
 	aiTools?: string[];
 	editor?: string;
