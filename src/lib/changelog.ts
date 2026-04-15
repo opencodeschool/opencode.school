@@ -11,6 +11,13 @@ export interface ChangelogEntry {
 
 export const changelogEntries: ChangelogEntry[] = [
 	{
+		slug: "permission-keyboard-image",
+		date: "2026-04-15",
+		title: "Permission fatigue keyboard image",
+		description:
+			"Added a humorous keyboard image to the [Permissions](/lessons/permissions) lesson featuring \"Allow once\", \"Allow always\", and \"Reject\" keys.",
+	},
+	{
 		slug: "github-corner-icon",
 		date: "2026-04-15",
 		title: "GitHub corner icon",
