@@ -11,6 +11,13 @@ export interface ChangelogEntry {
 
 export const changelogEntries: ChangelogEntry[] = [
 	{
+		slug: "inbox-zero-exercise",
+		date: "2026-04-15",
+		title: "New exercise: Achieve inbox zero",
+		description:
+			"A new [exercise](/exercises/achieve-inbox-zero) teaching Gmail management through OpenCode, including batch inbox triage, automated categorization, and bulk message processing using the Google Workspace CLI.",
+	},
+	{
 		slug: "realistic-agents-example",
 		date: "2026-04-15",
 		title: "Updated AGENTS.md example with realistic instructions",
