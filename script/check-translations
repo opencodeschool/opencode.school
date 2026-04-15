@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+# Copyright (c) 2026 Cloudflare, Inc.
+# Licensed under the Apache 2.0 license found in the LICENSE file or at:
+#     https://opensource.org/licenses/Apache-2.0
+
+# Reports missing and stale Portuguese translations.
+# Missing: English content files with no Portuguese counterpart.
+# Stale:   Portuguese files where the English version was modified more recently.
+#
+# Exit code is always 0 (informational, not a CI blocker).
+
+set -euo pipefail
+
+LESSONS_EN="src/content/lessons/en"
+LESSONS_PT="src/content/lessons/pt"
+EXERCISES_EN="src/content/exercises/en"
+EXERCISES_PT="src/content/exercises/pt"
+GLOSSARY_EN="lessons/glossary.md"
+GLOSSARY_PT="lessons/glossary.pt.md"
+
+missing=()
+stale=()
+
+# Check content directories for missing and stale translations
+check_dir() {
+  local en_dir="$1"
+  local pt_dir="$2"
+  local label="$3"
+
+  for en_file in "$en_dir"/*.mdx; do
+    [ -f "$en_file" ] || continue
+    local basename
+    basename=$(basename "$en_file")
+    local pt_file="$pt_dir/$basename"
+
+    if [ ! -f "$pt_file" ]; then
+      local slug
+      slug=$(basename "$en_file" .mdx | sed 's/^[0-9]*-//')
+      missing+=("$label: $slug ($basename)")
+    else
+      # Compare modification times using git log
+      local en_ts pt_ts
+      en_ts=$(git log -1 --format=%at -- "$en_file" 2>/dev/null || echo 0)
+      pt_ts=$(git log -1 --format=%at -- "$pt_file" 2>/dev/null || echo 0)
+
+      if [ "$en_ts" -gt "$pt_ts" ] && [ "$pt_ts" -ne 0 ]; then
+        local slug en_date pt_date
+        slug=$(basename "$en_file" .mdx | sed 's/^[0-9]*-//')
+        en_date=$(git log -1 --format=%ci -- "$en_file" 2>/dev/null | cut -d' ' -f1)
+        pt_date=$(git log -1 --format=%ci -- "$pt_file" 2>/dev/null | cut -d' ' -f1)
+        stale+=("$label: $slug (EN $en_date, PT $pt_date)")
+      fi
+    fi
+  done
+}
+
+check_dir "$LESSONS_EN" "$LESSONS_PT" "lessons"
+check_dir "$EXERCISES_EN" "$EXERCISES_PT" "exercises"
+
+# Check glossary
+if [ -f "$GLOSSARY_EN" ] && [ ! -f "$GLOSSARY_PT" ]; then
+  missing+=("glossary: glossary.pt.md")
+elif [ -f "$GLOSSARY_EN" ] && [ -f "$GLOSSARY_PT" ]; then
+  en_ts=$(git log -1 --format=%at -- "$GLOSSARY_EN" 2>/dev/null || echo 0)
+  pt_ts=$(git log -1 --format=%at -- "$GLOSSARY_PT" 2>/dev/null || echo 0)
+  if [ "$en_ts" -gt "$pt_ts" ] && [ "$pt_ts" -ne 0 ]; then
+    en_date=$(git log -1 --format=%ci -- "$GLOSSARY_EN" 2>/dev/null | cut -d' ' -f1)
+    pt_date=$(git log -1 --format=%ci -- "$GLOSSARY_PT" 2>/dev/null | cut -d' ' -f1)
+    stale+=("glossary: glossary (EN $en_date, PT $pt_date)")
+  fi
+fi
+
+# Report
+echo ""
+if [ ${#missing[@]} -eq 0 ] && [ ${#stale[@]} -eq 0 ]; then
+  echo "All translations up to date."
+  echo ""
+  exit 0
+fi
+
+if [ ${#missing[@]} -gt 0 ]; then
+  echo "Missing translations:"
+  for item in "${missing[@]}"; do
+    echo "  $item"
+  done
+  echo ""
+fi
+
+if [ ${#stale[@]} -gt 0 ]; then
+  echo "Stale translations:"
+  for item in "${stale[@]}"; do
+    echo "  $item"
+  done
+  echo ""
+fi
+
+echo "Summary: ${#missing[@]} missing, ${#stale[@]} stale"
+echo ""
