@@ -2,46 +2,46 @@
 // Copyright (c) 2026 Cloudflare, Inc.
 // Licensed under the Apache 2.0 license found in the LICENSE file or at:
 //     https://opensource.org/licenses/Apache-2.0
-export const prerender = true;
-
 import Base from "../../layouts/Base.astro";
-import { getCollection, render } from "astro:content";
+import { render } from "astro:content";
+import { getLocaleFromPath, localePath } from "../../i18n/locales";
+import { getLocalizedLessons, getLocalizedLesson } from "../../i18n/content";
+import { t } from "../../i18n/ui";
 
-export async function getStaticPaths() {
-  const lessons = await getCollection("lessons");
-  return lessons.map((lesson) => ({
-    params: { slug: lesson.data.slug },
-    props: { lesson },
-  }));
+const locale = getLocaleFromPath(Astro.url.pathname);
+const slug = Astro.params.slug!;
+const lesson = await getLocalizedLesson(slug, locale);
+
+if (!lesson) {
+  return new Response("Not found", { status: 404 });
 }
 
-const { lesson } = Astro.props;
 const { Content } = await render(lesson);
 
-const allLessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b.data.order);
+const allLessons = await getLocalizedLessons(locale);
 const currentIndex = allLessons.findIndex((l) => l.data.slug === lesson.data.slug);
 const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null;
 ---
 
 <Base title={lesson.data.title} description={lesson.data.description} ogImage={`/og/lesson/${lesson.data.slug}.png`}>
   <div class="mb-6">
-    <a href="/" class="text-sm text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
-      &larr; All lessons
+    <a href={localePath("/", locale)} class="text-sm text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+      &larr; {t("nav.allLessons", locale)}
     </a>
   </div>
 
   <header class="mb-8">
-    <p class="text-sm font-mono text-gray-400 dark:text-gray-600 mb-1">Lesson {lesson.data.order}</p>
+    <p class="text-sm font-mono text-gray-400 dark:text-gray-600 mb-1">{t("lesson.label", locale)} {lesson.data.order}</p>
     <h1 class="text-3xl font-bold">{lesson.data.title}</h1>
     <p class="text-gray-600 dark:text-gray-400 mt-2">{lesson.data.description}</p>
   </header>
 
   <div id="lesson-completed-banner" class="theme-banner hidden mb-6 rounded-lg px-4 py-3 text-sm font-medium">
-    <span id="lesson-completed-text">You completed this lesson!</span>
+    <span id="lesson-completed-text">{t("lesson.completed", locale)}</span>
   </div>
 
   <div id="lesson-enroll-nudge" class="hidden mb-8 rounded-lg border border-gray-200 dark:border-stone-700 px-4 py-3 text-sm text-gray-600 dark:text-stone-400">
-    <a href="/" class="theme-link font-medium underline underline-offset-2">Enroll for free</a> to track your progress through the course.
+    <a href={localePath("/", locale)} class="theme-link font-medium underline underline-offset-2">{t("lesson.enrollFree", locale)}</a> {t("lesson.enrollNudge", locale)}
   </div>
 
   <article class="prose dark:prose-invert max-w-none">
@@ -52,15 +52,15 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
   {lesson.data.agentOnly && (
     <div id="lesson-agent-only" class="mt-10 pt-6 border-t border-gray-200 dark:border-stone-800 hidden">
       <p id="lesson-agent-only-text" class="text-center text-sm text-gray-500 dark:text-stone-500">
-        Complete this lesson in OpenCode to continue.
+        {t("lesson.agentOnlyIncomplete", locale)}
       </p>
       {next && (
         <a
           id="lesson-agent-only-next"
-          href={`/lessons/${next.data.slug}`}
+          href={localePath(`/lessons/${next.data.slug}`, locale)}
           class="theme-button mt-4 flex w-full justify-center cursor-pointer items-center gap-2 rounded-lg px-6 py-4 text-sm font-medium select-none hidden"
         >
-          Next lesson: {next.data.title} &rarr;
+          {(t("lesson.nextLesson", locale) as string).replace("{title}", next.data.title)} &rarr;
         </a>
       )}
     </div>
@@ -71,17 +71,17 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
     {next ? (
       <button
         id="lesson-action-btn"
-        data-next-url={`/lessons/${next.data.slug}`}
+        data-next-url={localePath(`/lessons/${next.data.slug}`, locale)}
         class="theme-button flex w-full justify-center cursor-pointer items-center gap-2 rounded-lg px-6 py-4 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed select-none"
       >
-        <span id="lesson-action-label">Next lesson: {next.data.title} &rarr;</span>
+        <span id="lesson-action-label">{(t("lesson.nextLesson", locale) as string).replace("{title}", next.data.title)} &rarr;</span>
       </button>
     ) : (
       <button
         id="lesson-action-btn"
         class="theme-button flex w-full justify-center cursor-pointer items-center gap-2 rounded-lg px-6 py-4 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed select-none"
       >
-        <span id="lesson-action-label">Mark this lesson as complete</span>
+        <span id="lesson-action-label">{t("lesson.markComplete", locale)}</span>
       </button>
     )}
   </div>
@@ -111,12 +111,20 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
 
       var wasAlreadyComplete = window.school.isLessonComplete(lessonSlug);
 
+      var loc = document.documentElement.getAttribute("data-locale") || "en";
+      var lStrings = {
+        en: { completed: "You completed this lesson!", completedOn: "You completed this lesson on {date} {via}.", viaAgent: "via OpenCode", viaBrowser: "in the browser", agentComplete: "You completed this lesson in OpenCode.", lessonComplete: "Lesson complete!", saving: "Saving..." },
+        pt: { completed: "Concluiu esta lição!", completedOn: "Concluiu esta lição a {date} {via}.", viaAgent: "via OpenCode", viaBrowser: "no navegador", agentComplete: "Concluiu esta lição no OpenCode.", lessonComplete: "Lição concluída!", saving: "A guardar..." }
+      };
+      var ls = lStrings[loc] || lStrings.en;
+
       function formatBannerText(completion) {
-        var text = "You completed this lesson!";
+        var text = ls.completed;
         if (completion && completion.completedAt) {
-          var date = new Date(completion.completedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-          var via = completion.source === "agent" ? "via OpenCode" : "in the browser";
-          text = "You completed this lesson on " + date + " " + via + ".";
+          var dateLocale = loc === "pt" ? "pt-PT" : "en-US";
+          var date = new Date(completion.completedAt).toLocaleDateString(dateLocale, { month: "long", day: "numeric", year: "numeric" });
+          var via = completion.source === "agent" ? ls.viaAgent : ls.viaBrowser;
+          text = ls.completedOn.replace("{date}", date).replace("{via}", via);
         }
         return text;
       }
@@ -134,7 +142,7 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
 
         if (window.school.isLessonComplete(lessonSlug)) {
           showBanner();
-          if (agentOnlyText) agentOnlyText.textContent = "You completed this lesson in OpenCode.";
+          if (agentOnlyText) agentOnlyText.textContent = ls.agentComplete;
           if (agentOnlyNext) agentOnlyNext.classList.remove("hidden");
         }
 
@@ -144,7 +152,7 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
           if (nudge && window.school.getStudentId()) nudge.classList.add("hidden");
           if (window.school.isLessonComplete(lessonSlug)) {
             showBanner();
-            if (agentOnlyText) agentOnlyText.textContent = "You completed this lesson in OpenCode.";
+            if (agentOnlyText) agentOnlyText.textContent = ls.agentComplete;
             if (agentOnlyNext) agentOnlyNext.classList.remove("hidden");
             // Auto-navigate if just completed by agent during this page session
             if (!wasAlreadyComplete && agentOnlyNext) {
@@ -167,7 +175,7 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
         if (nextUrl) {
           window.location.href = nextUrl;
         } else {
-          label.textContent = "Lesson complete!";
+          label.textContent = ls.lessonComplete;
           btn.disabled = true;
         }
       }
@@ -178,13 +186,24 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
         if (nextUrl) {
           btn.addEventListener("click", function() { window.location.href = nextUrl; });
         } else {
-          label.textContent = "Lesson complete!";
+          label.textContent = ls.lessonComplete;
+          btn.disabled = true;
+        }
+      }
+
+      // If already complete, show the banner and make the button navigate directly
+      if (window.school.isLessonComplete(lessonSlug)) {
+        showBanner();
+        if (nextUrl) {
+          btn.addEventListener("click", function() { window.location.href = nextUrl; });
+        } else {
+          label.textContent = ls.lessonComplete;
           btn.disabled = true;
         }
       } else {
         btn.addEventListener("click", async function() {
           btn.disabled = true;
-          label.textContent = "Saving...";
+          label.textContent = ls.saving;
           var progress = await window.school.markComplete(lessonSlug);
           if (progress) {
             window.school.updateAllCheckmarks();

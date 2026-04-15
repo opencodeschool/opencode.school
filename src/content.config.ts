@@ -4,9 +4,14 @@
 
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
+import { localeAwareId } from "./i18n/locales";
 
 const lessons = defineCollection({
-	loader: glob({ pattern: "**/*.{md,mdx}", base: "src/content/lessons" }),
+	loader: glob({
+		pattern: "**/*.{md,mdx}",
+		base: "src/content/lessons",
+		generateId: localeAwareId,
+	}),
 	schema: z.object({
 		title: z.string(),
 		slug: z.string(),
@@ -20,7 +25,11 @@ const lessons = defineCollection({
 });
 
 const exercises = defineCollection({
-	loader: glob({ pattern: "**/*.{md,mdx}", base: "src/content/exercises" }),
+	loader: glob({
+		pattern: "**/*.{md,mdx}",
+		base: "src/content/exercises",
+		generateId: localeAwareId,
+	}),
 	schema: z.object({
 		title: z.string(),
 		slug: z.string(),

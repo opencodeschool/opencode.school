@@ -1,0 +1,105 @@
+---
+title: "Sessions"
+slug: sessions
+description: "Gere e retoma conversas com Sessões."
+order: 12
+quiz: true
+agentInstructions: |
+  Cover these four topics:
+
+  1. What a session is: an individual conversation with OpenCode. Each
+     session has its own history and context. A single project can have
+     many sessions.
+
+  2. Starting a new session: type /new in the prompt (works in both
+     Desktop and TUI) or use the New Session button in the Desktop left
+     sidebar.
+
+  3. Sessions persist: conversation history is saved to disk, so you can
+     resume any previous session even after quitting and restarting
+     OpenCode.
+
+  4. Sharing: /share generates a public link at opncd.ai/s/<id> that
+     anyone with the link can view. /unshare removes it. Three sharing
+     modes: manual (default, share on demand), auto (every session shared
+     automatically), disabled (sharing turned off entirely).
+
+  After teaching and quizzing, run `opencode session list` yourself to get
+  all sessions, pick one that looks interesting, run
+  `opencode export <sessionID>` on it, and give the student a brief
+  summary of what was being worked on in that session. Then mark the
+  lesson complete.
+---
+
+import AgentPrompt from '../../../components/AgentPrompt.astro'
+
+Cada conversa que tens com o OpenCode é uma sessão. As sessões têm o seu próprio histórico e contexto — o modelo lembra-se de tudo o que foi dito dentro de uma sessão, mas começa de novo numa nova. Um único projeto pode ter tantas sessões quantas quiseres.
+
+<AgentPrompt title="Sessions" />
+
+## Iniciar uma nova sessão
+
+Existem algumas formas de iniciar uma nova sessão:
+
+- **Escreve `/new`** no prompt — funciona tanto no OpenCode Desktop como no TUI
+- **Clica em New Session** na barra lateral esquerda do OpenCode Desktop
+
+A sessão atual permanece no teu histórico. Podes sempre voltar a ela.
+
+## As sessões persistem
+
+O teu histórico de sessões é guardado em disco. Podes retomar qualquer sessão anterior mesmo depois de fechares e reiniciares o OpenCode. Nada se perde — se estavas a meio de uma tarefa quando fechaste a aplicação, a conversa continua lá quando a reabrires.
+
+## Partilhar uma sessão
+
+Podes partilhar qualquer sessão como um link público — útil para colaborar com colegas de equipa ou pedir ajuda.
+
+```
+/share
+```
+
+Isto gera um URL único (em `opncd.ai/s/<id>`) e copia-o para a tua área de transferência. Qualquer pessoa com o link pode ver a conversa.
+
+Para parar de partilhar e remover os dados:
+
+```
+/unshare
+```
+
+### Modos de partilha
+
+O comportamento predefinido é **manual** — as sessões são privadas a menos que executes explicitamente `/share`. Podes alterar isto na tua configuração para partilhar todas as sessões automaticamente:
+
+```json
+{ "share": "auto" }
+```
+
+Ou desativar a partilha completamente:
+
+```json
+{ "share": "disabled" }
+```
+
+Desativar a partilha é uma boa ideia para sessões que envolvam informação sensível ou proprietária. Para impor isto numa equipa, adiciona `"share": "disabled"` ao `opencode.json` do teu projeto e faz commit.
+
+## Listar e exportar sessões
+
+O OpenCode tem dois comandos CLI para trabalhar com dados de sessões:
+
+```
+opencode session list
+```
+
+Lista todas as sessões em todos os teus projetos — IDs de sessão, caminhos de projeto e timestamps.
+
+```
+opencode export <sessionID>
+```
+
+Exporta uma única sessão como JSON, incluindo o histórico completo de mensagens e metadados.
+
+## Exercício: resume o teu trabalho passado
+
+Pede ao OpenCode para listar as tuas sessões e resumir no que tens estado a trabalhar. Não precisas de tocar no terminal — o OpenCode pode executar os comandos, ler o resultado e dar-te um resumo.
+
+> Lista as minhas sessões recentes do OpenCode e resume no que tenho estado a trabalhar.

@@ -1,0 +1,77 @@
+---
+title: "Workspaces"
+slug: workspaces
+description: "Executa múltiplas tarefas em paralelo no mesmo projeto sem conflitos de ficheiros."
+order: 14
+quiz: true
+agentInstructions: |
+  Cover these four topics:
+
+  1. What workspaces are: isolated copies of project files on their own
+     Git branch, letting you work on multiple tasks in parallel without
+     file conflicts. This is a Desktop-only feature that requires the
+     project to be a Git repository.
+
+  2. The problem they solve: running multiple sessions on the same project
+     simultaneously risks one session overwriting another's changes.
+     Workspaces prevent this by giving each task its own complete copy of
+     the project files.
+
+  3. How to create one: right-click the project in the OpenCode Desktop
+     left sidebar, select "Enable Workspaces", then click "New Workspace"
+     to create an isolated copy. Each workspace gets an auto-generated
+     name and its own branch.
+
+  4. What happens under the hood: each workspace creates a branch named
+     opencode/<name> and checks it out to a separate directory on disk.
+     When the work is done, the branch can be merged back into the main
+     branch via Git like any other branch.
+
+  After teaching and quizzing, verify completion by confirming the student
+  can describe what workspaces are for and how to create one. No
+  file-system check is needed.
+---
+
+import AgentPrompt from '../../../components/AgentPrompt.astro'
+
+Workspaces são uma funcionalidade avançada para trabalhar em múltiplas tarefas no mesmo projeto ao mesmo tempo. **Se não estás a fazer desenvolvimento de software num repositório Git, podes saltar esta lição** — os workspaces não se aplicam ao teu fluxo de trabalho.
+
+<AgentPrompt title="Workspaces" />
+
+## O problema que os workspaces resolvem
+
+Quando executas duas sessões do OpenCode no mesmo projeto simultaneamente, ambas estão a trabalhar nos mesmos ficheiros. Se a sessão A está a refatorizar uma parte do código enquanto a sessão B está a adicionar uma funcionalidade noutra, podem acidentalmente sobrescrever as alterações uma da outra. Na melhor das hipóteses, perdes trabalho. Na pior, não reparas e ficas com um projeto avariado.
+
+Este é o mesmo problema que os branches Git resolvem para programadores humanos a trabalhar em paralelo. Os workspaces resolvem-no para sessões paralelas do OpenCode.
+
+## O que são workspaces
+
+Um workspace é uma cópia completa e isolada dos ficheiros do teu projeto no seu próprio branch Git. Cada workspace tem os seus próprios ficheiros e as suas próprias sessões. As alterações feitas num workspace não afetam nenhum outro workspace.
+
+É semelhante em conceito ao branching do Git — estás a trabalhar numa versão isolada do código — mas em vez de todos os branches partilharem um único diretório de trabalho, cada workspace tem o seu próprio diretório separado em disco.
+
+## Como criar um workspace
+
+Os workspaces são uma funcionalidade exclusiva do Desktop. O teu projeto deve ser um repositório Git.
+
+1. Clica com o botão direito no projeto na barra lateral esquerda do OpenCode Desktop
+2. Seleciona **Enable Workspaces**
+3. Clica em **New Workspace** para criar uma cópia isolada
+
+Cada workspace recebe um nome gerado automaticamente. Podes criar tantos quantos precisares — um por tarefa, um por experiência, ou como quiseres organizar o teu trabalho.
+
+## O que acontece nos bastidores
+
+Quando crias um workspace, o OpenCode usa [Git worktrees](https://git-scm.com/docs/git-worktree) para criar um novo branch chamado `opencode/<name>` e faz checkout para um diretório separado em disco. O resultado é uma cópia totalmente independente do teu projeto no estado atual do teu branch principal.
+
+Quando terminares com um workspace, faz merge do seu branch de volta ao teu branch principal via Git — da mesma forma que farias merge de qualquer outro branch de funcionalidade.
+
+## Quando usar workspaces
+
+Os workspaces são mais úteis quando queres:
+
+- Executar duas ou mais sessões de longa duração no mesmo projeto simultaneamente
+- Experimentar uma alteração arriscada sem tocar no teu diretório de trabalho principal
+- Trabalhar em tarefas independentes em paralelo e fazer merge dos resultados quando cada uma estiver pronta
+
+Para trabalho com uma única sessão, ou para projetos que não são repositórios Git, não precisas de workspaces.

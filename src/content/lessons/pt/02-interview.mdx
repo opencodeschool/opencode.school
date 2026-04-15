@@ -1,0 +1,76 @@
+---
+title: "Interview"
+slug: interview
+description: "Conte ao OpenCode um pouco sobre si para que possa adaptar o curso a si."
+order: 2
+quiz: false
+agentOnly: true
+agentInstructions: |
+  This lesson is a short, optional interview. The student's answers are used to personalize the rest of the course. Every question can be skipped — make this clear up front.
+
+  Before asking questions, auto-detect the student's operating system by inspecting the environment (e.g. check uname or the OS environment variable). Report it to the API immediately via PUT /api/profile/{studentId} with { "os": "macos" } (or "linux", "windows", etc.). Do not ask the student what OS they use.
+
+  Present ALL of the following questions at once in a single message using multiple question tool calls in parallel. Include a "Saltar" (Skip) option in every question. This keeps things fast — the student answers everything in one pass instead of waiting between questions.
+
+  Present all question text, option labels, and descriptions in Portuguese. The API values stay in English — only the display text is translated.
+
+  After the student responds, check whether they answered "Construtor" or "Mestre" for the coding experience question. If so, ask one follow-up question about programming languages (see Question 8 below). If not, skip it.
+
+  Question 1 — Em que idioma prefere o curso?
+  Single select. Options: English, Português.
+  Default to the language the student used in their prompt (if the prompt says "Responde-me em português" or is otherwise in Portuguese, default to Português; otherwise default to English). Pre-select the default but let the student change it.
+  API value for language: "en" or "pt".
+
+  Question 2 — Quanta experiência de programação tem?
+  Single select. Options: Iniciante (Nunca escrevi código), Curioso (Já experimentei um pouco), Construtor (Construo coisas regularmente), Mestre (Vivo no código).
+  API value for codingExperience: "rookie", "dabbler", "builder", or "sage".
+
+  Question 3 — Que ferramentas de IA já usou?
+  Multi-select (select all that apply). Include "Nenhuma destas" as an option. Use these labels and descriptions:
+  - ChatGPT (Assistente de chat da OpenAI)
+  - Gemini (Assistente de chat da Google)
+  - Claude (Assistente de chat da Anthropic)
+  - Claude Code (Agente de programação no terminal)
+  - OpenAI Codex (Agente de programação no terminal)
+  - GitHub Copilot (Autocompletar no editor)
+  API value for aiTools: array of "chatgpt", "gemini", "claude", "claude-code", "openai-codex", "copilot". Send an empty array if they select "Nenhuma destas" or skip.
+
+  Question 4 — Que editor de código usa?
+  Single select. Options: VS Code, Cursor, Windsurf, Zed, Vim, Emacs, Outro, Ainda não tenho nenhum.
+  API value for editor: "vscode", "cursor", "windsurf", "zed", "vim", "emacs", "other", or "none".
+
+  Question 5 — Qual o seu nível de conforto com o terminal?
+  Single select. Options: Nenhum, Consigo orientar-me, Muito confortável.
+  API value for terminalComfort: "none", "some", or "very".
+
+  Question 6 — Como prefere aprender?
+  Single select. Options: Explicar conceitos primeiro, Saltar para tarefas práticas, Mostrar-me exemplos.
+  API value for learningStyle: "concepts-first", "hands-on", or "examples".
+
+  Question 7 — Quanta profundidade quer nas explicações?
+  Single select. Options: Sê breve, Algum contexto é bom, Dá-me todos os detalhes.
+  API value for depthPreference: "brief", "some-context", or "all-details".
+
+  Question 8 — Que linguagens de programação usa? (CONDITIONAL — only ask as a follow-up)
+  Only ask this if the student answered "Construtor" or "Mestre" for question 2. Skip it entirely for Iniciante, Curioso, or if question 2 was skipped.
+  Multi-select (select all that apply). Options: JavaScript/TypeScript, Python, Go, Rust.
+  API value for languages: array of "javascript", "typescript", "python", "go", "rust". For "JavaScript/TypeScript" send both "javascript" and "typescript".
+
+  After all answers are collected, submit them in a single PUT /api/profile/{studentId} request. Include only the fields the student answered — omit skipped fields.
+
+  Then briefly acknowledge their answers in a friendly way in Portuguese, referencing their preferences (e.g. "Entendido — és um Construtor que prefere aprender na prática com explicações concisas. Vou ter isso em conta no resto do curso."). If they skipped everything, that's fine — just say you'll teach at a general level.
+
+  Note: This lesson happens before the student has configured permissions, so they may need to manually approve a few permission prompts from OpenCode (like allowing network requests). If the student asks about this, reassure them it's normal and will be addressed in the Configuration lesson.
+
+  Mark the lesson complete after submitting the profile (or after acknowledging that all questions were skipped).
+---
+
+import AgentPrompt from '../../../components/AgentPrompt.astro'
+
+Nesta lição, o OpenCode vai fazer-lhe algumas perguntas opcionais sobre o seu percurso e preferências. As suas respostas ajudam a adaptar o resto do curso, ajustando o nível de detalhe, escolhendo exemplos relevantes e adequando-se ao seu nível de conforto com o terminal e o código.
+
+Todas as perguntas são opcionais. Pode saltar as que preferir não responder.
+
+Como estamos no início do curso, o OpenCode ainda não tem permissões alargadas. Poderá ter de clicar em "Allow" em alguns pedidos durante esta lição — isso é normal. As permissões serão configuradas numa lição futura.
+
+<AgentPrompt title="Interview" />

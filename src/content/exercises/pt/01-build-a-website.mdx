@@ -1,0 +1,80 @@
+---
+title: "Construir um website"
+slug: build-a-website
+description: "Construa uma página pessoal com Hono e publique-a no Cloudflare Workers."
+order: 1
+agentInstructions: |
+  Guide the student through building and deploying a personal homepage.
+  Adapt the depth and pace to their profile (codingExperience,
+  terminalComfort, etc.).
+
+  Steps:
+
+  1. Check if Node.js is installed by running `node --version`. If not
+     installed, help them install it: use Homebrew (`brew install node`)
+     on macOS, or guide them to https://nodejs.org for other platforms.
+
+  2. Help them sign up for a free Cloudflare account at
+     https://dash.cloudflare.com/sign-up if they don't have one. They can
+     verify by running `npx wrangler whoami`. If not authenticated, run
+     `npx wrangler login`.
+
+  3. Scaffold a new Hono project with
+     `npm create hono@latest my-site`: select the `cloudflare-workers`
+     template and install dependencies.
+
+  4. Set up JSX by adding `"jsxFactory": "jsx", "jsxFragment": "Fragment"`
+     to tsconfig.json compilerOptions if not already present, rename
+     `src/index.ts` to `src/index.tsx`, and configure JSX rendering using
+     Hono's `hono/jsx` module.
+
+  5. Build a personal homepage: ask the student what they want on their
+     page (name, bio, interests, links, etc.) and help them create it
+     using Hono JSX components with Tailwind CSS via the CDN play script
+     (`<script src="https://cdn.tailwindcss.com"></script>`). Make it look
+     good with proper typography, spacing, and color.
+
+  6. Test locally with `npm run dev` and confirm the page renders at
+     http://localhost:8787.
+
+  7. Deploy with `npx wrangler deploy` and confirm the site is live at a
+     .workers.dev URL.
+
+  After deployment, suggest optional next steps: adding more pages, making
+  something dynamic with Workers KV (like a visitor counter), or adding a
+  custom domain.
+
+  Verify completion by confirming the student has a working .workers.dev
+  URL that serves their personal homepage.
+---
+
+import AgentPrompt from '../../../components/AgentPrompt.astro'
+
+Está na hora de construir algo a sério. Neste exercício, vais criar uma página pessoal e publicá-la na internet usando [Cloudflare Workers](https://workers.cloudflare.com). No final, terás um website ao vivo num URL `.workers.dev`.
+
+<AgentPrompt title="Construir um website" prompt='Let&#39;s work on the "Build a website" exercise together!' />
+
+## As ferramentas
+
+Vais usar três ferramentas para construir e publicar o teu site:
+
+**[Hono](https://hono.dev)** é uma framework web pequena e rápida que corre no Cloudflare Workers. Trata do encaminhamento (routing), serve as tuas páginas e suporta JSX para que possas escrever o teu HTML num estilo baseado em componentes. Pensa nela como uma alternativa leve ao Express ou Next.js, feita especificamente para runtimes na edge.
+
+**[Tailwind CSS](https://tailwindcss.com)** é uma framework CSS baseada em utilitários. Em vez de escreveres CSS personalizado, estilizas elementos com classes como `text-lg`, `bg-blue-500` e `rounded-xl`. Neste exercício, vais carregar o Tailwind a partir de um CDN com uma única tag `<script>` — sem passo de compilação, sem ficheiros de configuração, sem npm install. É uma escolha prática para projetos pequenos e protótipos onde queres avançar rapidamente.
+
+**[Cloudflare Workers](https://developers.cloudflare.com/workers/)** é uma plataforma serverless que executa o teu código na edge — perto dos teus visitantes, em todo o mundo. A publicação é feita com um único comando (`npx wrangler deploy`), e o plano gratuito é suficientemente generoso para projetos pessoais.
+
+## Pré-requisitos
+
+Precisas de ter o [Node.js](https://nodejs.org) instalado para correr o servidor de desenvolvimento e publicar o site. Se não o tens:
+
+- **macOS**: `brew install node` (requer o [Homebrew](https://brew.sh))
+- **Windows/Linux**: descarrega o instalador em [nodejs.org](https://nodejs.org)
+
+Também precisas de uma conta gratuita no [Cloudflare](https://dash.cloudflare.com/sign-up) — podes registar-te rapidamente com uma conta Google. Se não tens uma, o agente ajuda-te a configurá-la.
+
+## O que vais construir
+
+Uma página pessoal — uma página única com o teu nome, uma biografia curta, os teus interesses e ligações para os teus perfis ou projetos. Vais dar-lhe um aspeto cuidado com Tailwind e publicá-la online.
+
+Quando o básico estiver a funcionar, podes ir mais longe: adicionar mais páginas, criar algo dinâmico com [Workers KV](https://developers.cloudflare.com/kv/) (como um contador de visitas), ou apontar um domínio personalizado para o site.

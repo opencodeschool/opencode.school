@@ -12,6 +12,7 @@ export interface CompletedLesson {
 }
 
 export interface StudentProfile {
+	language?: "en" | "pt";
 	codingExperience?: "rookie" | "dabbler" | "builder" | "sage";
 	aiTools?: string[];
 	editor?: string;
@@ -93,6 +94,7 @@ export async function createStudent(
 	kv: KVNamespace,
 	studentId: string,
 	deviceId?: string,
+	profile?: Partial<StudentProfile>,
 ): Promise<StudentProgress> {
 	const now = new Date().toISOString();
 	const progress: StudentProgress = {
@@ -101,6 +103,7 @@ export async function createStudent(
 		createdAt: now,
 		updatedAt: now,
 		...(deviceId ? { deviceId } : {}),
+		...(profile && Object.keys(profile).length > 0 ? { profile } : {}),
 	};
 	await kv.put(kvKey(studentId), JSON.stringify(progress));
 	return progress;

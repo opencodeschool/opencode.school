@@ -1,0 +1,99 @@
+---
+title: "Controlar um navegador"
+slug: drive-a-browser
+description: "Automatiza o teu navegador real usando o Chrome DevTools MCP."
+order: 5
+agentInstructions: |
+  Guide the student through setting up and using Chrome DevTools MCP to
+  automate their real browser from OpenCode. Adapt depth to their profile.
+
+  Steps:
+
+  1. Enable remote debugging in Chrome. Have the student navigate to
+     chrome://inspect/#remote-debugging in Chrome and enable the remote
+     debugging feature.
+
+   2. Add the Chrome DevTools MCP server to the student's OpenCode global
+      config (~/.config/opencode/opencode.json). Add a `mcp` section if
+     it doesn't exist, with:
+     `"chrome-devtools": { "type": "local", "command": ["npx", "-y", "chrome-devtools-mcp@latest", "--autoConnect"] }`.
+     The student needs to restart OpenCode after adding this.
+
+  3. Recommend starting in Plan Mode for safety: the agent should describe
+     what it intends to do before acting in the browser. Show the student
+     how to switch to Plan Mode in OpenCode.
+
+  4. Start with something simple: take a screenshot of whatever tab the
+     student has open. This verifies the connection works.
+
+  5. Try a Lighthouse audit on a page the student has open: run an
+     accessibility or performance audit and review the results together.
+
+  6. Ask the student what they want to automate. Give them ideas: extract
+     data from a page they're logged into, fill out a form, navigate
+     through a multi-step workflow, compare prices across tabs, summarize
+     a long article, check their bank or school portal. The key insight is
+     that their agent inherits their existing browser session, so they're
+     already logged in everywhere, and sites that were never designed for
+     automation become automatable. Help them accomplish whatever they want
+     to try.
+
+  7. After completing at least one meaningful browser automation task,
+     discuss what went well and what the limitations are.
+
+  Verify completion by confirming the student has successfully used the
+  Chrome DevTools MCP to perform at least one browser automation task
+  (screenshot, audit, data extraction, form interaction, etc.).
+---
+
+import AgentPrompt from '../../../components/AgentPrompt.astro'
+
+A maioria das ferramentas de automação de navegadores requer um navegador headless, sessões separadas e muito código. Mas a partir do Chrome 144, o teu agente de IA pode controlar o teu navegador real — o que usas todos os dias, com todos os teus separadores abertos e todas as tuas contas com sessão iniciada.
+
+Isto funciona através do servidor [Chrome DevTools MCP](https://www.npmjs.com/package/chrome-devtools-mcp), que liga o OpenCode ao protocolo de depuração remota do Chrome. O Chrome mostra uma janela de permissão de cada vez e exibe um banner enquanto o agente está ligado, para que nada aconteça em silêncio.
+
+<AgentPrompt title="Controlar um navegador" prompt='Let&#39;s work on the "Drive a browser" exercise together!' />
+
+## Configurar o Chrome DevTools MCP
+
+São necessários dois passos:
+
+**Ativar a depuração remota no Chrome** — navega até este URL no Chrome e ativa a funcionalidade:
+
+```
+chrome://inspect/#remote-debugging
+```
+
+**Adicionar o servidor MCP à tua configuração do OpenCode** — adiciona isto à tua configuração global (`~/.config/opencode/opencode.json`):
+
+```json
+{
+  "mcp": {
+    "chrome-devtools": {
+      "type": "local",
+      "command": ["npx", "-y", "chrome-devtools-mcp@latest", "--autoConnect"]
+    }
+  }
+}
+```
+
+Reinicia o OpenCode depois de fazeres esta alteração.
+
+## Começar no Modo Plano
+
+Antes de deixares o agente interagir com o teu navegador, muda para o **Modo Plano** (Plan Mode). Neste modo, o agente descreve o que pretende fazer e espera pela tua aprovação antes de agir. Esta é uma boa prática de segurança — o teu navegador tem acesso às tuas contas, aos teus dados e às tuas sessões. Queres rever as ações antes de serem executadas.
+
+## A funcionalidade chave: a tua sessão existente
+
+A razão pela qual isto é poderoso é que o teu agente herda a tua sessão existente do Chrome. Já tens sessão iniciada em todo o lado. Isso abre sites que nunca foram pensados para ser automatizados — sites sem API, sem CLI, e com uma interface autenticada complexa:
+
+- Verificar as tuas transações bancárias e categorizar gastos
+- Resumir um artigo com acesso restrito ao qual tens subscrição
+- Extrair datas de entrega de trabalhos de um portal escolar
+- Executar uma auditoria Lighthouse de acessibilidade em qualquer página
+- Preencher um formulário longo com o teu agente a guiar-te passo a passo
+- Comparar detalhes de produtos em vários separadores
+
+## O que vais fazer
+
+Vais começar de forma simples — tirar uma captura de ecrã do teu separador atual para verificar que a ligação funciona. Depois experimenta uma auditoria Lighthouse. A partir daí, o exercício é aberto: escolhe algo que realmente queiras automatizar e fá-lo.

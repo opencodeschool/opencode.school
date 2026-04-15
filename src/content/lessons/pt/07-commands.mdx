@@ -1,0 +1,108 @@
+---
+title: "Commands"
+slug: commands
+description: "Crie comandos slash personalizados para tarefas que executa repetidamente."
+order: 7
+quiz: true
+agentInstructions: |
+  Cover these four topics:
+
+  1. What custom commands are: reusable slash commands that send a saved
+     prompt to the model when invoked with /command-name.
+
+  2. The two ways to define them: markdown files in
+     ~/.config/opencode/commands/ (global) or .opencode/commands/
+      (per-project), or as JSON entries in opencode.json under the
+      "command" key.
+
+  3. The $ARGUMENTS placeholder: how to pass arguments when invoking a
+     command so the same command can be adapted at runtime.
+
+  4. The optional agent and model frontmatter options: you can pin a
+     command to a specific agent or model, with a link to the docs for
+     full details.
+
+  After teaching and quizzing, verify completion by reading
+  ~/.config/opencode/commands/summarize.md and confirming it exists with a
+  description in the frontmatter and a prompt in the body.
+
+  After marking the lesson complete, do NOT suggest moving on to the next
+  lesson. Instead, tell the student: commands are loaded at startup, so
+  they need to quit OpenCode Desktop and reopen it to pick up the new
+  command, and they can move on to the next lesson after restarting.
+---
+
+import AgentPrompt from '../../../components/AgentPrompt.astro'
+
+Se se encontra a escrever o mesmo tipo de prompt vezes sem conta — "resume este projeto", "revê as minhas alterações", "explica este ficheiro" — os comandos personalizados permitem guardar esse prompt e executá-lo com um único comando slash.
+
+Escreva `/` na caixa de texto e verá uma lista de comandos disponíveis. Comandos integrados como `/new`, `/undo` e `/help` estão sempre presentes. Os comandos personalizados que criar aparecem na mesma lista.
+
+<AgentPrompt title="Commands" />
+
+## Duas formas de definir um comando
+
+### Ficheiros Markdown
+
+Crie um ficheiro `.md` em `~/.config/opencode/commands/` (global, disponível em todos os projetos) ou `.opencode/commands/` (por projeto). O nome do ficheiro torna-se o nome do comando.
+
+`~/.config/opencode/commands/summarize.md`:
+
+```markdown
+---
+description: Resumir o projeto atual
+---
+Dá-me uma visão geral deste projeto. O que é? Quais são os ficheiros e pastas principais? Para que parece servir?
+```
+
+Agora pode executar `/summarize` em qualquer sessão do OpenCode.
+
+### JSON no opencode.json
+
+Também pode definir comandos diretamente no seu ficheiro de configuração:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "command": {
+    "summarize": {
+      "description": "Resumir o projeto atual",
+      "template": "Dá-me uma visão geral deste projeto. O que é? Quais são os ficheiros e pastas principais? Para que parece servir?"
+    }
+  }
+}
+```
+
+Ambas as abordagens produzem o mesmo resultado. Os ficheiros Markdown são mais fáceis de ler e editar; o JSON é conveniente se quiser tudo num único ficheiro de configuração.
+
+## Experimente: criar um comando /summarize
+
+Peça ao OpenCode para criar o ficheiro `~/.config/opencode/commands/summarize.md` com este conteúdo:
+
+```markdown
+---
+description: Resumir o projeto atual
+---
+Dá-me uma visão geral deste projeto. O que é? Quais são os ficheiros e pastas principais? Para que parece servir?
+```
+
+**Depois reinicie o OpenCode.** Os comandos são carregados no arranque, por isso novos ficheiros de comandos não aparecerão até reabrir a aplicação.
+
+Quando voltar, escreva `/summarize` na caixa de texto — deverá vê-lo aparecer na lista de autocompletar. Selecione-o e prima Return para o executar.
+
+## Passar argumentos
+
+Adicione um marcador `$ARGUMENTS` ao seu template e pode passar contexto extra ao invocar o comando:
+
+```markdown
+---
+description: Explicar um ficheiro
+---
+Explica o que $ARGUMENTS faz em linguagem simples.
+```
+
+Depois execute como `/explain src/index.ts` e `$ARGUMENTS` é substituído por `src/index.ts`.
+
+## Mais opções
+
+Os comandos suportam algumas outras opções no frontmatter: `agent` (executar o comando com um agente específico) e `model` (utilizar um modelo específico para este comando). Vamos abordar agentes numa lição posterior. Para a referência completa, consulte a [documentação de comandos](https://opencode.ai/docs/commands/).

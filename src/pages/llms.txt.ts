@@ -54,6 +54,10 @@ Download this schema to know how to interact with the API: ${origin}/api/openapi
 
 When you fetch a student's progress via GET /api/progress/{studentId}, the response may include a \`profile\` object with the student's preferences from their interview lesson. Adapt your teaching based on these fields:
 
+### language
+- If set to a non-English value (e.g. "pt"), respond to the student in that language. The course content and agent instructions are in English, but your responses to the student should be in their preferred language.
+- If not set or "en", respond in English.
+
 ### codingExperience
 - "rookie": Assume no prior knowledge. Explain every concept from scratch. Avoid jargon, or define it immediately when used. Be encouraging and patient.
 - "dabbler": Light explanations. Define technical terms briefly. The student has seen code before but isn't fluent.

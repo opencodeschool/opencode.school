@@ -1,0 +1,116 @@
+---
+title: "Tools"
+slug: tools
+description: "Expande o OpenCode com ferramentas externas e servidores MCP."
+order: 9
+quiz: true
+modifiesGlobalConfig: true
+agentInstructions: |
+  Cover these four topics:
+
+  1. What tools are: functions an AI can call to do things beyond
+     generating text, sometimes called "function calling" or "tool use".
+     This is what makes OpenCode an agent rather than a chatbot.
+
+  2. What MCP is: Model Context Protocol, an open standard for connecting
+     AI to external tools. Two kinds of servers: local (runs on your
+     machine, typically via npx) and remote (runs in the cloud, connected
+     by URL). You can edit the config yourself or just ask OpenCode to add
+     servers for you.
+
+  3. Public vs. authenticated servers: some MCP servers require no
+     credentials and work immediately. Others require an API token in your
+     config or an OAuth browser flow to authenticate.
+
+  4. The /mcp command and context: use /mcp in OpenCode to see configured
+     servers and their connection status. Good practice after installing a
+     new server to confirm it's connected and authenticated. Also note
+     that each MCP server adds tools to the context window, so be
+     selective about how many you enable.
+
+  After every write or edit to the config file, re-read it and validate it
+  is well-formed JSON before proceeding.
+
+  After teaching and quizzing, verify completion by reading
+  ~/.config/opencode/opencode.json (or opencode.jsonc) and confirming an "mcp" block exists
+  with at least one server entry.
+
+  After marking the lesson complete, do NOT suggest moving on to the next
+  lesson. Instead, tell the student: MCP servers are connected at startup,
+  so they need to quit OpenCode Desktop and reopen it for the new server
+  to be available, and they can move on to the next lesson after
+  restarting.
+---
+
+import AgentPrompt from '../../../components/AgentPrompt.astro'
+
+Quando escreves uma mensagem a uma IA, ela gera texto. É só isso — por si só, só consegue produzir palavras. Mas as palavras nem sempre são suficientes. Por vezes, precisas que a IA realmente *faça* algo: consultar a meteorologia de hoje, pesquisar na web, ler um ficheiro ou chamar uma API.
+
+É para isso que servem as ferramentas (tools). Uma ferramenta é uma função que a IA pode chamar quando decide que precisa dela — reconhece a situação, escolhe a ferramenta certa, executa-a e usa o resultado para te dar uma resposta melhor. Isto é por vezes chamado "function calling" ou "tool use".
+
+O OpenCode vem com ferramentas integradas para coisas como ler ficheiros, editar código e executar comandos no terminal. Mas podes expandi-lo com ferramentas externas também, usando um padrão chamado **MCP** (Model Context Protocol). Um servidor MCP é um pequeno programa que expõe ferramentas à IA — coisas como pesquisar no teu calendário, consultar uma base de dados ou obter dados em tempo real da web. Ligas um servidor MCP ao OpenCode uma vez e essas ferramentas ficam disponíveis em todas as sessões.
+
+<AgentPrompt title="Tools" />
+
+## Dois tipos de servidores MCP
+
+**Servidores locais** correm como um processo na tua própria máquina. O OpenCode inicia-os automaticamente ao arrancar, usando um comando que especificas na tua configuração — tipicamente `npx` seguido de um nome de pacote. Os servidores locais são comuns para ferramentas que precisam de acesso ao teu sistema de ficheiros ou ambiente local.
+
+**Servidores remotos** correm na nuvem. Ligas-te a eles por URL — não é necessário nenhum processo local. Muitos serviços publicam servidores MCP remotos para que possas dar ao teu agente de IA acesso à sua plataforma sem instalar nada.
+
+## Públicos vs. autenticados
+
+**Servidores públicos** não requerem credenciais. Adicionas à tua configuração e funcionam imediatamente.
+
+**Servidores com autenticação por token** requerem uma chave de API. Adicionas a chave à tua configuração, normalmente através de uma variável de ambiente para que não fique armazenada em texto simples.
+
+**Servidores OAuth** abrem um navegador para iniciares sessão no serviço. O OpenCode trata do fluxo OAuth automaticamente — deteta quando é necessária autenticação e pede-te para a completar.
+
+## Adicionar um servidor MCP de meteorologia
+
+Vamos instalar um servidor MCP local que obtém dados meteorológicos em tempo real do [Open-Meteo](https://open-meteo.com) — uma API de meteorologia gratuita e pública que não requer conta nem chave de API.
+
+Embora os servidores MCP sejam geridos na configuração global do OpenCode, não precisas de editar o ficheiro manualmente — podes simplesmente pedir ao OpenCode para o fazer. Tenta pedir-lhe que adicione o seguinte ao teu `~/.config/opencode/opencode.json`:
+
+```json
+"mcp": {
+  "open-meteo": {
+    "type": "local",
+    "command": ["npx", "-y", "-p", "open-meteo-mcp-server", "open-meteo-mcp-server"]
+  }
+}
+```
+
+Isto diz ao OpenCode para iniciar o pacote `open-meteo-mcp-server` via `npx` cada vez que arranca. O servidor corre localmente na tua máquina e liga-se à API Open-Meteo quando uma ferramenta de meteorologia é chamada.
+
+**Isto requer Node.js 22 ou posterior.** Se não o tiveres instalado, pede ao OpenCode para te ajudar a instalá-lo no teu sistema operativo.
+
+## Verificar com /mcp
+
+Depois de adicionares um servidor, escreve `/mcp` no OpenCode para veres uma lista dos teus servidores MCP configurados e o seu estado de ligação. Isto é um bom hábito — abre-o depois de instalares um novo servidor para confirmar que está ligado e, se necessário, autenticado.
+
+## Reiniciar o OpenCode
+
+Os servidores MCP são ligados ao arranque. **Fecha e reabre o OpenCode Desktop**, depois usa o prompt abaixo para continuar.
+
+<AgentPrompt title="Tools" prompt={`I've added the weather MCP server and restarted OpenCode. Let's verify the Tools lesson is complete.`} />
+
+## Experimenta
+
+Depois de voltares, pergunta ao OpenCode algo como:
+
+> Qual é a previsão meteorológica para Tóquio esta semana?
+
+Observa a interface enquanto o OpenCode responde — deves ver que faz uma chamada de ferramenta ao servidor de meteorologia, obtém os dados e usa o resultado na sua resposta. A IA está a decidir que precisa de uma ferramenta, a chamá-la e a trabalhar com o que recebe de volta. É isto que distingue um agente de um chatbot.
+
+Se tiveres várias ferramentas disponíveis, o modelo pode nem sempre escolher a que esperas. Podes orientá-lo mencionando a ferramenta pelo nome — por exemplo, "usa o servidor MCP open-meteo para verificar a meteorologia em Tóquio." Isto torna mais provável que o modelo utilize essa ferramenta específica em vez de tentar responder a partir dos seus dados de treino ou escolher outra ferramenta.
+
+## Uma nota sobre o contexto
+
+Cada servidor MCP que adicionas regista as suas ferramentas junto do modelo no início de cada sessão. Com muitos servidores ativados, essas descrições de ferramentas podem ocupar uma parte significativa da tua [janela de contexto](/glossary#context-window). A documentação do OpenCode recomenda ser seletivo — ativa apenas os servidores que realmente usas regularmente.
+
+## Encontrar mais servidores MCP
+
+A [documentação MCP do OpenCode](https://opencode.ai/docs/mcp-servers/) inclui exemplos de configuração prontos a usar para Sentry, Context7 e Grep. Para uma descoberta mais ampla, o [registo oficial de MCP](https://registry.modelcontextprotocol.io) indexa milhares de servidores em categorias como bases de dados, ferramentas de desenvolvimento e produtividade — apoiado pela Anthropic, GitHub e Microsoft.
+
+Também podes pedir ao OpenCode para encontrar e instalar servidores MCP por ti — descreve o que precisas e ele pode procurar um servidor e adicioná-lo à tua configuração.

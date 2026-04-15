@@ -1,0 +1,369 @@
+---
+// Copyright (c) 2026 Cloudflare, Inc.
+// Licensed under the Apache 2.0 license found in the LICENSE file or at:
+//     https://opensource.org/licenses/Apache-2.0
+export const prerender = true;
+
+import Base from "../../layouts/Base.astro";
+import { localePath } from "../../i18n/locales";
+import { getLocalizedLessons, getLocalizedExercises } from "../../i18n/content";
+import { t } from "../../i18n/ui";
+
+const locale = "pt" as const;
+const lessons = await getLocalizedLessons(locale);
+const exercises = await getLocalizedExercises(locale);
+---
+
+<Base locale={locale}>
+
+  <!-- Student ID card: always at top, shown once enrolled -->
+  <div id="student-id-card" class="hidden mb-8" style="max-width:420px; position:relative;">
+    <div id="celebration-layer" style="position:absolute; inset:-80px; pointer-events:none; z-index:1; overflow:visible;"></div>
+    <div class="theme-card-band rounded-2xl overflow-hidden" style="aspect-ratio:85.6/54; position:relative; z-index:2;">
+      <div class="flex flex-col justify-between h-full px-7 py-5">
+        <p class="text-xs font-mono uppercase tracking-[0.3em] opacity-80">{t("home.studentId", locale)}</p>
+        <p id="student-id-display" class="text-2xl font-mono font-bold tracking-tight"></p>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-header" class="mb-8">
+    <p class="text-xl text-gray-700 dark:text-gray-300 leading-relaxed" set:html={t("home.intro", locale)} />
+  </div>
+
+  <div id="enrolled-section" class="hidden mb-12">
+    <h2 class="text-sm font-mono uppercase tracking-wider text-gray-500 dark:text-gray-500 mb-4">{t("home.lessons", locale)}</h2>
+
+    <ol class="divide-y divide-gray-200 dark:divide-stone-800">
+      {lessons.map((lesson) => {
+        const isStub = lesson.body?.trim() === "Coming soon.";
+        const href = localePath(`/lessons/${lesson.data.slug}`, locale);
+        return (
+          <li data-lesson-slug={lesson.data.slug} data-lesson-stub={isStub ? "true" : "false"}>
+            <div class="lesson-row flex flex-col gap-3 py-3 transition-colors sm:flex-row sm:items-center sm:justify-between">
+              <a href={href} class="lesson-link group flex min-w-0 items-center gap-3">
+                <span class="lesson-status flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-gray-300 bg-gray-100/70 text-white dark:border-stone-700 dark:bg-stone-900/70" aria-hidden="true">
+                  <span class="lesson-status-dot h-2 w-2 rounded-full bg-gray-400 dark:bg-stone-500"></span>
+                  <span class="lesson-check hidden h-full w-full items-center justify-center text-xs font-bold leading-none">&#10003;</span>
+                </span>
+                <div class="min-w-0">
+                  <h3 class:list={["lesson-title font-medium transition-colors", isStub && "text-gray-400 dark:text-gray-600"]}>
+                    {lesson.data.title}
+                    {isStub && <span class="ml-2 text-xs font-normal text-gray-400 dark:text-gray-600">{t("home.comingSoon", locale)}</span>}
+                  </h3>
+                  <p class="lesson-description mt-0.5 text-sm text-gray-500 dark:text-gray-500">{lesson.data.description}</p>
+                </div>
+              </a>
+              <a href={href} class="lesson-cta theme-button hidden shrink-0 rounded-lg px-3 py-2 text-center font-mono text-sm">
+                {t("cta.continue", locale)}
+              </a>
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+
+    <h2 class="text-sm font-mono uppercase tracking-wider text-gray-500 dark:text-gray-500 mb-4 mt-10">{t("home.exercises", locale)}</h2>
+    <p class="text-sm text-gray-500 dark:text-gray-500 mb-4">
+      {t("home.exercisesDescription", locale)}
+      <a href={localePath("/exercises", locale)} class="theme-link underline underline-offset-2">{t("home.learnMore", locale)}</a>
+    </p>
+
+    <ol class="divide-y divide-gray-200 dark:divide-stone-800">
+      {exercises.map((exercise) => {
+        const isStub = exercise.body?.trim() === "Coming soon.";
+        const href = localePath(`/exercises/${exercise.data.slug}`, locale);
+        return (
+          <li data-exercise-slug={exercise.data.slug} data-exercise-stub={isStub ? "true" : "false"}>
+            <div class="exercise-row flex flex-col gap-3 py-3 transition-colors sm:flex-row sm:items-center sm:justify-between">
+              <a href={href} class="exercise-link group flex min-w-0 items-center gap-3">
+                <span class="exercise-status flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-gray-300 bg-gray-100/70 text-white dark:border-stone-700 dark:bg-stone-900/70" aria-hidden="true">
+                  <span class="exercise-status-dot h-2 w-2 rounded-full bg-gray-400 dark:bg-stone-500"></span>
+                  <span class="exercise-check hidden h-full w-full items-center justify-center text-xs font-bold leading-none">&#10003;</span>
+                </span>
+                <div class="min-w-0">
+                  <h3 class:list={["exercise-title font-medium transition-colors", isStub && "text-gray-400 dark:text-gray-600"]}>
+                    {exercise.data.title}
+                    {isStub && <span class="ml-2 text-xs font-normal text-gray-400 dark:text-gray-600">{t("home.comingSoon", locale)}</span>}
+                  </h3>
+                  <p class="exercise-description mt-0.5 text-sm text-gray-500 dark:text-gray-500">{exercise.data.description}</p>
+                </div>
+              </a>
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+  </div>
+
+  <div id="intro-video-bg" class="mb-8 rounded-2xl overflow-hidden rainbow-bg" style="background-color: var(--theme-solid);">
+    <video controls playsinline class="w-full" poster="/video/poster.png">
+      <source src="https://assets.opencode.school/video/intro.mov" type="video/mp4; codecs=hvc1">
+      <source src="https://assets.opencode.school/video/intro.webm" type="video/webm">
+    </video>
+  </div>
+
+  <div id="not-enrolled-section" class="mb-12">
+    <div id="enroll-step-button" class="py-8 text-center">
+      <button type="button" id="enroll-button" class="rainbow-bg cursor-pointer rounded-lg px-10 py-4 font-mono font-semibold text-2xl disabled:opacity-50 disabled:cursor-not-allowed">
+        {t("home.enroll", locale)}
+      </button>
+      <p class="text-sm text-gray-500 dark:text-stone-500 mt-4">{t("home.enrollFree", locale)}</p>
+    </div>
+
+    <div id="enroll-step-color" class="hidden">
+      <p id="color-picker-copy" class="text-sm text-gray-600 dark:text-stone-400 mb-4">{t("home.colorPicker", locale)}</p>
+      <div id="color-picker" class="grid grid-cols-6 gap-2 not-prose">
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="red"     aria-label="Red"     title="Red"     style="background:#dc2626;--i:0"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="orange"  aria-label="Orange"  title="Orange"  style="background:#ea580c;--i:1"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="amber"   aria-label="Amber"   title="Amber"   style="background:#b45309;--i:2"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="yellow"  aria-label="Yellow"  title="Yellow"  style="background:#ca8a04;--i:3"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="lime"    aria-label="Lime"    title="Lime"    style="background:#4d7c0f;--i:4"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="green"   aria-label="Green"   title="Green"   style="background:#15803d;--i:5"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="emerald" aria-label="Emerald" title="Emerald" style="background:#059669;--i:6"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="teal"    aria-label="Teal"    title="Teal"    style="background:#0f766e;--i:7"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="cyan"    aria-label="Cyan"    title="Cyan"    style="background:#0e7490;--i:8"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="sky"     aria-label="Sky"     title="Sky"     style="background:#0284c7;--i:9"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="blue"    aria-label="Blue"    title="Blue"    style="background:#2563eb;--i:10"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="indigo"  aria-label="Indigo"  title="Indigo"  style="background:#4f46e5;--i:11"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="violet"  aria-label="Violet"  title="Violet"  style="background:#7c3aed;--i:12"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="purple"  aria-label="Purple"  title="Purple"  style="background:#9333ea;--i:13"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="fuchsia" aria-label="Fuchsia" title="Fuchsia" style="background:#c026d3;--i:14"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="pink"    aria-label="Pink"    title="Pink"    style="background:#db2777;--i:15"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="rose"    aria-label="Rose"    title="Rose"    style="background:#e11d48;--i:16"></button>
+        <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="slate"   aria-label="Slate"   title="Slate"   style="background:#475569;--i:17"></button>
+      </div>
+      <p id="enroll-error" class="mt-2 text-red-500 text-sm hidden">{t("home.enrollError", locale)}</p>
+    </div>
+  </div>
+
+  <div class="prose dark:prose-invert max-w-none">
+    <h2>{t("home.whatIsOpenCode", locale)}</h2>
+    <p set:html={t("home.whatIsOpenCodeP1", locale)} />
+    <p>{t("home.whatIsOpenCodeP2", locale)}</p>
+    <p set:html={t("home.whatIsOpenCodeP3", locale)} />
+
+    <h2>{t("home.whoIsThisFor", locale)}</h2>
+    <p>{t("home.whoIsThisForP1", locale)}</p>
+    <p set:html={t("home.whoIsThisForP2", locale)} />
+    <p set:html={t("home.whoIsThisForP3", locale)} />
+
+    <h2>{t("home.whatYoullLearn", locale)}</h2>
+    <p>{t("home.whatYoullLearnIntro", locale)}</p>
+    <ul>
+      {(t("home.whatYoullLearnList", locale) as string[]).map((item) => <li>{item}</li>)}
+    </ul>
+
+    <h2>{t("home.howItWorks", locale)}</h2>
+    <p set:html={t("home.howItWorksP1", locale)} />
+  </div>
+
+  <div id="enroll-bottom-section" class="mt-10 py-8 text-center not-prose">
+    <button type="button" id="enroll-button-bottom" class="rainbow-bg cursor-pointer rounded-lg px-10 py-4 font-mono font-semibold text-2xl disabled:opacity-50 disabled:cursor-not-allowed">
+      {t("home.enroll", locale)}
+    </button>
+    <p class="text-sm text-gray-500 dark:text-stone-500 mt-4">{t("home.enrollFree", locale)}</p>
+  </div>
+
+  <script is:inline>
+    document.querySelector('video').addEventListener('ended', function() {
+      this.load();
+    });
+
+    (function() {
+      var idCard          = document.getElementById("student-id-card");
+      var pageHeader      = document.getElementById("page-header");
+      var stepButton      = document.getElementById("enroll-step-button");
+      var stepColor       = document.getElementById("enroll-step-color");
+      var enrollBtn       = document.getElementById("enroll-button");
+      var colorPickerCopy = document.getElementById("color-picker-copy");
+      var enrollError     = document.getElementById("enroll-error");
+      var display         = document.getElementById("student-id-display");
+      var notEnrolledSection  = document.getElementById("not-enrolled-section");
+      var enrolledSection     = document.getElementById("enrolled-section");
+      var enrollBottomSection = document.getElementById("enroll-bottom-section");
+      var enrollBtnBottom     = document.getElementById("enroll-button-bottom");
+
+      var colorOptions = Array.prototype.slice.call(
+        document.querySelectorAll(".enrollment-color-option[data-theme-color]")
+      );
+
+      var selectedTheme = window.school.getThemeColor();
+      var isSubmitting = false;
+
+      var chars  = "abcdefghijklmnopqrstuvwxyz";
+      var digits = "0123456789";
+
+      function randomChar(real) {
+        if (real === "-") return "-";
+        if (real >= "0" && real <= "9") return digits[Math.floor(Math.random() * digits.length)];
+        return chars[Math.floor(Math.random() * chars.length)];
+      }
+
+      function scramble(target) {
+        var result = "";
+        for (var i = 0; i < target.length; i++) result += randomChar(target[i]);
+        return result;
+      }
+
+      function fireCelebration() {
+        var layer = document.getElementById("celebration-layer");
+        if (!layer) return;
+        var palettes = window.school.getThemePalettes();
+        var palette = palettes[window.school.getThemeColor()] || palettes.blue;
+        var colors = [palette.solid, palette.solidHover, palette.linkDark, palette.softText, palette.softTextDark];
+        var cx = layer.offsetWidth / 2;
+        var cy = layer.offsetHeight / 2;
+        for (var i = 0; i < 80; i++) {
+          var p = document.createElement("span");
+          p.className = "celebration-particle";
+          var angle = Math.random() * 2 * Math.PI;
+          var speed = 120 + Math.random() * 200;
+          var vx = Math.cos(angle) * speed * 1.6;
+          var vy = Math.sin(angle) * speed;
+          var size = (4 + Math.random() * 5) + "px";
+          var rot = (Math.random() * 720 - 360) + "deg";
+          var dur = (0.8 + Math.random() * 0.7) + "s";
+          var isCircle = Math.random() > 0.4;
+          p.style.setProperty("--vx", vx + "px");
+          p.style.setProperty("--vy", vy + "px");
+          p.style.setProperty("--rot", rot);
+          p.style.setProperty("--size", size);
+          p.style.setProperty("--dur", dur);
+          p.style.setProperty("--radius", isCircle ? "50%" : "20%");
+          p.style.setProperty("--color", colors[Math.floor(Math.random() * colors.length)]);
+          p.style.left = cx + "px";
+          p.style.top  = cy + "px";
+          layer.appendChild(p);
+          p.addEventListener("animationend", function() { this.remove(); });
+        }
+      }
+
+      function cipherReveal(target, fast, callback) {
+        var scrambleMs = fast ? 15 : 30;
+        var delayMs    = fast ? 150 : 600;
+        var resolveMs  = fast ? 45 : 140;
+        var resolved = 0;
+        display.textContent = scramble(target);
+        var scrambleInterval = setInterval(function() {
+          var next = "";
+          for (var i = 0; i < target.length; i++) {
+            if (i < resolved)           next += target[i];
+            else if (target[i] === "-") next += "-";
+            else                        next += randomChar(target[i]);
+          }
+          display.textContent = next;
+        }, scrambleMs);
+        setTimeout(function() {
+          var resolveInterval = setInterval(function() {
+            if (resolved >= target.length) {
+              clearInterval(scrambleInterval);
+              clearInterval(resolveInterval);
+              display.textContent = target;
+              if (callback) callback();
+              return;
+            }
+            if (target[resolved] === "-") resolved++;
+            resolved++;
+          }, resolveMs);
+        }, delayMs);
+      }
+
+      function revealIdCard(studentId) {
+        display.textContent = studentId;
+        idCard.classList.remove("hidden");
+        pageHeader.classList.add("hidden");
+      }
+
+      function showEnrolled(studentId, animate, fast) {
+        notEnrolledSection.classList.add("hidden");
+        if (enrollBottomSection) enrollBottomSection.classList.add("hidden");
+        enrolledSection.classList.remove("hidden");
+        pageHeader.classList.add("hidden");
+        display.textContent = studentId;
+        idCard.classList.remove("hidden");
+        if (animate) {
+          cipherReveal(studentId, fast, function() {
+            fireCelebration();
+            if (!fast) {
+              window.school.markComplete("enrollment").then(function() {
+                window.school.updateAllCheckmarks();
+                if (typeof window.school.updateEnrolledIndicator === "function") {
+                  window.school.updateEnrolledIndicator();
+                }
+              });
+            }
+          });
+        }
+      }
+
+      function setSelectedTheme(themeName) {
+        selectedTheme = window.school.setThemeColor(themeName);
+        colorOptions.forEach(function(opt) {
+          var isSelected = opt.getAttribute("data-theme-color") === selectedTheme;
+          opt.style.outline = isSelected ? "2px solid var(--theme-solid)" : "none";
+          opt.style.outlineOffset = "2px";
+        });
+      }
+
+      function setPickerState(message, disabled) {
+        if (colorPickerCopy && message) colorPickerCopy.textContent = message;
+        colorOptions.forEach(function(opt) {
+          opt.disabled = disabled;
+          opt.classList.toggle("opacity-60", disabled);
+          opt.classList.toggle("cursor-not-allowed", disabled);
+        });
+      }
+
+      var existingId = window.school.getStudentId();
+      if (existingId) {
+        showEnrolled(existingId, true, true);
+      } else {
+        setSelectedTheme(selectedTheme);
+      }
+
+      if (enrollBtnBottom) {
+        enrollBtnBottom.addEventListener("click", function() {
+          notEnrolledSection.scrollIntoView({ behavior: "smooth", block: "start" });
+          setTimeout(function() { if (enrollBtn) enrollBtn.click(); }, 400);
+        });
+      }
+
+      if (enrollBtn) {
+        enrollBtn.addEventListener("click", function() {
+          stepButton.classList.add("hidden");
+          stepColor.classList.remove("hidden");
+          setSelectedTheme(selectedTheme);
+          colorOptions.forEach(function(opt) {
+            opt.classList.remove("swatch-animate");
+            void opt.offsetWidth;
+            opt.classList.add("swatch-animate");
+          });
+        });
+      }
+
+      colorOptions.forEach(function(opt) {
+        opt.addEventListener("click", async function() {
+          if (isSubmitting) return;
+          isSubmitting = true;
+          enrollError.classList.add("hidden");
+          setSelectedTheme(opt.getAttribute("data-theme-color"));
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          var videoBg = document.getElementById("intro-video-bg");
+          if (videoBg) videoBg.classList.remove("rainbow-bg");
+          var loc = document.documentElement.getAttribute("data-locale") || "en";
+          var generatingText = { en: "Generating your student ID...", pt: "A gerar o seu ID de estudante..." };
+          setPickerState(generatingText[loc] || generatingText.en, true);
+          try {
+            var data = await window.school.enroll();
+            showEnrolled(data.studentId, true, false);
+          } catch (e) {
+            var colorPickerText = { en: "Choose a color for your student ID card and site theme.", pt: "Escolha uma cor para o seu cartão de estudante e tema do site." };
+            setPickerState(colorPickerText[loc] || colorPickerText.en, false);
+            isSubmitting = false;
+          }
+        });
+      });
+    })();
+  </script>
+</Base>

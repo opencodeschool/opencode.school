@@ -39,10 +39,16 @@ export const GET: APIRoute = async ({ params, request }) => {
 
 	const origin = new URL(request.url).origin;
 
+	const language = progress.profile?.language;
+	const languageLine =
+		language && language !== "en"
+			? `\nMy preferred language is ${language === "pt" ? "Portuguese" : language}. Please respond to me in ${language === "pt" ? "Portuguese" : language}.\n`
+			: "";
+
 	const content = `My OpenCode School student ID is ${studentId}
 
 When I mention school, lessons, progress, exercises, enrollment, or my student ID, use this ID to fetch my OpenCode School data as needed.
-
+${languageLine}
 For the full OpenCode School agent protocol, fetch ${origin}/llms.txt
 `;
 

@@ -5,10 +5,13 @@
 export const prerender = true;
 
 import Base from "../layouts/Base.astro";
-import { getCollection } from "astro:content";
+import { getLocaleFromPath, localePath } from "../i18n/locales";
+import { getLocalizedLessons, getLocalizedExercises } from "../i18n/content";
+import { t } from "../i18n/ui";
 
-const lessons = (await getCollection("lessons")).sort((a, b) => a.data.order - b.data.order);
-const exercises = (await getCollection("exercises")).sort((a, b) => a.data.order - b.data.order);
+const locale = getLocaleFromPath(Astro.url.pathname);
+const lessons = await getLocalizedLessons(locale);
+const exercises = await getLocalizedExercises(locale);
 ---
 
 <Base>
@@ -20,7 +23,7 @@ const exercises = (await getCollection("exercises")).sort((a, b) => a.data.order
     <!-- Card itself sits above the particle layer -->
     <div class="theme-card-band rounded-2xl overflow-hidden" style="aspect-ratio:85.6/54; position:relative; z-index:2;">
       <div class="flex flex-col justify-between h-full px-7 py-5">
-        <p class="text-xs font-mono uppercase tracking-[0.3em] opacity-80">OpenCode Student ID</p>
+        <p class="text-xs font-mono uppercase tracking-[0.3em] opacity-80">{t("home.studentId", locale)}</p>
         <p id="student-id-display" class="text-2xl font-mono font-bold tracking-tight"></p>
       </div>
     </div>
@@ -28,19 +31,17 @@ const exercises = (await getCollection("exercises")).sort((a, b) => a.data.order
 
   <!-- Page header: hidden once enrolled -->
   <div id="page-header" class="mb-8">
-    <p class="text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
-      OpenCode School is a free, self-paced course for learning <a href="https://opencode.ai" class="theme-link underline">OpenCode</a>, the open-source AI coding agent.
-    </p>
+    <p class="text-xl text-gray-700 dark:text-gray-300 leading-relaxed" set:html={t("home.intro", locale)} />
   </div>
 
   <!-- Enrolled: lesson list -->
   <div id="enrolled-section" class="hidden mb-12">
-    <h2 class="text-sm font-mono uppercase tracking-wider text-gray-500 dark:text-gray-500 mb-4">Lessons</h2>
+    <h2 class="text-sm font-mono uppercase tracking-wider text-gray-500 dark:text-gray-500 mb-4">{t("home.lessons", locale)}</h2>
 
     <ol class="divide-y divide-gray-200 dark:divide-stone-800">
       {lessons.map((lesson) => {
         const isStub = lesson.body?.trim() === "Coming soon.";
-        const href = `/lessons/${lesson.data.slug}`;
+        const href = localePath(`/lessons/${lesson.data.slug}`, locale);
         return (
           <li data-lesson-slug={lesson.data.slug} data-lesson-stub={isStub ? "true" : "false"}>
             <div class="lesson-row flex flex-col gap-3 py-3 transition-colors sm:flex-row sm:items-center sm:justify-between">
@@ -61,7 +62,7 @@ const exercises = (await getCollection("exercises")).sort((a, b) => a.data.order
                     isStub && "text-gray-400 dark:text-gray-600",
                   ]}>
                     {lesson.data.title}
-                    {isStub && <span class="ml-2 text-xs font-normal text-gray-400 dark:text-gray-600">(coming soon)</span>}
+                    {isStub && <span class="ml-2 text-xs font-normal text-gray-400 dark:text-gray-600">{t("home.comingSoon", locale)}</span>}
                   </h3>
                   <p class="lesson-description mt-0.5 text-sm text-gray-500 dark:text-gray-500">{lesson.data.description}</p>
                 </div>
@@ -70,7 +71,7 @@ const exercises = (await getCollection("exercises")).sort((a, b) => a.data.order
                 href={href}
                 class="lesson-cta theme-button hidden shrink-0 rounded-lg px-3 py-2 text-center font-mono text-sm"
               >
-                Continue
+                {t("cta.continue", locale)}
               </a>
             </div>
           </li>
@@ -78,16 +79,16 @@ const exercises = (await getCollection("exercises")).sort((a, b) => a.data.order
       })}
     </ol>
 
-    <h2 class="text-sm font-mono uppercase tracking-wider text-gray-500 dark:text-gray-500 mb-4 mt-10">Exercises</h2>
+    <h2 class="text-sm font-mono uppercase tracking-wider text-gray-500 dark:text-gray-500 mb-4 mt-10">{t("home.exercises", locale)}</h2>
     <p class="text-sm text-gray-500 dark:text-gray-500 mb-4">
-      Hands-on projects where you apply what you've learned to build real things.
-      <a href="/exercises" class="theme-link underline underline-offset-2">Learn more</a>
+      {t("home.exercisesDescription", locale)}
+      <a href={localePath("/exercises", locale)} class="theme-link underline underline-offset-2">{t("home.learnMore", locale)}</a>
     </p>
 
     <ol class="divide-y divide-gray-200 dark:divide-stone-800">
       {exercises.map((exercise) => {
         const isStub = exercise.body?.trim() === "Coming soon.";
-        const href = `/exercises/${exercise.data.slug}`;
+        const href = localePath(`/exercises/${exercise.data.slug}`, locale);
         return (
           <li data-exercise-slug={exercise.data.slug} data-exercise-stub={isStub ? "true" : "false"}>
             <div class="exercise-row flex flex-col gap-3 py-3 transition-colors sm:flex-row sm:items-center sm:justify-between">
@@ -108,7 +109,7 @@ const exercises = (await getCollection("exercises")).sort((a, b) => a.data.order
                     isStub && "text-gray-400 dark:text-gray-600",
                   ]}>
                     {exercise.data.title}
-                    {isStub && <span class="ml-2 text-xs font-normal text-gray-400 dark:text-gray-600">(coming soon)</span>}
+                    {isStub && <span class="ml-2 text-xs font-normal text-gray-400 dark:text-gray-600">{t("home.comingSoon", locale)}</span>}
                   </h3>
                   <p class="exercise-description mt-0.5 text-sm text-gray-500 dark:text-gray-500">{exercise.data.description}</p>
                 </div>
@@ -136,15 +137,15 @@ const exercises = (await getCollection("exercises")).sort((a, b) => a.data.order
         id="enroll-button"
         class="rainbow-bg cursor-pointer rounded-lg px-10 py-4 font-mono font-semibold text-2xl disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Enroll in OpenCode School
+        {t("home.enroll", locale)}
       </button>
       <p class="text-sm text-gray-500 dark:text-stone-500 mt-4">
-        Free forever. No account required. No personal data collected.
+        {t("home.enrollFree", locale)}
       </p>
     </div>
 
     <div id="enroll-step-color" class="hidden">
-      <p id="color-picker-copy" class="text-sm text-gray-600 dark:text-stone-400 mb-4">Choose a color for your student ID card and site theme.</p>
+      <p id="color-picker-copy" class="text-sm text-gray-600 dark:text-stone-400 mb-4">{t("home.colorPicker", locale)}</p>
       <div id="color-picker" class="grid grid-cols-6 gap-2 not-prose">
         <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="red"     aria-label="Red"     title="Red"     style="background:#dc2626;--i:0"></button>
         <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="orange"  aria-label="Orange"  title="Orange"  style="background:#ea580c;--i:1"></button>
@@ -165,54 +166,30 @@ const exercises = (await getCollection("exercises")).sort((a, b) => a.data.order
         <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="rose"    aria-label="Rose"    title="Rose"    style="background:#e11d48;--i:16"></button>
         <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="slate"   aria-label="Slate"   title="Slate"   style="background:#475569;--i:17"></button>
       </div>
-      <p id="enroll-error" class="mt-2 text-red-500 text-sm hidden">Something went wrong. Please try again.</p>
+      <p id="enroll-error" class="mt-2 text-red-500 text-sm hidden">{t("home.enrollError", locale)}</p>
     </div>
   </div>
 
   <!-- Orientation content (always visible) -->
   <div class="prose dark:prose-invert max-w-none">
-    <h2>What is OpenCode?</h2>
+    <h2>{t("home.whatIsOpenCode", locale)}</h2>
+    <p set:html={t("home.whatIsOpenCodeP1", locale)} />
+    <p>{t("home.whatIsOpenCodeP2", locale)}</p>
+    <p set:html={t("home.whatIsOpenCodeP3", locale)} />
 
-    <p>
-      <a href="https://opencode.ai">OpenCode</a> is a free, open-source AI coding agent that you install on your personal computer. The primary interface is a chat window, much like ChatGPT or Claude, where you have a back and forth dialogue with an AI model. But instead of just chatting, OpenCode can read and write files on your computer, write code, run commands, and interact with other applications.
-    </p>
+    <h2>{t("home.whoIsThisFor", locale)}</h2>
+    <p>{t("home.whoIsThisForP1", locale)}</p>
+    <p set:html={t("home.whoIsThisForP2", locale)} />
+    <p set:html={t("home.whoIsThisForP3", locale)} />
 
-    <p>
-      Despite the name, OpenCode is not just a tool for writing software. You can use it to automate any task on your computer, from managing files to controlling other applications. It's like having an assistant that can understand your intentions, help you brainstorm, do deep research, and build creative things.
-    </p>
-
-    <p>Unlike proprietary tools like Claude Code and OpenAI Codex, OpenCode works with <a href="https://opencode.ai/docs/providers/">75+ AI model providers</a>, including <a href="https://anthropic.com">Anthropic</a> (Claude), <a href="https://openai.com">OpenAI</a> (GPT), and <a href="https://deepmind.google/technologies/gemini/">Google</a> (Gemini). You can also run open-source models locally on your own machine using tools like <a href="https://ollama.com">Ollama</a>, <a href="https://lmstudio.ai">LM Studio</a>, or <a href="https://github.com/ggml-org/llama.cpp">llama.cpp</a> — no cloud account needed.</p>
-
-    <h2>Who is this for?</h2>
-
-    <p>
-      This course is for anyone who wants to expand their creative potential with AI. Whether you're a student, a hobbyist, a professional developer, or just curious about AI, OpenCode can help you do more with less effort.
-    </p>
-
-    <p>
-      This course is for <strong>beginners</strong> who are new to AI coding agents. You don't need to be a programmer, and you don't need any experience with the terminal. We'll be using the OpenCode Desktop app, which provides a familiar graphical interface.
-    </p>
-
-    <p>
-      This course is also for <strong>experienced developers</strong>. It'll get you set up with a good foundation for using OpenCode effectively, and you'll learn some tips and tricks for getting the most out of it.
-    </p>
-
-    <h2>What you'll learn</h2>
-
-    <p>By the end of this course, you'll know how to:</p>
-
+    <h2>{t("home.whatYoullLearn", locale)}</h2>
+    <p>{t("home.whatYoullLearnIntro", locale)}</p>
     <ul>
-      <li>Install and configure OpenCode</li>
-      <li>Use AI models to help you write and edit code</li>
-      <li>Control what OpenCode can and can't do on your machine</li>
-      <li>Connect external tools and services</li>
-      <li>Run multiple sessions in parallel</li>
-      <li>Build websites, games, and other creative projects!</li>
+      {(t("home.whatYoullLearnList", locale) as string[]).map((item) => <li>{item}</li>)}
     </ul>
 
-    <h2>How it works</h2>
-
-    <p>The first lesson — Installation — is done here in the browser. Once you have OpenCode up and running, the rest of the course happens interactively <em>inside</em> OpenCode itself. Each lesson page has a prompt you copy and paste into OpenCode. The agent reads the lesson, works through the material with you, and marks it complete — which syncs back to this page in real time.</p>
+    <h2>{t("home.howItWorks", locale)}</h2>
+    <p set:html={t("home.howItWorksP1", locale)} />
   </div>
 
   <!-- Bottom enroll CTA: hidden once enrolled -->
@@ -222,10 +199,10 @@ const exercises = (await getCollection("exercises")).sort((a, b) => a.data.order
       id="enroll-button-bottom"
       class="rainbow-bg cursor-pointer rounded-lg px-10 py-4 font-mono font-semibold text-2xl disabled:opacity-50 disabled:cursor-not-allowed"
     >
-      Enroll in OpenCode School
+      {t("home.enroll", locale)}
     </button>
     <p class="text-sm text-gray-500 dark:text-stone-500 mt-4">
-      Free forever. No account required. No personal data collected.
+      {t("home.enrollFree", locale)}
     </p>
   </div>
 
@@ -433,13 +410,16 @@ const exercises = (await getCollection("exercises")).sort((a, b) => a.data.order
           // Transition rainbow → student's chosen solid color
           var videoBg = document.getElementById("intro-video-bg");
           if (videoBg) videoBg.classList.remove("rainbow-bg");
-          setPickerState("Generating your student ID...", true);
+          var loc = document.documentElement.getAttribute("data-locale") || "en";
+          var generatingText = { en: "Generating your student ID...", pt: "A gerar o seu ID de estudante..." };
+          setPickerState(generatingText[loc] || generatingText.en, true);
           try {
             var data = await window.school.enroll();
             showEnrolled(data.studentId, true, false);
           } catch (e) {
             enrollError.classList.remove("hidden");
-            setPickerState("Choose a color for your student ID card and site theme.", false);
+            var colorPickerText = { en: "Choose a color for your student ID card and site theme.", pt: "Escolha uma cor para o seu cartão de estudante e tema do site." };
+            setPickerState(colorPickerText[loc] || colorPickerText.en, false);
             isSubmitting = false;
           }
         });

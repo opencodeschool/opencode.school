@@ -14,6 +14,13 @@ export default defineConfig({
 	output: "server",
 	adapter: cloudflare(),
 	integrations: [mdx()],
+	i18n: {
+		defaultLocale: "en",
+		locales: ["en", "pt"],
+		routing: {
+			prefixDefaultLocale: false,
+		},
+	},
 	markdown: {
 		rehypePlugins: [
 			rehypeSlug,

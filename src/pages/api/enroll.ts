@@ -17,19 +17,29 @@ export const OPTIONS: APIRoute = async () => {
 	return new Response(null, { status: 204, headers: corsHeaders });
 };
 
+const VALID_LOCALE = ["en", "pt"];
+
 export const POST: APIRoute = async ({ request }) => {
 	const kv = env.PROGRESS;
 	const studentId = await generateStudentId(kv);
 
 	let deviceId: string | undefined;
+	let language: "en" | "pt" | undefined;
 	try {
 		const body = await request.json();
 		if (typeof body?.deviceId === "string") deviceId = body.deviceId;
+		if (
+			typeof body?.language === "string" &&
+			VALID_LOCALE.includes(body.language)
+		) {
+			language = body.language as "en" | "pt";
+		}
 	} catch {
 		// Body is optional; ignore parse errors
 	}
 
-	const progress = await createStudent(kv, studentId, deviceId);
+	const profile = language ? { language } : undefined;
+	const progress = await createStudent(kv, studentId, deviceId, profile);
 
 	return new Response(JSON.stringify({ studentId, progress }), {
 		status: 201,

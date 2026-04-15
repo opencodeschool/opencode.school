@@ -2,28 +2,32 @@
 // Copyright (c) 2026 Cloudflare, Inc.
 // Licensed under the Apache 2.0 license found in the LICENSE file or at:
 //     https://opensource.org/licenses/Apache-2.0
+import { getLocaleFromPath } from "../i18n/locales";
+import { t } from "../i18n/ui";
+
 interface Props {
   title: string;
   prompt?: string;
 }
 
 const { title, prompt } = Astro.props;
+const locale = getLocaleFromPath(Astro.url.pathname);
 ---
 
 <div class="agent-prompt-card hidden mb-8" data-lesson-title={title} data-prompt={prompt}>
   <p class="text-sm text-gray-500 dark:text-stone-400 mb-2 font-mono uppercase tracking-wider text-xs">
-    Prompt for OpenCode
+    {t("agentPrompt.label", locale)}
   </p>
   <div class="agent-prompt-box relative rounded-lg overflow-hidden">
     <pre class="agent-prompt-text px-5 py-4 font-mono text-sm text-gray-800 dark:text-stone-200 overflow-x-auto whitespace-pre-wrap leading-relaxed"></pre>
     <button
       class="agent-prompt-copy absolute top-2.5 right-2.5 px-2.5 py-1 text-xs font-mono font-medium rounded transition-colors cursor-pointer theme-button"
     >
-      Copy
+      {t("agentPrompt.copy", locale)}
     </button>
   </div>
   <p class="agent-prompt-confirm hidden mt-5 text-sm font-mono text-gray-500 dark:text-stone-400">
-    Copied! Now go paste that into OpenCode...
+    {t("agentPrompt.copied", locale)}
   </p>
 </div>
 
@@ -32,6 +36,25 @@ const { title, prompt } = Astro.props;
     if (!window.school) return;
     var studentId = window.school.getStudentId();
     if (!studentId) return;
+
+    var loc = document.documentElement.getAttribute("data-locale") || "en";
+    var promptStrings = {
+      en: {
+        enrolled: "I'm enrolled in OpenCode School as ",
+        lessonDefault: 'Let\'s work on the "{title}" lesson together!',
+        exerciseDefault: 'Let\'s work on the "{title}" exercise together!',
+        fetch: "Fetch {origin}/llms.txt for instructions.",
+        respondIn: ""
+      },
+      pt: {
+        enrolled: "Estou inscrito na OpenCode School como ",
+        lessonDefault: 'Vamos trabalhar na lição "{title}" juntos!',
+        exerciseDefault: 'Vamos trabalhar no exercício "{title}" juntos!',
+        fetch: "Consulta {origin}/llms.txt para instruções.",
+        respondIn: "\n\nResponde-me em português."
+      }
+    };
+    var s = promptStrings[loc] || promptStrings.en;
 
     var cards = document.querySelectorAll(".agent-prompt-card");
     cards.forEach(function(card) {
@@ -42,7 +65,11 @@ const { title, prompt } = Astro.props;
       if (!promptText) return;
 
       var customPrompt = card.getAttribute("data-prompt");
-      var prompt = "I'm enrolled in OpenCode School as " + studentId + "\n\n" + (customPrompt || "Let's work on the \"" + lessonTitle + "\" lesson together!") + "\n\nFetch " + window.location.origin + "/llms.txt for instructions.";
+      var isExercise = window.location.pathname.indexOf("/exercises/") !== -1;
+      var defaultTemplate = isExercise ? s.exerciseDefault : s.lessonDefault;
+      var defaultPrompt = defaultTemplate.replace("{title}", lessonTitle);
+      var fetchLine = s.fetch.replace("{origin}", window.location.origin);
+      var prompt = s.enrolled + studentId + "\n\n" + (customPrompt || defaultPrompt) + "\n\n" + fetchLine + s.respondIn;
       promptText.textContent = prompt;
       card.classList.remove("hidden");
 

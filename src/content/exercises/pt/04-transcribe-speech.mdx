@@ -1,0 +1,97 @@
+---
+title: "Transcrever discurso"
+slug: transcribe-speech
+description: "Transcreve áudio para texto localmente usando o Whisper."
+order: 4
+agentInstructions: |
+  Guide the student through local speech-to-text transcription using
+  whisper-cpp. Adapt depth to their profile.
+
+  Steps:
+
+  1. Install whisper-cpp and ffmpeg. On macOS:
+     `brew install whisper-cpp ffmpeg`. On Linux: use the system package
+     manager or build from source
+     (https://github.com/ggerganov/whisper.cpp). Verify with
+     `whisper-cpp --help` and `ffmpeg -version`.
+
+  2. Download a Whisper model. Use the ggml-large-v3-q5_0 model (good
+     balance of quality and size, ~1GB):
+     `curl -o ggml-large-v3-q5_0.bin -L 'https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large-v3-q5_0.bin?download=true'`.
+     Explain that Whisper has multiple model sizes and this is a quantized
+     version of the large model.
+
+  3. Get an audio source. Offer the student three options:
+     (a) Record a short clip using their microphone. On macOS they can use
+         QuickTime Player or `say` to generate speech.
+     (b) If they did the Edit Videos exercise, use the audio file they
+         already extracted.
+     (c) Download a sample: a podcast clip, speech recording, or any
+         audio with speech.
+     Help them with whichever option they choose.
+
+  4. Convert the audio to 16kHz WAV format (required by whisper-cpp):
+     `ffmpeg -i input.mp3 -ar 16000 input.wav`. Explain why 16kHz is
+     needed.
+
+  5. Run transcription:
+     `whisper-cpp -m ggml-large-v3-q5_0.bin input.wav --output-txt`. This
+     produces a timestamped transcript on stdout and saves a plain text
+     file. Walk through the output together.
+
+  6. Try a different output format: SRT subtitles (`--output-srt`) or VTT
+     (`--output-vtt`). Explain what these formats are used for (video
+     subtitles, closed captions).
+
+  After the basics, mention that whisper-cpp can also translate from other
+  languages to English using the `--translate` flag. If the student has
+  audio in another language or wants to try it, help them do so.
+
+  Verify completion by confirming the student has a transcription output
+  file (txt, srt, or vtt) in their working directory.
+---
+
+import AgentPrompt from '../../../components/AgentPrompt.astro'
+
+Todas as grandes empresas de tecnologia executam modelos de conversão de voz para texto na cloud, mas podes fazer o mesmo localmente no teu próprio computador — sem chaves de API, sem limites de envio, sem preocupações de privacidade. Neste exercício, vais usar o [Whisper](https://github.com/openai/whisper), o modelo open-source de reconhecimento de voz da OpenAI, para transcrever áudio para texto.
+
+Vais usar o [whisper-cpp](https://github.com/ggerganov/whisper.cpp), uma versão rápida em C++ do modelo original em Python. Corre inteiramente no teu CPU (ou GPU, se disponível), e a instalação via Homebrew é um único comando.
+
+<AgentPrompt title="Transcrever discurso" prompt='Let&#39;s work on the "Transcribe speech" exercise together!' />
+
+## Instalar as ferramentas
+
+Precisas de duas ferramentas:
+
+```
+brew install whisper-cpp ffmpeg
+```
+
+O [whisper-cpp](https://github.com/ggerganov/whisper.cpp) executa o modelo de transcrição. O [FFMPEG](https://ffmpeg.org) converte ficheiros de áudio para o formato WAV a 16kHz que o Whisper requer. Se fizeste o exercício [Editar vídeos](/exercises/edit-videos), já tens o FFMPEG instalado.
+
+No Linux, compila o whisper-cpp a partir do código-fonte ou usa o gestor de pacotes do teu sistema. Consulta o [repositório do whisper.cpp](https://github.com/ggerganov/whisper.cpp) para instruções.
+
+## Descarregar um modelo
+
+O Whisper vem em vários tamanhos — desde tiny (75MB) até large (3GB). Vais descarregar uma versão quantizada do modelo large que oferece um bom equilíbrio entre precisão e tamanho do ficheiro (~1GB):
+
+```
+curl -o ggml-large-v3-q5_0.bin -L \
+  'https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large-v3-q5_0.bin?download=true'
+```
+
+## Obter áudio
+
+Precisas de áudio com voz para transcrever. Escolhe a opção que te parecer mais fácil:
+
+- **Grava-te a ti próprio** — usa o QuickTime Player no macOS (Ficheiro > Nova Gravação de Áudio), ou qualquer aplicação de gravação
+- **Reutiliza o áudio do exercício Editar vídeos** — se já tens uma faixa de áudio extraída, usa-a
+- **Descarrega algo** — um excerto de podcast, um discurso, uma palestra, qualquer coisa com palavras faladas claramente
+
+## O que vais fazer
+
+- Converter o teu áudio para o formato WAV a 16kHz que o Whisper espera
+- Executar a transcrição e obter um resultado de texto com marcas temporais
+- Exportar a transcrição como legendas SRT ou VTT — os formatos padrão usados para legendas de vídeo
+
+O Whisper também consegue **traduzir** voz de outras línguas para inglês. Se tens áudio noutro idioma, podes experimentar isso também.

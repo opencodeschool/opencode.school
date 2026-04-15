@@ -1,0 +1,123 @@
+---
+title: "Skills"
+slug: skills
+description: "Instale comportamentos reutilizáveis para o agente com Skills."
+order: 8
+quiz: true
+agentInstructions: |
+  Cover these four topics:
+
+  1. What skills are: reusable instruction sets in SKILL.md files,
+     originally created by Anthropic, now an open standard at
+     agentskills.io, supported by 40+ AI tools including Claude Code,
+     Codex, and Cursor.
+
+  2. How agents use skills: two ways: automatically when a task matches a
+     skill's description, or manually when the user explicitly invokes a
+     skill by name.
+
+  3. What a skill can contain: at minimum a SKILL.md file with name and
+     description frontmatter plus instructions. Can also bundle scripts,
+     reference docs, templates, and other assets in the same folder.
+
+  4. Why `npx skills` is the recommended install method: it installs to
+     all your AI tools at once from a single command, rather than manually
+     copying files for each tool.
+
+  After teaching and quizzing, verify completion by checking that at least
+  one skill directory exists under ~/.config/opencode/skills/ or
+  ~/.agents/skills/ and contains a SKILL.md file.
+
+  After marking the lesson complete, do NOT suggest moving on to the next
+  lesson. Instead, tell the student: skills are loaded at startup, so they
+  need to quit OpenCode and reopen it for the newly installed skills to
+  take effect. They can verify skills loaded by prompting "list installed
+  skills". They can move on to the next lesson after restarting.
+---
+
+import AgentPrompt from '../../../components/AgentPrompt.astro'
+
+Skills são conjuntos de instruções reutilizáveis que tornam o teu agente de IA mais inteligente em tarefas específicas. Quando instalas uma skill, o OpenCode aprende a fazer algo que não sabia antes, seja construir numa plataforma específica, executar modelos de IA ou seguir boas práticas de design.
+
+O formato foi criado pela Anthropic e desde então tornou-se um padrão aberto mantido em [agentskills.io](https://agentskills.io). É suportado por mais de 40 ferramentas de IA, incluindo Claude Code, OpenAI Codex, Cursor e Windsurf, pelo que as skills que instalas funcionam em todas elas.
+
+<AgentPrompt title="Skills" />
+
+## Como funcionam as skills
+
+Uma skill é uma pasta que contém um ficheiro `SKILL.md`. No mínimo, esse ficheiro tem um `name`, uma `description` e instruções para o agente seguir. As skills também podem incluir scripts, documentação de referência, templates e outros recursos:
+
+```
+my-skill/
+├── SKILL.md       # obrigatório: nome, descrição, instruções
+├── scripts/       # opcional: código executável
+├── references/    # opcional: documentação e especificações
+└── assets/        # opcional: templates e dados
+```
+
+Os agentes utilizam skills de duas formas:
+
+- **Automaticamente** — quando o teu pedido corresponde à descrição de uma skill, o agente carrega-a e aplica-a sem que tenhas de pedir
+- **Manualmente** — podes invocar uma skill pelo nome, por exemplo *"Usa a skill replicate para encontrar um bom modelo de geração de imagens"*
+
+As skills usam divulgação progressiva para serem eficientes: ao iniciar, o OpenCode carrega apenas o `name` e a `description` de cada skill, o suficiente para saber quando a usar. As instruções completas são carregadas a pedido.
+
+## Instalar com `npx skills`
+
+A melhor forma de instalar skills é com o [CLI `skills`](https://www.npmjs.com/package/skills). Instala em todas as tuas ferramentas de IA ao mesmo tempo, OpenCode, Claude Code, Codex, Cursor e mais, com um único comando.
+
+Precisas de ter o [Node.js](https://nodejs.org) instalado para executar `npx skills`. Se não o tiveres, pede ao OpenCode para te ajudar a instalá-lo no teu sistema operativo.
+
+## Instalar quatro skills
+
+Executa estes quatro comandos para instalar um conjunto útil de skills globais:
+
+**Cloudflare** — skills para construir com Workers, AI, KV, R2, D1 e a plataforma Cloudflare em geral:
+
+```
+npx skills add https://github.com/cloudflare/skills
+```
+
+**Replicate** — skills para descobrir, comparar e executar modelos de IA através da API do Replicate:
+
+```
+npx skills add replicate/skills
+```
+
+**frontend-design** — padrões de design UI/UX e boas práticas de front-end da Anthropic:
+
+```
+npx skills add https://github.com/anthropics/skills --skill frontend-design
+```
+
+**skill-creator** — cria, testa e melhora as tuas próprias skills a partir de qualquer fluxo de trabalho que queiras tornar repetível:
+
+```
+npx skills add https://github.com/anthropics/skills --skill skill-creator
+```
+
+Executa cada comando no teu terminal. O CLI deteta quais ferramentas de IA tens instaladas e configura tudo automaticamente.
+
+## Reiniciar o OpenCode
+
+As skills são carregadas quando o OpenCode inicia. **Fecha e reabre o OpenCode** para que as skills recém-instaladas fiquem disponíveis. Podes verificar que foram carregadas escrevendo "list installed skills". Depois usa o prompt abaixo para continuar.
+
+<AgentPrompt title="Skills" prompt={`I've installed skills and restarted OpenCode. Let's verify the Skills lesson is complete.`} />
+
+## Criar as tuas próprias skills
+
+O `skill-creator` que acabaste de instalar permite-te transformar qualquer fluxo de trabalho numa skill reutilizável. Depois de completares um processo e quereres torná-lo repetível, basta dizeres ao OpenCode:
+
+> Funcionou! Vamos criar uma skill global para isto.
+
+Ou se for algo específico de um projeto:
+
+> Funcionou! Não quero ter de me repetir, por isso vamos criar uma skill de projeto para esta tarefa.
+
+As skills globais ficam em `~/.config/opencode/skills/` e aplicam-se a todos os projetos. As skills de projeto ficam em `.opencode/skills/` dentro do diretório do projeto e aplicam-se apenas a esse projeto.
+
+## Encontrar mais skills
+
+[skills.sh](https://skills.sh) é um diretório de coleções de skills disponíveis. Explora-o para encontrar skills para as ferramentas e fluxos de trabalho que utilizas.
+
+Para a referência completa, incluindo como escrever as tuas próprias skills e configurar permissões por agente, consulta a [documentação de skills do OpenCode](https://opencode.ai/docs/skills/) e a [especificação agentskills.io](https://agentskills.io).

@@ -1,0 +1,88 @@
+---
+title: "Editar vídeos"
+slug: edit-videos
+description: "Edita vídeos a partir da linha de comandos usando FFMPEG e yt-dlp."
+order: 3
+agentInstructions: |
+  Guide the student through video editing with FFMPEG and yt-dlp. Adapt
+  depth to their profile.
+
+  Steps:
+
+  1. Install FFMPEG and yt-dlp. On macOS use Homebrew:
+     `brew install ffmpeg yt-dlp`. On Linux: use the system package
+     manager (apt, dnf, etc.) or Homebrew. On Windows: guide them to
+     download from ffmpeg.org and github.com/yt-dlp/yt-dlp. Verify both
+     are installed by running `ffmpeg -version` and `yt-dlp --version`.
+
+  2. Find a Creative Commons video on YouTube. Teach them how: go to
+     youtube.com, search for something interesting (nature, city, music,
+     etc.), click Filters, and under Features select Creative Commons.
+     Help them pick a short video (under 5 minutes is ideal).
+
+  3. Download the video using yt-dlp. Use
+     `yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]' -o 'source.mp4' URL`
+     to get an MP4 file. Explain what the format selector does.
+
+  4. Inspect the video with `ffprobe source.mp4` to see its resolution,
+     duration, codecs, and frame rate. Explain the key fields in the
+     output.
+
+  5. Extract frames at one per second:
+     `ffmpeg -i source.mp4 -vf fps=1 frames/frame_%04d.jpg`. Create the
+     frames/ directory first. Explain the fps filter.
+
+  6. Extract the audio track:
+     `ffmpeg -i source.mp4 -vn -acodec copy audio.m4a` (or convert to
+     mp3 with `-acodec libmp3lame`). Explain -vn and -acodec.
+
+  7. Extract a clip by specifying a start time and duration:
+     `ffmpeg -i source.mp4 -ss 00:00:10 -t 5 -c copy clip.mp4`. Explain
+     -ss, -t, and -c copy.
+
+  After completing the basics, suggest creative next steps the student
+  might try: making a GIF from the frames, adding a text watermark,
+  creating a slow-motion or sped-up version, combining clips, or
+  extracting a still frame at a specific timestamp. Let the student choose
+  what sounds fun and help them do it.
+
+  Verify completion by confirming the student has the source video,
+  extracted frames directory, audio file, and video clip in their working
+  directory.
+---
+
+import AgentPrompt from '../../../components/AgentPrompt.astro'
+
+O FFMPEG é uma das ferramentas mais poderosas e amplamente utilizadas no mundo para trabalhar com áudio e vídeo. É ele que alimenta a codificação por trás do YouTube, Netflix, Spotify e inúmeros outros serviços. Consegue converter entre formatos, extrair áudio, cortar clipes, gerar miniaturas, criar GIFs, adicionar marcas de água, entre muito mais — tudo a partir da linha de comandos.
+
+Neste exercício, vais combinar o FFMPEG com o [yt-dlp](https://github.com/yt-dlp/yt-dlp), uma ferramenta para descarregar vídeo do YouTube e de outros sites. Juntos, formam um conjunto de ferramentas para descarregar, inspecionar e manipular vídeo — e o OpenCode torna todo o processo conversacional.
+
+<AgentPrompt title="Editar vídeos" prompt='Let&#39;s work on the "Edit videos" exercise together!' />
+
+## Instalar as ferramentas
+
+Ambas as ferramentas estão disponíveis através do [Homebrew](https://brew.sh) no macOS:
+
+```
+brew install ffmpeg yt-dlp
+```
+
+No Linux, usa o gestor de pacotes do teu sistema ou o Homebrew. No Windows, descarrega o FFMPEG em [ffmpeg.org](https://ffmpeg.org/download.html) e o yt-dlp a partir do [GitHub](https://github.com/yt-dlp/yt-dlp/releases).
+
+## Encontrar um vídeo
+
+Vais começar por encontrar um vídeo licenciado sob [Creative Commons](https://creativecommons.org) no YouTube — são vídeos que o criador marcou explicitamente como livres para reutilização.
+
+Para encontrar um: pesquisa no YouTube por um tema que te interesse, clica em **Filtros**, e em **Funcionalidades** seleciona **Creative Commons**. Escolhe algo curto (menos de 5 minutos) com imagens que aches interessantes — filmagens de natureza, timelapses urbanos e vídeos musicais costumam resultar bem.
+
+## O que vais fazer
+
+Quando tiveres um vídeo, vais usar o FFMPEG para desmontá-lo e reconstruí-lo:
+
+- **Descarregar** o vídeo do YouTube usando yt-dlp
+- **Inspecionar** os metadados do vídeo — resolução, duração, codecs, taxa de fotogramas
+- **Extrair fotogramas** — retirar uma imagem por segundo
+- **Extrair áudio** — separar a faixa de áudio para um ficheiro independente
+- **Cortar um clipe** — extrair um segmento específico por tempo de início e duração
+
+Depois do básico, terás oportunidade de ser criativo — criar GIFs, adicionar marcas de água, acelerar filmagens, ou qualquer outra coisa que te pareça divertida.

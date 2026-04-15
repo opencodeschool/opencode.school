@@ -2,48 +2,48 @@
 // Copyright (c) 2026 Cloudflare, Inc.
 // Licensed under the Apache 2.0 license found in the LICENSE file or at:
 //     https://opensource.org/licenses/Apache-2.0
-export const prerender = true;
-
 import Base from "../../layouts/Base.astro";
-import { getCollection, render } from "astro:content";
+import { render } from "astro:content";
+import { getLocaleFromPath, localePath } from "../../i18n/locales";
+import { getLocalizedExercises, getLocalizedExercise } from "../../i18n/content";
+import { t } from "../../i18n/ui";
 
-export async function getStaticPaths() {
-  const exercises = await getCollection("exercises");
-  return exercises.map((exercise) => ({
-    params: { slug: exercise.data.slug },
-    props: { exercise },
-  }));
+const locale = getLocaleFromPath(Astro.url.pathname);
+const slug = Astro.params.slug!;
+const exercise = await getLocalizedExercise(slug, locale);
+
+if (!exercise) {
+  return new Response("Not found", { status: 404 });
 }
 
-const { exercise } = Astro.props;
 const { Content } = await render(exercise);
 
-const allExercises = (await getCollection("exercises")).sort((a, b) => a.data.order - b.data.order);
+const allExercises = await getLocalizedExercises(locale);
 const currentIndex = allExercises.findIndex((e) => e.data.slug === exercise.data.slug);
 const next = currentIndex < allExercises.length - 1 ? allExercises[currentIndex + 1] : null;
 ---
 
 <Base title={exercise.data.title} description={exercise.data.description} ogImage={`/og/exercise/${exercise.data.slug}.png`}>
   <div class="mb-6">
-    <a href="/exercises" class="text-sm text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
-      &larr; All exercises
+    <a href={localePath("/exercises", locale)} class="text-sm text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+      &larr; {t("exercise.allExercises", locale)}
     </a>
   </div>
 
   <header class="mb-8">
-    <p class="text-sm font-mono text-gray-400 dark:text-gray-600 mb-1">Exercise {exercise.data.order}</p>
+    <p class="text-sm font-mono text-gray-400 dark:text-gray-600 mb-1">{t("exercise.label", locale)} {exercise.data.order}</p>
     <h1 class="text-3xl font-bold">{exercise.data.title}</h1>
     <p class="text-gray-600 dark:text-gray-400 mt-2">{exercise.data.description}</p>
   </header>
 
   <div id="exercise-completed-banner" class="theme-banner hidden mb-6 rounded-lg px-4 py-3 text-sm font-medium">
-    <span id="exercise-completed-text">You completed this exercise!</span>
+    <span id="exercise-completed-text">{t("exercise.completed", locale)}</span>
   </div>
 
   <div id="exercise-enroll-nudge" class="hidden mb-8 rounded-xl theme-banner px-6 py-5">
-    <p class="text-base font-medium mb-1">This exercise works best with OpenCode</p>
-    <p class="text-sm opacity-80 mb-3">Enroll in OpenCode School to get a student ID. Then paste the exercise prompt into OpenCode, and it will guide you through this project step by step.</p>
-    <a href="/" class="theme-button inline-block rounded-lg px-4 py-2 text-sm font-medium">Enroll for free</a>
+    <p class="text-base font-medium mb-1">{t("exercise.nudgeHeading", locale)}</p>
+    <p class="text-sm opacity-80 mb-3">{t("exercise.nudgeBody", locale)}</p>
+    <a href={localePath("/", locale)} class="theme-button inline-block rounded-lg px-4 py-2 text-sm font-medium">{t("exercise.enrollFree", locale)}</a>
   </div>
 
   <article class="prose dark:prose-invert max-w-none">
@@ -55,17 +55,17 @@ const next = currentIndex < allExercises.length - 1 ? allExercises[currentIndex 
     {next ? (
       <button
         id="exercise-action-btn"
-        data-next-url={`/exercises/${next.data.slug}`}
+        data-next-url={localePath(`/exercises/${next.data.slug}`, locale)}
         class="theme-button flex w-full justify-center cursor-pointer items-center gap-2 rounded-lg px-6 py-4 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed select-none"
       >
-        <span id="exercise-action-label">Next exercise: {next.data.title} &rarr;</span>
+        <span id="exercise-action-label">{(t("exercise.nextExercise", locale) as string).replace("{title}", next.data.title)} &rarr;</span>
       </button>
     ) : (
       <button
         id="exercise-action-btn"
         class="theme-button flex w-full justify-center cursor-pointer items-center gap-2 rounded-lg px-6 py-4 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed select-none"
       >
-        <span id="exercise-action-label">Mark this exercise as complete</span>
+        <span id="exercise-action-label">{t("exercise.markComplete", locale)}</span>
       </button>
     )}
   </div>

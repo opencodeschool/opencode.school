@@ -5,35 +5,36 @@
 export const prerender = true;
 
 import Base from "../../layouts/Base.astro";
-import { getCollection } from "astro:content";
+import { getLocaleFromPath, localePath } from "../../i18n/locales";
+import { getLocalizedExercises } from "../../i18n/content";
+import { t } from "../../i18n/ui";
 
-const exercises = (await getCollection("exercises")).sort((a, b) => a.data.order - b.data.order);
+const locale = getLocaleFromPath(Astro.url.pathname);
+const exercises = await getLocalizedExercises(locale);
 ---
 
-<Base title="Exercises" description="Hands-on projects for applying what you've learned in OpenCode School.">
+<Base title={t("exercises.title", locale) as string} description={t("exercises.description", locale) as string}>
   <div class="mb-6">
-    <a href="/" class="text-sm text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
-      &larr; Home
+    <a href={localePath("/", locale)} class="text-sm text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+      &larr; {t("nav.home", locale)}
     </a>
   </div>
 
   <header class="mb-8">
-    <h1 class="text-3xl font-bold">Exercises</h1>
-    <p class="text-gray-600 dark:text-gray-400 mt-2">
-      Hands-on projects where you apply what you've learned to build real things &mdash; websites, media tools, browser automation, and more.
-    </p>
+    <h1 class="text-3xl font-bold">{t("exercises.title", locale)}</h1>
+    <p class="text-gray-600 dark:text-gray-400 mt-2">{t("exercises.description", locale)}</p>
   </header>
 
   <div id="exercise-enroll-nudge" class="hidden mb-8 rounded-xl theme-banner px-6 py-5">
-    <p class="text-base font-medium mb-1">Exercises work best with OpenCode</p>
-    <p class="text-sm opacity-80 mb-3">Enroll in OpenCode School to get a student ID. Then paste the exercise prompt into OpenCode, and it will guide you through each project step by step.</p>
-    <a href="/" class="theme-button inline-block rounded-lg px-4 py-2 text-sm font-medium">Enroll for free</a>
+    <p class="text-base font-medium mb-1">{t("exercises.nudgeHeading", locale)}</p>
+    <p class="text-sm opacity-80 mb-3">{t("exercises.nudgeBody", locale)}</p>
+    <a href={localePath("/", locale)} class="theme-button inline-block rounded-lg px-4 py-2 text-sm font-medium">{t("exercise.enrollFree", locale)}</a>
   </div>
 
   <ol class="divide-y divide-gray-200 dark:divide-stone-800">
     {exercises.map((exercise) => {
       const isStub = exercise.body?.trim() === "Coming soon.";
-      const href = `/exercises/${exercise.data.slug}`;
+      const href = localePath(`/exercises/${exercise.data.slug}`, locale);
       return (
         <li data-exercise-slug={exercise.data.slug} data-exercise-stub={isStub ? "true" : "false"}>
           <div class="exercise-row flex flex-col gap-3 py-3 transition-colors sm:flex-row sm:items-center sm:justify-between">

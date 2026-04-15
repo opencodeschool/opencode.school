@@ -1,0 +1,172 @@
+---
+// Copyright (c) 2026 Cloudflare, Inc.
+// Licensed under the Apache 2.0 license found in the LICENSE file or at:
+//     https://opensource.org/licenses/Apache-2.0
+import Base from "../../../layouts/Base.astro";
+import { render } from "astro:content";
+import { localePath } from "../../../i18n/locales";
+import { getLocalizedExercises, getLocalizedExercise } from "../../../i18n/content";
+import { t } from "../../../i18n/ui";
+
+const locale = "pt" as const;
+const slug = Astro.params.slug!;
+const exercise = await getLocalizedExercise(slug, locale);
+
+if (!exercise) {
+  return new Response("Not found", { status: 404 });
+}
+
+const { Content } = await render(exercise);
+
+const allExercises = await getLocalizedExercises(locale);
+const currentIndex = allExercises.findIndex((e) => e.data.slug === exercise.data.slug);
+const next = currentIndex < allExercises.length - 1 ? allExercises[currentIndex + 1] : null;
+---
+
+<Base title={exercise.data.title} description={exercise.data.description} ogImage={`/og/exercise/${exercise.data.slug}.png`} locale={locale}>
+  <div class="mb-6">
+    <a href={localePath("/exercises", locale)} class="text-sm text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+      &larr; {t("exercise.allExercises", locale)}
+    </a>
+  </div>
+
+  <header class="mb-8">
+    <p class="text-sm font-mono text-gray-400 dark:text-gray-600 mb-1">{t("exercise.label", locale)} {exercise.data.order}</p>
+    <h1 class="text-3xl font-bold">{exercise.data.title}</h1>
+    <p class="text-gray-600 dark:text-gray-400 mt-2">{exercise.data.description}</p>
+  </header>
+
+  <div id="exercise-completed-banner" class="theme-banner hidden mb-6 rounded-lg px-4 py-3 text-sm font-medium">
+    <span id="exercise-completed-text">{t("exercise.completed", locale)}</span>
+  </div>
+
+  <div id="exercise-enroll-nudge" class="hidden mb-8 rounded-xl theme-banner px-6 py-5">
+    <p class="text-base font-medium mb-1">{t("exercise.nudgeHeading", locale)}</p>
+    <p class="text-sm opacity-80 mb-3">{t("exercise.nudgeBody", locale)}</p>
+    <a href={localePath("/", locale)} class="theme-button inline-block rounded-lg px-4 py-2 text-sm font-medium">{t("exercise.enrollFree", locale)}</a>
+  </div>
+
+  <article class="prose dark:prose-invert max-w-none">
+    <Content />
+  </article>
+
+  <div id="exercise-action" class="mt-10 pt-6 border-t border-gray-200 dark:border-stone-800 hidden">
+    {next ? (
+      <button
+        id="exercise-action-btn"
+        data-next-url={localePath(`/exercises/${next.data.slug}`, locale)}
+        class="theme-button flex w-full justify-center cursor-pointer items-center gap-2 rounded-lg px-6 py-4 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed select-none"
+      >
+        <span id="exercise-action-label">{(t("exercise.nextExercise", locale) as string).replace("{title}", next.data.title)} &rarr;</span>
+      </button>
+    ) : (
+      <button
+        id="exercise-action-btn"
+        class="theme-button flex w-full justify-center cursor-pointer items-center gap-2 rounded-lg px-6 py-4 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed select-none"
+      >
+        <span id="exercise-action-label">{t("exercise.markComplete", locale)}</span>
+      </button>
+    )}
+  </div>
+
+  <script is:inline define:vars={{ exerciseSlug: exercise.data.slug }}>
+    (function() {
+      var action = document.getElementById("exercise-action");
+      var btn = document.getElementById("exercise-action-btn");
+      var label = document.getElementById("exercise-action-label");
+      var banner = document.getElementById("exercise-completed-banner");
+      var bannerText = document.getElementById("exercise-completed-text");
+      var nudge = document.getElementById("exercise-enroll-nudge");
+      if (!action || !btn || !window.school) return;
+
+      var loc = document.documentElement.getAttribute("data-locale") || "en";
+      var s = {
+        en: { completed: "You completed this exercise!", completedOn: "You completed this exercise on {date} {via}.", viaAgent: "via OpenCode", viaBrowser: "in the browser", exerciseComplete: "Exercise complete!", saving: "Saving..." },
+        pt: { completed: "Concluiu este exercício!", completedOn: "Concluiu este exercício a {date} {via}.", viaAgent: "via OpenCode", viaBrowser: "no navegador", exerciseComplete: "Exercício concluído!", saving: "A guardar..." }
+      }[loc] || { completed: "You completed this exercise!", completedOn: "You completed this exercise on {date} {via}.", viaAgent: "via OpenCode", viaBrowser: "in the browser", exerciseComplete: "Exercise complete!", saving: "Saving..." };
+
+      if (!window.school.getStudentId()) {
+        if (nudge) nudge.classList.remove("hidden");
+        return;
+      }
+      if (nudge) nudge.classList.add("hidden");
+      action.classList.remove("hidden");
+
+      var nextUrl = btn.getAttribute("data-next-url");
+      var originalLabel = label.textContent;
+      var wasAlreadyComplete = window.school.isExerciseComplete && window.school.isExerciseComplete(exerciseSlug);
+
+      function formatBannerText(completion) {
+        var text = s.completed;
+        if (completion && completion.completedAt) {
+          var dateLocale = loc === "pt" ? "pt-PT" : "en-US";
+          var date = new Date(completion.completedAt).toLocaleDateString(dateLocale, { month: "long", day: "numeric", year: "numeric" });
+          var via = completion.source === "agent" ? s.viaAgent : s.viaBrowser;
+          text = s.completedOn.replace("{date}", date).replace("{via}", via);
+        }
+        return text;
+      }
+
+      function getExerciseCompletion(slug) {
+        var progress = window.school._progressCache;
+        if (!progress || !progress.completedExercises) return null;
+        for (var i = 0; i < progress.completedExercises.length; i++) {
+          if (progress.completedExercises[i].slug === slug) return progress.completedExercises[i];
+        }
+        return null;
+      }
+
+      function showBanner() {
+        if (!banner) return;
+        var completion = getExerciseCompletion(exerciseSlug);
+        if (bannerText) bannerText.textContent = formatBannerText(completion);
+        banner.classList.remove("hidden");
+      }
+
+      function setCompleted() {
+        showBanner();
+        if (nextUrl) {
+          window.location.href = nextUrl;
+        } else {
+          label.textContent = s.exerciseComplete;
+          btn.disabled = true;
+        }
+      }
+
+      if (window.school.isExerciseComplete && window.school.isExerciseComplete(exerciseSlug)) {
+        showBanner();
+        if (nextUrl) {
+          btn.addEventListener("click", function() { window.location.href = nextUrl; });
+        } else {
+          label.textContent = s.exerciseComplete;
+          btn.disabled = true;
+        }
+      } else {
+        btn.addEventListener("click", async function() {
+          btn.disabled = true;
+          label.textContent = s.saving;
+          var progress = await window.school.markExerciseComplete(exerciseSlug);
+          if (progress) {
+            window.school.updateAllCheckmarks();
+            setCompleted();
+          } else {
+            btn.disabled = false;
+            label.textContent = originalLabel;
+          }
+        });
+      }
+
+      var origUpdate = window.school.updateAllCheckmarks.bind(window.school);
+      window.school.updateAllCheckmarks = function() {
+        origUpdate();
+        if (nudge && window.school.getStudentId()) nudge.classList.add("hidden");
+        if (window.school.isExerciseComplete && window.school.isExerciseComplete(exerciseSlug)) {
+          showBanner();
+          if (nextUrl && !wasAlreadyComplete && label.textContent === originalLabel) {
+            setCompleted();
+          }
+        }
+      };
+    })();
+  </script>
+</Base>

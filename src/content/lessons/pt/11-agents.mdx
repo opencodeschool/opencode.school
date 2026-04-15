@@ -1,0 +1,85 @@
+---
+title: "Agents"
+slug: agents
+description: "Usa os agentes Plan e Build para pensar antes de agir."
+order: 11
+quiz: true
+agentInstructions: |
+  Cover these four topics:
+
+  1. What an agent means in OpenCode specifically: a specialized assistant
+     configured for a particular task or workflow, distinct from the
+     broader industry use of the word.
+
+  2. The Plan agent: conversational and read-only. It can read files and
+     discuss the project but won't make any changes. The student already
+     set "default_agent": "plan" in the Configuration lesson so every new
+     session starts here, but note that Plan mode is not a hard sandbox
+     and the agent may still occasionally run commands or make API calls
+     that have side effects.
+
+  3. The Build agent: the implementation agent with full access to read,
+     write, and run things. Switch to this when you know what you want
+     to do.
+
+  4. The recommended workflow: since Plan is already the default, the
+     student is already starting safe. The key skill is knowing when to
+     switch to Build and being deliberate about it, especially for complex
+     or unfamiliar tasks.
+
+  After teaching and quizzing, verify completion by asking the student to
+  describe when they'd use Plan vs. Build and confirm they understand that
+  Plan is read-only by default but not a guaranteed sandbox, and that
+  Build can make changes.
+---
+
+import AgentPrompt from '../../../components/AgentPrompt.astro'
+
+"Agente" é uma das palavras mais sobrecarregadas no mundo da IA neste momento. Significa algo diferente consoante quem a usa. No OpenCode, tem um significado específico: um agente é um assistente especializado configurado para uma tarefa ou fluxo de trabalho particular, com as suas próprias instruções, ferramentas e permissões.
+
+O OpenCode vem com dois agentes integrados: **Plan** e **Build**.
+
+<AgentPrompt title="Agents" />
+
+## O agente Plan
+
+Plan é um agente conversacional e apenas de leitura. Pode ler os teus ficheiros e discutir o teu projeto, mas não faz alterações. Nenhum ficheiro escrito, nenhum comando executado, nada modificado.
+
+Já definiste `"default_agent": "plan"` na tua configuração global na lição [Configuração](/configuration), por isso cada nova sessão começa aqui. Isso é intencional — pensas primeiro, depois ages.
+
+Dito isto, o modo Plan é uma instrução para o modelo, não uma sandbox rígida. Ocasionalmente, o agente pode ainda fazer chamadas de API ou executar comandos que tenham efeitos secundários, por isso não é uma proteção garantida contra alterações não intencionadas.
+
+Usa o Plan quando quiseres:
+
+- Pensar numa abordagem antes de te comprometeres com ela
+- Explorar opções e compromissos
+- Fazer perguntas e pesquisar
+- Chegar a um plano claro antes de tocar em nada
+
+O Plan continua a ser o lugar certo para pensar nas coisas — simplesmente não o trates como uma garantia absoluta de que nada vai mudar.
+
+## O agente Build
+
+Build é o agente de implementação. Tem acesso total — pode ler ficheiros, escrever ficheiros, executar comandos no terminal e fazer alterações. Depois de pensares nas coisas no Plan e saberes o que queres fazer, muda para o Build para o concretizar.
+
+## Como mudar
+
+**No OpenCode Desktop:** usa o menu dropdown abaixo da caixa de prompt para alternar entre Plan e Build.
+
+**No TUI:** prime `Tab` para alternar entre Plan e Build.
+
+## O fluxo de trabalho recomendado
+
+Como o Plan é o teu predefinido, cada sessão já começa em segurança. Para tarefas rápidas e simples, podes mudar diretamente para o Build. Mas para algo complexo ou desconhecido, ficar primeiro no Plan é um bom hábito. Dá-te a oportunidade de pensar em voz alta com o agente, detetar problemas cedo e chegar ao Build com uma direção clara.
+
+Um padrão útil:
+
+1. **Começa no Plan.** Descreve o que queres realizar. (Já estás aqui.)
+2. **Explora em conjunto.** Faz perguntas, considera opções, refina a abordagem.
+3. **Muda para o Build.** Diz-lhe para implementar o que planeaste.
+
+## Agentes personalizados
+
+Para além do Plan e Build, podes definir os teus próprios agentes no `opencode.json` — com instruções personalizadas, ferramentas específicas ativadas ou desativadas, um modelo preferido e mais. Os agentes personalizados são úteis para fluxos de trabalho recorrentes como revisão de código, escrita ou trabalho com uma parte específica do teu codebase.
+
+Para a referência completa, consulta a [documentação de agentes](https://opencode.ai/docs/agents/).

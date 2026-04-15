@@ -2,8 +2,9 @@
 // Licensed under the Apache 2.0 license found in the LICENSE file or at:
 //     https://opensource.org/licenses/Apache-2.0
 
-import { getCollection } from "astro:content";
 import type { APIRoute } from "astro";
+import { getLocalizedLessons } from "../../../i18n/content";
+import type { Locale } from "../../../i18n/locales";
 import { CONFIG_VALIDATION_INSTRUCTIONS } from "../../../lib/config-validation-instructions";
 import { mdxToProse } from "../../../lib/mdx-to-prose";
 import { QUIZ_INSTRUCTIONS } from "../../../lib/quiz-instructions";
@@ -19,8 +20,10 @@ export const OPTIONS: APIRoute = async () => {
 };
 
 export const GET: APIRoute = async ({ params, request }) => {
-	const origin = new URL(request.url).origin;
-	const lessons = await getCollection("lessons");
+	const url = new URL(request.url);
+	const origin = url.origin;
+	const locale = (url.searchParams.get("locale") || "en") as Locale;
+	const lessons = await getLocalizedLessons(locale);
 	const lesson = lessons.find((l) => l.data.slug === params.slug);
 
 	if (!lesson) {
