@@ -2,13 +2,15 @@
 // Copyright (c) 2026 Cloudflare, Inc.
 // Licensed under the Apache 2.0 license found in the LICENSE file or at:
 //     https://opensource.org/licenses/Apache-2.0
-import Base from "../../layouts/Base.astro";
+import Base from "../../../layouts/Base.astro";
 import { render } from "astro:content";
-import { getLocaleFromPath, localePath } from "../../i18n/locales";
-import { getLocalizedLessons, getLocalizedLesson } from "../../i18n/content";
-import { t } from "../../i18n/ui";
+import { parseLocaleParam, localePath } from "../../../i18n/locales";
+import { getLocalizedLessons, getLocalizedLesson } from "../../../i18n/content";
+import { t } from "../../../i18n/ui";
 
-const locale = getLocaleFromPath(Astro.url.pathname);
+const locale = parseLocaleParam(Astro.params.locale);
+if (!locale) return new Response("Not found", { status: 404 });
+
 const slug = Astro.params.slug!;
 const lesson = await getLocalizedLesson(slug, locale);
 
@@ -99,6 +101,13 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
       var agentOnlyNext = document.getElementById("lesson-agent-only-next");
       if (!window.school) return;
 
+      var loc = document.documentElement.getAttribute("data-locale") || "en";
+      var lStrings = {
+        en: { completed: "You completed this lesson!", completedOn: "You completed this lesson on {date} {via}.", viaAgent: "via OpenCode", viaBrowser: "in the browser", agentComplete: "You completed this lesson in OpenCode.", lessonComplete: "Lesson complete!", saving: "Saving..." },
+        pt: { completed: "Concluiu esta lição!", completedOn: "Concluiu esta lição a {date} {via}.", viaAgent: "via OpenCode", viaBrowser: "no navegador", agentComplete: "Concluiu esta lição no OpenCode.", lessonComplete: "Lição concluída!", saving: "A guardar..." }
+      };
+      var ls = lStrings[loc] || lStrings.en;
+
       // Show enroll nudge to unenrolled visitors, hide it once enrolled
       if (!window.school.getStudentId()) {
         if (nudge) nudge.classList.remove("hidden");
@@ -110,13 +119,6 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
       window.school.markLessonVisited(lessonSlug);
 
       var wasAlreadyComplete = window.school.isLessonComplete(lessonSlug);
-
-      var loc = document.documentElement.getAttribute("data-locale") || "en";
-      var lStrings = {
-        en: { completed: "You completed this lesson!", completedOn: "You completed this lesson on {date} {via}.", viaAgent: "via OpenCode", viaBrowser: "in the browser", agentComplete: "You completed this lesson in OpenCode.", lessonComplete: "Lesson complete!", saving: "Saving..." },
-        pt: { completed: "Concluiu esta lição!", completedOn: "Concluiu esta lição a {date} {via}.", viaAgent: "via OpenCode", viaBrowser: "no navegador", agentComplete: "Concluiu esta lição no OpenCode.", lessonComplete: "Lição concluída!", saving: "A guardar..." }
-      };
-      var ls = lStrings[loc] || lStrings.en;
 
       function formatBannerText(completion) {
         var text = ls.completed;
@@ -174,17 +176,6 @@ const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1]
         showBanner();
         if (nextUrl) {
           window.location.href = nextUrl;
-        } else {
-          label.textContent = ls.lessonComplete;
-          btn.disabled = true;
-        }
-      }
-
-      // If already complete, show the banner and make the button navigate directly
-      if (window.school.isLessonComplete(lessonSlug)) {
-        showBanner();
-        if (nextUrl) {
-          btn.addEventListener("click", function() { window.location.href = nextUrl; });
         } else {
           label.textContent = ls.lessonComplete;
           btn.disabled = true;

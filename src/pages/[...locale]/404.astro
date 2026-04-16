@@ -5,13 +5,18 @@
 export const prerender = true;
 
 import Base from "../../layouts/Base.astro";
-import { localePath } from "../../i18n/locales";
+import { getLocaleStaticPaths, parseLocaleParam, localePath } from "../../i18n/locales";
 import { t } from "../../i18n/ui";
 
-const locale = "pt" as const;
+export function getStaticPaths() {
+  return getLocaleStaticPaths();
+}
+
+const locale = parseLocaleParam(Astro.params.locale);
+if (!locale) return new Response("Not found", { status: 404 });
 ---
 
-<Base title={t("404.title", locale) as string} locale={locale}>
+<Base title={t("404.title", locale) as string}>
   <div class="text-center py-20">
     <h1 class="text-6xl font-bold font-mono text-gray-300 dark:text-gray-700 mb-4">{t("404.title", locale)}</h1>
     <p class="text-gray-600 dark:text-gray-400 mb-6">{t("404.message", locale)}</p>

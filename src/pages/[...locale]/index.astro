@@ -4,12 +4,18 @@
 //     https://opensource.org/licenses/Apache-2.0
 export const prerender = true;
 
-import Base from "../layouts/Base.astro";
-import { getLocaleFromPath, localePath } from "../i18n/locales";
-import { getLocalizedLessons, getLocalizedExercises } from "../i18n/content";
-import { t } from "../i18n/ui";
+import Base from "../../layouts/Base.astro";
+import { getLocaleStaticPaths, parseLocaleParam, localePath } from "../../i18n/locales";
+import { getLocalizedLessons, getLocalizedExercises } from "../../i18n/content";
+import { t } from "../../i18n/ui";
 
-const locale = getLocaleFromPath(Astro.url.pathname);
+export function getStaticPaths() {
+  return getLocaleStaticPaths();
+}
+
+const locale = parseLocaleParam(Astro.params.locale);
+if (!locale) return new Response("Not found", { status: 404 });
+
 const lessons = await getLocalizedLessons(locale);
 const exercises = await getLocalizedExercises(locale);
 ---
@@ -374,7 +380,7 @@ const exercises = await getLocalizedExercises(locale);
         setSelectedTheme(selectedTheme);
       }
 
-      // Bottom enroll button → scroll to top and trigger the main enroll flow
+      // Bottom enroll button: scroll to top and trigger the main enroll flow
       if (enrollBtnBottom) {
         enrollBtnBottom.addEventListener("click", function() {
           notEnrolledSection.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -382,7 +388,7 @@ const exercises = await getLocalizedExercises(locale);
         });
       }
 
-      // Step 1: click Enroll button → show color picker with staggered animation
+      // Step 1: click Enroll button: show color picker with staggered animation
       if (enrollBtn) {
         enrollBtn.addEventListener("click", function() {
           stepButton.classList.add("hidden");
@@ -398,7 +404,7 @@ const exercises = await getLocalizedExercises(locale);
         });
       }
 
-      // Step 2: click a color → enroll + animate
+      // Step 2: click a color: enroll + animate
       colorOptions.forEach(function(opt) {
         opt.addEventListener("click", async function() {
           if (isSubmitting) return;
@@ -407,7 +413,7 @@ const exercises = await getLocalizedExercises(locale);
           setSelectedTheme(opt.getAttribute("data-theme-color"));
           // Scroll to top so the student ID card and enrolled state are visible
           window.scrollTo({ top: 0, behavior: "smooth" });
-          // Transition rainbow → student's chosen solid color
+          // Transition rainbow: student's chosen solid color
           var videoBg = document.getElementById("intro-video-bg");
           if (videoBg) videoBg.classList.remove("rainbow-bg");
           var loc = document.documentElement.getAttribute("data-locale") || "en";

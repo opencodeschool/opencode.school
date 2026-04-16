@@ -5,13 +5,18 @@
 export const prerender = true;
 
 import Base from "../../layouts/Base.astro";
-import { localePath } from "../../i18n/locales";
+import { getLocaleStaticPaths, parseLocaleParam, localePath } from "../../i18n/locales";
 import { t } from "../../i18n/ui";
 
-const locale = "pt" as const;
+export function getStaticPaths() {
+  return getLocaleStaticPaths();
+}
+
+const locale = parseLocaleParam(Astro.params.locale);
+if (!locale) return new Response("Not found", { status: 404 });
 ---
 
-<Base title={t("disenroll.title", locale) as string} description={t("disenroll.title", locale) as string} locale={locale}>
+<Base title={t("disenroll.title", locale) as string} description={t("disenroll.title", locale) as string}>
   <div class="mb-6">
     <a href={localePath("/", locale)} class="text-sm text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
       &larr; {t("nav.allLessons", locale)}
