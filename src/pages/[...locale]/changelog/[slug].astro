@@ -4,30 +4,37 @@
 //     https://opensource.org/licenses/Apache-2.0
 export const prerender = true;
 
-import Base from "../../layouts/Base.astro";
-import { changelogEntries } from "../../lib/changelog";
+import Base from "../../../layouts/Base.astro";
+import { locales, defaultLocale, parseLocaleParam, localePath, getDateLocale } from "../../../i18n/locales";
+import { t } from "../../../i18n/ui";
+import { changelogEntries } from "../../../lib/changelog";
 import { marked } from "marked";
 
 export function getStaticPaths() {
-  return changelogEntries.map((entry) => ({
-    params: { slug: entry.slug },
-    props: { entry },
-  }));
+  return locales.flatMap((l) =>
+    changelogEntries.map((entry) => ({
+      params: { locale: l === defaultLocale ? undefined : l, slug: entry.slug },
+      props: { entry },
+    }))
+  );
 }
+
+const locale = parseLocaleParam(Astro.params.locale);
+if (!locale) return new Response("Not found", { status: 404 });
 
 const { entry } = Astro.props;
 
 function formatDate(dateStr: string): string {
   const [year, month, day] = dateStr.split("-").map(Number);
   const date = new Date(year, month - 1, day);
-  return date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+  return date.toLocaleDateString(getDateLocale(locale), { month: "long", day: "numeric", year: "numeric" });
 }
 ---
 
 <Base title={entry.title} description={entry.description.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")}>
   <div class="mb-6">
-    <a href="/changelog" class="text-sm text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
-      &larr; Changelog
+    <a href={localePath("/changelog", locale)} class="text-sm text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+      &larr; {t("changelog.title", locale)}
     </a>
   </div>
 
