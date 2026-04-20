@@ -11,6 +11,13 @@ export interface ChangelogEntry {
 
 export const changelogEntries: ChangelogEntry[] = [
 	{
+		slug: "mcp-reauth-guidance",
+		date: "2026-04-20",
+		title: "MCP re-authentication guidance",
+		description:
+			"The [Tools](/lessons/tools) lesson now includes guidance on handling MCP server authentication expiration and setting up re-authentication instructions.",
+	},
+	{
 		slug: "ai-gateway-exercise",
 		date: "2026-04-15",
 		title: "New exercise: Use an AI gateway",
