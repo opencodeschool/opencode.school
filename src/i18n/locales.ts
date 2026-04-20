@@ -47,6 +47,28 @@ export function localePath(path: string, locale: Locale): string {
 }
 
 /**
+ * Return static paths for the `[...locale]` rest parameter.
+ * English maps to `undefined` (no prefix), other locales map to their code.
+ */
+export function getLocaleStaticPaths() {
+	return locales.map((l) => ({
+		params: { locale: l === defaultLocale ? undefined : l },
+	}));
+}
+
+/**
+ * Validate and return the locale from the `[...locale]` rest parameter.
+ * Returns `null` if the value is not a valid locale.
+ */
+export function parseLocaleParam(param: string | undefined): Locale | null {
+	if (param === undefined) return defaultLocale;
+	if (locales.includes(param as Locale) && param !== defaultLocale) {
+		return param as Locale;
+	}
+	return null;
+}
+
+/**
  * Get the date locale string for toLocaleDateString().
  */
 export function getDateLocale(locale: Locale): string {

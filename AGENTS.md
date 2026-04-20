@@ -110,7 +110,7 @@ The site supports multiple languages. English is the default locale (no URL pref
 ### Architecture
 
 - Astro's built-in i18n routing: `defaultLocale: "en"`, `locales: ["en", "pt"]`, `prefixDefaultLocale: false`
-- `src/i18n/locales.ts` — locale config, path helpers (`getLocaleFromPath`, `localePath`, `removeLocalePrefix`), `localeAwareId` for content collection IDs
+- `src/i18n/locales.ts` — locale config, path helpers (`getLocaleFromPath`, `localePath`, `removeLocalePrefix`, `parseLocaleParam`, `getLocaleStaticPaths`), `localeAwareId` for content collection IDs
 - `src/i18n/ui.ts` — ~150 UI string translations with a `t(key, locale)` helper
 - `src/i18n/content.ts` — locale-aware content collection helpers with per-item fallback
 
@@ -131,9 +131,7 @@ For each English lesson/exercise, the content helper uses the translated version
 
 ### Page routes
 
-- English: `src/pages/*.astro`, `src/pages/lessons/[slug].astro`, `src/pages/exercises/[slug].astro`
-- Portuguese: `src/pages/pt/*.astro`, `src/pages/pt/lessons/[slug].astro`, `src/pages/pt/exercises/[slug].astro`
-- Portuguese pages set `locale = "pt"` and reuse the same component patterns as English
+All page files live under `src/pages/[...locale]/`. The `[...locale]` rest parameter is `undefined` for English (no URL prefix) and `"pt"` for Portuguese (`/pt/*`). Each page uses `parseLocaleParam(Astro.params.locale)` to derive the locale and returns a 404 for invalid values. Prerendered pages export `getStaticPaths()` using `getLocaleStaticPaths()`. There are no per-locale page mirrors: adding a new locale requires zero new page files.
 
 ### Translation rules for lessons
 
@@ -194,13 +192,12 @@ Run `script/check-translations` to see missing and stale translations:
 2. Add the display name to `localeNames`
 3. Add a date locale mapping in `getDateLocale`
 4. Add all UI strings for the new locale in `src/i18n/ui.ts`
-5. Create page mirrors under `src/pages/{locale}/`
-6. Create content directories `src/content/lessons/{locale}/` and `src/content/exercises/{locale}/`
-7. Create `lessons/glossary.{locale}.md`
-8. Add the locale to `astro.config.mjs` `i18n.locales`
-9. Add a banner message for the new locale in the language detection script in `Base.astro`
-10. Add the locale to `VALID_LOCALE` in `src/pages/api/profile/[studentId].ts` and `src/pages/api/enroll.ts`
-11. Update `script/check-translations` if the directory structure differs
+5. Create content directories `src/content/lessons/{locale}/` and `src/content/exercises/{locale}/`
+6. Create `lessons/glossary.{locale}.md` and add its import to `src/pages/[...locale]/glossary.astro`
+7. Add the locale to `astro.config.mjs` `i18n.locales`
+8. Add a banner message for the new locale in the language detection script in `Base.astro`
+9. Add the locale to `VALID_LOCALE` in `src/pages/api/profile/[studentId].ts` and `src/pages/api/enroll.ts`
+10. Update `script/check-translations` if the directory structure differs
 
 ## Scripts
 

@@ -2,13 +2,15 @@
 // Copyright (c) 2026 Cloudflare, Inc.
 // Licensed under the Apache 2.0 license found in the LICENSE file or at:
 //     https://opensource.org/licenses/Apache-2.0
-import Base from "../../layouts/Base.astro";
+import Base from "../../../layouts/Base.astro";
 import { render } from "astro:content";
-import { getLocaleFromPath, localePath } from "../../i18n/locales";
-import { getLocalizedExercises, getLocalizedExercise } from "../../i18n/content";
-import { t } from "../../i18n/ui";
+import { parseLocaleParam, localePath } from "../../../i18n/locales";
+import { getLocalizedExercises, getLocalizedExercise } from "../../../i18n/content";
+import { t } from "../../../i18n/ui";
 
-const locale = getLocaleFromPath(Astro.url.pathname);
+const locale = parseLocaleParam(Astro.params.locale);
+if (!locale) return new Response("Not found", { status: 404 });
+
 const slug = Astro.params.slug!;
 const exercise = await getLocalizedExercise(slug, locale);
 
@@ -80,6 +82,13 @@ const next = currentIndex < allExercises.length - 1 ? allExercises[currentIndex 
       var nudge = document.getElementById("exercise-enroll-nudge");
       if (!action || !btn || !window.school) return;
 
+      var loc = document.documentElement.getAttribute("data-locale") || "en";
+      var strings = {
+        en: { completed: "You completed this exercise!", completedOn: "You completed this exercise on {date} {via}.", viaAgent: "via OpenCode", viaBrowser: "in the browser", exerciseComplete: "Exercise complete!", saving: "Saving..." },
+        pt: { completed: "Concluiu este exercício!", completedOn: "Concluiu este exercício a {date} {via}.", viaAgent: "via OpenCode", viaBrowser: "no navegador", exerciseComplete: "Exercício concluído!", saving: "A guardar..." }
+      };
+      var s = strings[loc] || strings.en;
+
       // Show enroll nudge to unenrolled visitors, hide it once enrolled
       if (!window.school.getStudentId()) {
         if (nudge) nudge.classList.remove("hidden");
@@ -93,11 +102,12 @@ const next = currentIndex < allExercises.length - 1 ? allExercises[currentIndex 
       var wasAlreadyComplete = window.school.isExerciseComplete && window.school.isExerciseComplete(exerciseSlug);
 
       function formatBannerText(completion) {
-        var text = "You completed this exercise!";
+        var text = s.completed;
         if (completion && completion.completedAt) {
-          var date = new Date(completion.completedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-          var via = completion.source === "agent" ? "via OpenCode" : "in the browser";
-          text = "You completed this exercise on " + date + " " + via + ".";
+          var dateLocale = loc === "pt" ? "pt-PT" : "en-US";
+          var date = new Date(completion.completedAt).toLocaleDateString(dateLocale, { month: "long", day: "numeric", year: "numeric" });
+          var via = completion.source === "agent" ? s.viaAgent : s.viaBrowser;
+          text = s.completedOn.replace("{date}", date).replace("{via}", via);
         }
         return text;
       }
@@ -123,7 +133,7 @@ const next = currentIndex < allExercises.length - 1 ? allExercises[currentIndex 
         if (nextUrl) {
           window.location.href = nextUrl;
         } else {
-          label.textContent = "Exercise complete!";
+          label.textContent = s.exerciseComplete;
           btn.disabled = true;
         }
       }
@@ -134,13 +144,13 @@ const next = currentIndex < allExercises.length - 1 ? allExercises[currentIndex 
         if (nextUrl) {
           btn.addEventListener("click", function() { window.location.href = nextUrl; });
         } else {
-          label.textContent = "Exercise complete!";
+          label.textContent = s.exerciseComplete;
           btn.disabled = true;
         }
       } else {
         btn.addEventListener("click", async function() {
           btn.disabled = true;
-          label.textContent = "Saving...";
+          label.textContent = s.saving;
           var progress = await window.school.markExerciseComplete(exerciseSlug);
           if (progress) {
             window.school.updateAllCheckmarks();
