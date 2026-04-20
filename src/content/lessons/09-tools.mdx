@@ -35,7 +35,16 @@ agentInstructions: |
   ~/.config/opencode/opencode.json (or opencode.jsonc) and confirming an "mcp" block exists
   with at least one server entry.
 
-  After marking the lesson complete, do NOT suggest moving on to the next
+  After marking the lesson complete, help the student add an "MCP
+  authentication" section to their global ~/.config/opencode/AGENTS.md.
+  The section should instruct the agent to read the user's OpenCode config
+  to find remote MCP server names and give exact re-authentication
+  commands using those names (e.g. "opencode mcp auth sentry", not
+  "opencode mcp auth <server-name>"). Include these related commands:
+  opencode mcp auth <name>, opencode mcp auth list,
+  opencode mcp logout <name>, and opencode mcp debug <name>.
+
+  After updating the AGENTS.md, do NOT suggest moving on to the next
   lesson. Instead, tell the student: MCP servers are connected at startup,
   so they need to quit OpenCode Desktop and reopen it for the new server
   to be available, and they can move on to the next lesson after
@@ -114,3 +123,14 @@ Each MCP server you add registers its tools with the model at the start of every
 The [OpenCode MCP docs](https://opencode.ai/docs/mcp-servers/) include ready-to-use config examples for Sentry, Context7, and Grep. For broader discovery, the [official MCP registry](https://registry.modelcontextprotocol.io) indexes thousands of servers across categories like databases, developer tools, and productivity — backed by Anthropic, GitHub, and Microsoft.
 
 You can also ask OpenCode to find and install MCP servers for you — describe what you need, and it can search for a server and add it to your config.
+
+## Reconnecting authenticated servers
+
+Some MCP servers require authentication to work. That connection can expire, and when it does the server silently stops working. It can be tricky to remember the exact commands to re-authenticate.
+
+This is a good use for your global `~/.config/opencode/AGENTS.md` file: add structured instructions that remind OpenCode how to reconnect. Ask OpenCode to add an "MCP authentication" section to your global AGENTS.md with guidance like:
+
+- When troubleshooting MCP connection issues, read my OpenCode config to find the server names, then give me the exact commands to run (e.g. `opencode mcp auth sentry`, not `opencode mcp auth <server-name>`).
+- Related commands: `opencode mcp auth <name>`, `opencode mcp auth list`, `opencode mcp logout <name>`, `opencode mcp debug <name>`.
+
+Once it's in your AGENTS.md, OpenCode will know how to help you reconnect any time a server drops.
