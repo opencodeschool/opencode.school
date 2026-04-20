@@ -17,6 +17,23 @@ Install methods:
 
 Several lessons require students to quit and reopen Desktop for changes to take effect (e.g. after editing config, adding MCP servers, installing skills, or installing plugins). When writing lesson content or agent instructions that involve restarting, refer to "OpenCode Desktop" specifically, not just "OpenCode".
 
+## MCP authentication
+
+Some remote MCP servers use OAuth for authentication. Tokens can expire or become invalid, causing the server to stop working. When troubleshooting MCP connection issues:
+
+1. Read the student's OpenCode config (`~/.config/opencode/opencode.json` or `opencode.jsonc`) to find the names of remote MCP servers that use OAuth.
+2. Give the student the exact commands to run in a terminal, using the actual server names from their config. For example, if the config has a server named `sentry`, tell them to run `opencode mcp auth sentry`, not `opencode mcp auth <server-name>`.
+3. If multiple OAuth servers need re-authentication, list a command for each one.
+
+Related commands (all run in a separate terminal, not inside OpenCode Desktop):
+
+- `opencode mcp auth <name>` — re-authenticate with a specific server (opens a browser for the OAuth flow)
+- `opencode mcp auth list` — check which servers are authenticated and which have expired tokens
+- `opencode mcp logout <name>` — clear stored credentials and start fresh
+- `opencode mcp debug <name>` — diagnose connection and OAuth issues
+
+After re-authenticating, the student should quit and reopen OpenCode Desktop for the change to take effect.
+
 ## Stack
 
 - [Astro](https://astro.build) — static site framework
