@@ -11,6 +11,13 @@ export interface ChangelogEntry {
 
 export const changelogEntries: ChangelogEntry[] = [
 	{
+		slug: "contributing-page",
+		date: "2026-04-21",
+		title: "New contributing page",
+		description:
+			"Students can now easily share ideas and report issues via a new [contributing](/contributing) page with prefilled GitHub issue templates. The [Use Git and GitHub](/exercises/use-git-and-github) exercise also includes an optional path for making your first pull request.",
+	},
+	{
 		slug: "mcp-reauth-guidance",
 		date: "2026-04-20",
 		title: "MCP re-authentication guidance",
