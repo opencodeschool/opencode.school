@@ -88,16 +88,46 @@
     visibility: visible;
   }
 
-  /* Ensure prose code blocks and inline code stay stone-toned in dark mode */
-  .dark .prose pre {
-    background-color: theme(--color-stone-800);
-    color: theme(--color-stone-300);
-  }
+}
 
-  .dark .prose code {
-    background-color: theme(--color-stone-800);
-    color: theme(--color-stone-300);
-  }
+/*
+  Theme-aware syntax highlighting.
+
+  A Shiki transformer (see astro.config.mjs) strips Shiki's per-token
+  inline colors at build time and tags structural tokens with
+  `.tok-comment` and `.tok-structure`. We then paint everything with the
+  student's chosen theme color, varying only opacity and weight so the
+  scheme stays legible across all 18 palette colors.
+
+  These rules live outside `@layer base` on purpose: Tailwind Typography
+  defines its prose `pre` / `code` styles inside `@layer utilities`, which
+  would otherwise win regardless of specificity. Unlayered rules beat any
+  layered rule in the cascade, so we declare these here.
+*/
+.prose pre.astro-code,
+.prose :not(pre) > code {
+  background-color: theme(--color-stone-100);
+  color: var(--theme-link);
+}
+
+.dark .prose pre.astro-code,
+.dark .prose :not(pre) > code {
+  background-color: theme(--color-stone-800);
+  color: var(--theme-link-dark);
+}
+
+.prose :not(pre) > code {
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+}
+
+.prose pre.astro-code .tok-comment {
+  opacity: 0.5;
+}
+
+.prose pre.astro-code .tok-structure {
+  opacity: 0.7;
+  font-weight: 600;
 }
 
 @keyframes spin-slow {
