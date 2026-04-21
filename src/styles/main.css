@@ -92,10 +92,10 @@
 /*
   Theme-framed code blocks.
 
-  Code blocks mirror the agent-prompt-box look: a 2px theme-colored
-  border with a soft theme-colored glow and a theme-tinted background.
-  Unlike the agent-prompt card, there's no 6px left border — we want the
-  frame to feel like a subtle highlight, not a callout.
+  A 2px theme-colored border plus a lightly theme-tinted background.
+  Inspired by the agent-prompt card but quieter — no box shadow, no
+  heavy left border — so code blocks read as a subtle highlight rather
+  than a callout.
 
   Vesper bakes per-token `style="color:#..."` into each span at build
   time, so we neutralize those with `color: inherit !important` on the
@@ -111,9 +111,6 @@
   border: 2px solid var(--theme-solid);
   background: color-mix(in srgb, var(--theme-soft-bg) 40%, white) !important;
   color: theme(--color-stone-800) !important;
-  box-shadow:
-    0 0 0 3px color-mix(in srgb, var(--theme-solid) 12%, transparent),
-    0 4px 16px color-mix(in srgb, var(--theme-solid) 15%, transparent);
 }
 
 .prose pre.astro-code span {
@@ -122,11 +119,8 @@
 
 .dark .prose pre.astro-code {
   border: 2px solid color-mix(in srgb, var(--theme-link-dark) 60%, transparent);
-  background: theme(--color-stone-950) !important;
+  background: theme(--color-stone-900) !important;
   color: theme(--color-stone-300) !important;
-  box-shadow:
-    0 0 0 3px color-mix(in srgb, var(--theme-link-dark) 18%, transparent),
-    0 4px 20px color-mix(in srgb, var(--theme-link-dark) 20%, transparent);
 }
 
 /* Inline code inside prose — stone-toned in dark mode for readability */
