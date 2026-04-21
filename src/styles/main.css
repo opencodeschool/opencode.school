@@ -118,14 +118,8 @@
 }
 
 .dark .prose pre.astro-code {
-  /*
-    Deep tinted background using the student's highlight color, roughly
-    equivalent to Tailwind's `-950` shade. Mixing --theme-link-dark
-    (the palette's 300-ish dark-mode color) with black at a low percentage
-    produces a consistent deep tint across all 18 palettes.
-  */
   border: 2px solid color-mix(in srgb, var(--theme-link-dark) 60%, transparent);
-  background: color-mix(in srgb, var(--theme-link-dark) 10%, black) !important;
+  background: theme(--color-stone-900) !important;
   color: theme(--color-stone-300) !important;
 }
 
