@@ -1,13 +1,14 @@
 ---
 title: "Use Git and GitHub"
 slug: use-git-and-github
-description: "Track and manage file changes with Git and GitHub Desktop."
+description: "Track changes with Git and GitHub, and make your first open-source contribution."
 order: 7
 agentInstructions: |
-  Guide the student through using Git and GitHub to track project changes.
-  Adapt depth to their profile.
+  Guide the student through using Git and GitHub to track project changes,
+  and ramp them up to making a real contribution to OpenCode School. Adapt
+  depth to their profile.
 
-  Steps:
+  Core steps (always do these):
 
   1. Check if Git is installed by running `git --version`. If not,
      recommend installing GitHub Desktop from https://desktop.github.com/,
@@ -48,11 +49,62 @@ agentInstructions: |
      disappears. Explain this as a way to try things without affecting
      working code.
 
-  After the core steps, suggest next steps: writing a `.gitignore` file,
-  making a pull request, or exploring the repository on github.com.
+  After the core steps, explain that the most valuable thing anyone can
+  do as an open-source contributor is share ideas and report issues on
+  GitHub. This does not require any of the Git setup you just walked
+  through — just a GitHub account. Point them at
+  {origin}/contributing for the full picture.
 
-  Verify completion by confirming the student has a local Git repository
-  with at least two commits and has pushed it to GitHub.
+  Then offer two paths for completing this exercise:
+
+  Path A (short): keep going with their own repository. Make sure they
+  have a local repo with at least two commits pushed to GitHub. If they
+  prefer this path, verify their remote repo exists, then mark the
+  exercise complete.
+
+  Path B (contribution): make their first real contribution to
+  OpenCode School. Walk them through:
+
+  1. Fork `opencodeschool/opencode.school` on GitHub, via
+     `gh repo fork opencodeschool/opencode.school --clone` or GitHub
+     Desktop's File > Clone Repository > URL flow with the student
+     entering their fork URL after forking on github.com.
+
+  2. Clone the fork locally (or confirm `gh repo fork` already did this)
+     and change into the project directory.
+
+  3. Create a new branch with a descriptive name,
+     e.g. `git checkout -b fix-typo-in-lesson`.
+
+  4. Help them find a small, real improvement to make. Good options:
+     - Fix a typo or unclear sentence in a lesson or page they've
+       already read.
+     - Pick an open issue they'd like to take on. Browse
+       https://github.com/opencodeschool/opencode.school/issues and
+       search before choosing, so they don't duplicate existing work.
+     - Make a small clarification to the glossary, tips, or
+       troubleshooting pages.
+     Encourage them to pick something small for their first PR.
+
+  5. Make the change. Commit it with a clear message.
+
+  6. Push the branch to their fork.
+
+  7. Open a pull request against `opencodeschool/opencode.school:main`
+     via `gh pr create --web` or GitHub Desktop's "Create Pull Request"
+     button. Help them write a concise title and body that explains what
+     changed and why.
+
+  8. Have the student share the PR URL with you. Confirm the URL exists
+     and points at a PR in the opencodeschool/opencode.school repo.
+
+  Mark the exercise complete if either path reaches its end state: Path A
+  requires at least two commits pushed to a GitHub repo; Path B requires
+  an open PR against opencodeschool/opencode.school.
+
+  Whichever path they choose, close with a reminder: filing GitHub issues
+  about anything confusing, broken, or missing is always welcome and
+  never requires forking or sending a PR. See {origin}/contributing.
 ---
 
 import AgentPrompt from '../../components/AgentPrompt.astro'
@@ -61,7 +113,7 @@ When OpenCode edits files in your project, you want to know exactly what changed
 
 But you don't need to be a developer or share your work with anyone to benefit from Git. Even if you only use it locally, Git gives you a complete history of your project. Every commit is a snapshot you can return to. If OpenCode makes a change you don't like, you can revert it. You never have to worry about accidentally losing or overwriting work.
 
-[GitHub](https://github.com) is a platform for hosting Git repositories in the cloud. It makes it easy to back up your projects, share them publicly, and collaborate with others. Together, Git and GitHub form the standard toolkit for managing code — and they work just as well for any project with files you want to track.
+[GitHub](https://github.com) is a platform for hosting Git repositories in the cloud. It makes it easy to back up your projects, share them publicly, and collaborate with others. Together, Git and GitHub form the standard toolkit for managing code, and they work just as well for any project with files you want to track.
 
 <AgentPrompt title="Use Git and GitHub" prompt='Let&#39;s work on the "Use Git and GitHub" exercise together!' />
 
@@ -69,14 +121,22 @@ But you don't need to be a developer or share your work with anyone to benefit f
 
 The easiest way to get Git running is to install [GitHub Desktop](https://desktop.github.com/). It handles three things at once: installing Git on your machine, creating a GitHub account if you don't have one, and authenticating the Git CLI so commands like `git push` work automatically.
 
-If you already use Git from the command line, you can skip GitHub Desktop entirely — the exercise works either way.
+If you already use Git from the command line, you can skip GitHub Desktop entirely. The exercise works either way.
 
 ## What you'll do
 
-- **Initialize a repository** in a project folder so Git starts tracking changes
-- **Make commits** — save snapshots of your work with a short description of what changed
-- **Review diffs** — use GitHub Desktop or `git diff` to see exactly what OpenCode changed in your files
-- **Push to GitHub** — back up your repository to the cloud, public or private
-- **Create a branch** — try something experimental without affecting your main project
+- Initialize a repository in a project folder so Git starts tracking changes
+- Make commits: save snapshots of your work with a short description of what changed
+- Review diffs: use GitHub Desktop or `git diff` to see exactly what OpenCode changed in your files
+- Push to GitHub: back up your repository to the cloud, public or private
+- Create a branch: try something experimental without affecting your main project
 
 Once the basics are working, you can go further: write a `.gitignore` to keep clutter out of your repository, open a pull request, or explore your project's commit history on github.com.
+
+## Contribute to OpenCode School
+
+Once you're comfortable with commits, branches, and GitHub, you're ready to make your first real open-source contribution. This exercise includes an optional second path where OpenCode walks you through forking the [OpenCode School repository](https://github.com/opencodeschool/opencode.school), making a small improvement, and opening a pull request against it.
+
+You don't have to take this path to finish the exercise. If you'd rather stick with your own repo, that's fine. But if you've ever wanted to contribute to open source, this is a low-stakes way to do it. OpenCode will help you find a small change to make and walk you through every step.
+
+And remember: you don't need any of this to help improve OpenCode School. Filing a GitHub issue about something confusing, broken, or missing is always welcome and doesn't require Git at all. See [Contributing](/contributing) for more.
