@@ -87,47 +87,52 @@
   .prose :is(h2, h3, h4, h5, h6):hover .heading-anchor::after {
     visibility: visible;
   }
-
 }
 
 /*
-  Theme-aware syntax highlighting.
+  Theme-framed code blocks.
 
-  A Shiki transformer (see astro.config.mjs) strips Shiki's per-token
-  inline colors at build time and tags structural tokens with
-  `.tok-comment` and `.tok-structure`. We then paint everything with the
-  student's chosen theme color, varying only opacity and weight so the
-  scheme stays legible across all 18 palette colors.
+  Code blocks mirror the agent-prompt-box look: a 2px theme-colored
+  border with a soft theme-colored glow and a theme-tinted background.
+  Unlike the agent-prompt card, there's no 6px left border — we want the
+  frame to feel like a subtle highlight, not a callout.
 
-  These rules live outside `@layer base` on purpose: Tailwind Typography
-  defines its prose `pre` / `code` styles inside `@layer utilities`, which
-  would otherwise win regardless of specificity. Unlayered rules beat any
-  layered rule in the cascade, so we declare these here.
+  Vesper bakes per-token `style="color:#..."` into each span at build
+  time, so we neutralize those with `color: inherit !important` on the
+  spans and set a single monochrome ink color on the block.
+
+  These rules live outside `@layer base` because Tailwind Typography
+  emits its prose `pre` / `code` styles inside `@layer utilities`, which
+  wins against any layered rule regardless of specificity. Unlayered
+  declarations beat layered ones in the cascade.
 */
-.prose pre.astro-code,
-.prose :not(pre) > code {
-  background-color: theme(--color-stone-100);
-  color: var(--theme-link);
+.prose pre.astro-code {
+  /* !important overrides Shiki's inline background and color on <pre>. */
+  border: 2px solid var(--theme-solid);
+  background: color-mix(in srgb, var(--theme-soft-bg) 40%, white) !important;
+  color: theme(--color-stone-800) !important;
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--theme-solid) 12%, transparent),
+    0 4px 16px color-mix(in srgb, var(--theme-solid) 15%, transparent);
 }
 
-.dark .prose pre.astro-code,
+.prose pre.astro-code span {
+  color: inherit !important;
+}
+
+.dark .prose pre.astro-code {
+  border: 2px solid color-mix(in srgb, var(--theme-link-dark) 60%, transparent);
+  background: theme(--color-stone-950) !important;
+  color: theme(--color-stone-300) !important;
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--theme-link-dark) 18%, transparent),
+    0 4px 20px color-mix(in srgb, var(--theme-link-dark) 20%, transparent);
+}
+
+/* Inline code inside prose — stone-toned in dark mode for readability */
 .dark .prose :not(pre) > code {
   background-color: theme(--color-stone-800);
-  color: var(--theme-link-dark);
-}
-
-.prose :not(pre) > code {
-  padding: 0.125rem 0.375rem;
-  border-radius: 0.25rem;
-}
-
-.prose pre.astro-code .tok-comment {
-  opacity: 0.5;
-}
-
-.prose pre.astro-code .tok-structure {
-  opacity: 0.7;
-  font-weight: 600;
+  color: theme(--color-stone-300);
 }
 
 @keyframes spin-slow {
