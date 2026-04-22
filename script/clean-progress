@@ -13,7 +13,7 @@ VALID_EXERCISE_SLUGS=(
   drive-a-browser post-to-social-media use-git-and-github
 )
 
-KV_NAMESPACE_ID="3bd04cd0e35548b181036e6385b5120c"
+KV_NAMESPACE_ID="8ff29749cd3f4b95ba6245727b7ba5e0"
 DRY_RUN=true
 FIXED=0
 SCANNED=0
