@@ -11,6 +11,13 @@ export interface ChangelogEntry {
 
 export const changelogEntries: ChangelogEntry[] = [
 	{
+		slug: "themed-code-blocks",
+		date: "2026-04-22",
+		title: "Themed code blocks",
+		description:
+			"Code blocks throughout the site now use your selected theme color for borders and backgrounds, matching the style of agent prompt cards.",
+	},
+	{
 		slug: "contributing-page",
 		date: "2026-04-21",
 		title: "New contributing page",
