@@ -49,8 +49,8 @@ People who are new to agentic coding and may not be comfortable using a terminal
 ## Deployment
 
 - Custom domain: `opencode.school`
-- Workers dev URL: `opencodeschool.ziki.workers.dev`
-- GitHub repo: `zeke/opencode.school`
+- Workers dev URL: `opencodeschool.examples.workers.dev`
+- GitHub repo: `opencodeschool/opencode.school`
 - GitHub Actions: deploy on push to main
 
 ## Project structure

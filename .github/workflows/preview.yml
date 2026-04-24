@@ -52,7 +52,7 @@ jobs:
           gh api repos/${{ github.repository }}/deployments/${{ steps.deployment.outputs.deployment_id }}/statuses \
             --method POST \
             -f state=success \
-            -f environment_url=https://opencodeschool-pr-${{ github.event.pull_request.number }}.ziki.workers.dev \
+            -f environment_url=https://opencodeschool-pr-${{ github.event.pull_request.number }}.examples.workers.dev \
             -f description="Preview deployed"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
