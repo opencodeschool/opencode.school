@@ -11,6 +11,13 @@ export interface ChangelogEntry {
 
 export const changelogEntries: ChangelogEntry[] = [
 	{
+		slug: "ai-gateway-cloudflare-ui-update",
+		date: "2026-04-24",
+		title: "Updated AI gateway exercise for current Cloudflare UI",
+		description:
+			"Fixed outdated dashboard instructions in the [AI gateway exercise](/exercises/run-ai-models) to match Cloudflare's current interface, including updated billing and authentication steps.",
+	},
+	{
 		slug: "git-terms-glossary",
 		date: "2026-04-24",
 		title: "Git terms added to glossary",
