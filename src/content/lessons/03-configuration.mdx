@@ -20,14 +20,20 @@ agentInstructions: |
      Build mode when they're ready to make changes.
 
   4. Permission basics and the instructions URL: "*": "allow" lets most
-     actions through automatically. "external_directory": "ask" means
-     OpenCode will pause and ask before touching files outside the project
-     directory (this is the default, but setting it explicitly makes the
-     config self-documenting). The bash object adds "ask" rules for
-     destructive commands like rm and rmdir so OpenCode pauses before
-     running them. The "instructions" array loads the student's personal
-     OpenCode School URL ({origin}/api/instructions/{studentId}) so
-     OpenCode always knows who they are.
+      actions through automatically. "edit": "allow" and "webfetch":
+      "allow" are set explicitly because some providers push a remote
+      config that sets these to "ask", and explicit per-tool rules
+      override the "*" wildcard during config merging. Without these,
+      a user who connects to a provider with stricter defaults will
+      still get prompted for every file edit and web fetch.
+      "external_directory": "ask" means OpenCode will pause and ask
+      before touching files outside the project directory (this is the
+      default, but setting it explicitly makes the config
+      self-documenting). The bash object adds "ask" rules for
+      destructive commands like rm and rmdir so OpenCode pauses before
+      running them. The "instructions" array loads the student's personal
+      OpenCode School URL ({origin}/api/instructions/{studentId}) so
+      OpenCode always knows who they are.
 
   CRITICAL: PROTECTING THE STUDENT'S GLOBAL OPENCODE CONFIG
 
@@ -54,8 +60,9 @@ agentInstructions: |
   ~/.config/opencode/opencode.json (or ~/.config/opencode/opencode.jsonc
   if the .json file does not exist) and confirming it contains:
   - "default_agent": "plan"
-  - A "permission" object with "*": "allow", "external_directory": "ask",
-    and at least one "ask" rule inside a bash object (e.g. "rm *": "ask")
+   - A "permission" object with "*": "allow", "edit": "allow",
+     "webfetch": "allow", "external_directory": "ask", and at least one
+     "ask" rule inside a bash object (e.g. "rm *": "ask")
   - An "instructions" array that includes the student's personal OpenCode
     School instructions URL ({origin}/api/instructions/{studentId} with
     their actual student ID)
@@ -133,6 +140,8 @@ Here's what your config file will look like:
   "default_agent": "plan",
   "permission": {
     "*": "allow",
+    "edit": "allow",
+    "webfetch": "allow",
     "external_directory": "ask",
     "bash": {
       "*": "allow",
@@ -149,6 +158,7 @@ Here's what your config file will look like:
 We'll substitute your actual student ID when we create the file. A few things to note:
 
 - `"default_agent": "plan"` means every new session starts in [Plan mode](/glossary#agent) — a read-only agent that can read your files and discuss your project but won't make any changes. When you're ready to act, you switch to Build. We'll cover this in detail in the [Agents](/agents) lesson.
+- `"edit": "allow"` and `"webfetch": "allow"` are set explicitly because some providers push a remote config (via `.well-known/opencode`) that sets these tools to `"ask"`. Explicit per-tool rules override the `"*"` wildcard during config merging, so without these you may still get prompted for every file edit and web fetch even though you set `"*": "allow"`.
 - `"external_directory": "ask"` means OpenCode will pause and ask before reading or editing files outside the current project directory. This is the default behavior, but setting it explicitly makes the config self-documenting.
 - The `"bash"` block inside `"permission"` adds safety guardrails for shell commands. Most commands run automatically, but `rm` (delete files) and `rmdir` (remove directories) will pause and ask for your approval first. We'll add more permission rules in the next lesson.
 - The instructions URL lets OpenCode fetch your school enrollment at the start of every session, so it has your student profile on hand even when you're working on something unrelated.
