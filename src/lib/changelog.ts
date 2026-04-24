@@ -11,6 +11,13 @@ export interface ChangelogEntry {
 
 export const changelogEntries: ChangelogEntry[] = [
 	{
+		slug: "git-terms-glossary",
+		date: "2026-04-24",
+		title: "Git terms added to glossary",
+		description:
+			"Added definitions for common Git terms (branch, commit, fork, repository) to the [glossary](/glossary) to help students new to version control.",
+	},
+	{
 		slug: "config-permission-overrides",
 		date: "2026-04-24",
 		title: "Fixed permission configuration edge case",
