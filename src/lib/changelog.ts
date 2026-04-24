@@ -11,6 +11,90 @@ export interface ChangelogEntry {
 
 export const changelogEntries: ChangelogEntry[] = [
 	{
+		slug: "config-permission-overrides",
+		date: "2026-04-24",
+		title: "Permission overrides in config",
+		description:
+			"The [Configuration](/lessons/configuration) lesson now shows how to set explicit permission overrides for tools like edit and webfetch in your config file.",
+	},
+	{
+		slug: "themed-code-blocks",
+		date: "2026-04-22",
+		title: "Themed code blocks",
+		description:
+			"Code blocks in lesson prose now have a themed border and soft glow to match the agent-prompt card style.",
+	},
+	{
+		slug: "contributing-page",
+		date: "2026-04-21",
+		title: "New page: Contributing",
+		description:
+			"A [Contributing](/contributing) page that explains how students can share ideas and report issues as GitHub issues.",
+	},
+	{
+		slug: "mcp-reauth-guidance",
+		date: "2026-04-20",
+		title: "MCP re-authentication guidance",
+		description:
+			"The [Tools](/lessons/tools) lesson now covers how to handle expired MCP server authentication and add re-authentication instructions.",
+	},
+	{
+		slug: "ai-gateway-exercise",
+		date: "2026-04-15",
+		title: "New exercise: Use an AI gateway",
+		description:
+			"A new [Use an AI gateway](/exercises/use-an-ai-gateway) exercise walks through setting up Cloudflare AI Gateway with OpenCode.",
+	},
+	{
+		slug: "inbox-zero-exercise",
+		date: "2026-04-15",
+		title: "New exercise: Achieve inbox zero",
+		description:
+			"A new [Achieve inbox zero](/exercises/achieve-inbox-zero) exercise teaches Gmail management using OpenCode and the gws CLI tool.",
+	},
+	{
+		slug: "github-corner-icon",
+		date: "2026-04-15",
+		title: "GitHub link on every page",
+		description:
+			"A fixed GitHub icon in the top-right corner of every page links to the project source code.",
+	},
+	{
+		slug: "permission-keyboard-image",
+		date: "2026-04-15",
+		title: "Permission fatigue keyboard",
+		description:
+			"The [Permissions](/lessons/permissions) lesson now features a novelty keyboard image illustrating permission fatigue.",
+	},
+	{
+		slug: "realistic-agents-example",
+		date: "2026-04-15",
+		title: "Improved AGENTS.md example",
+		description:
+			"The [Instructions](/lessons/instructions) lesson now uses a realistic AGENTS.md example that shows the breadth of what the file can contain.",
+	},
+	{
+		slug: "json-config-default",
+		date: "2026-04-14",
+		title: "JSON as default config format",
+		description:
+			"Lessons now recommend `opencode.json` as the default config filename. Existing `opencode.jsonc` files continue to work.",
+	},
+	{
+		slug: "mcp-discovery-links",
+		date: "2026-04-12",
+		title: "MCP server discovery links",
+		description:
+			"The [Tools](/lessons/tools) lesson now links directly to MCP server directories and registries instead of vague references to the ecosystem.",
+	},
+	{
+		slug: "external-directory-config",
+		date: "2026-04-12",
+		title: "External directory config and tip",
+		description:
+			"The [Configuration](/lessons/configuration) lesson now includes `external_directory` in the recommended config, and [Tips](/tips) has a new tip about opening a higher-level directory for broader file access.",
+	},
+	{
 		slug: "progress-reset",
 		date: "2026-04-09",
 		title: "Reset your progress",
