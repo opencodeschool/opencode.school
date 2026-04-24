@@ -11,6 +11,13 @@ export interface ChangelogEntry {
 
 export const changelogEntries: ChangelogEntry[] = [
 	{
+		slug: "config-permission-overrides",
+		date: "2026-04-24",
+		title: "Fixed permission configuration edge case",
+		description:
+			"The [Configuration](/lessons/configuration) lesson now includes explicit permission overrides to prevent remote provider configs from unexpectedly prompting students despite wildcard allow rules.",
+	},
+	{
 		slug: "themed-code-blocks",
 		date: "2026-04-22",
 		title: "Themed code blocks",
