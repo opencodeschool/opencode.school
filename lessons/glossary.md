@@ -102,6 +102,22 @@ A few popular cross-platform editors (all free): [VS Code](https://code.visualst
 
 A capability that OpenCode's AI agent can use. Built-in tools include reading files, editing code, running shell commands, searching the web, and more. [MCP servers](#mcp) can add additional tools from external services.
 
+## branch
+
+A parallel version of your project. Branches let you try changes without affecting the main codebase. When you're happy with a branch, you can merge it into the main branch. The `git checkout -b <name>` command creates a new branch.
+
+## commit
+
+A saved snapshot of your project at a point in time. Every commit has a message describing what changed and why. Think of it as a checkpoint you can return to. Use `git add` to stage changes, then `git commit -m "message"` to save them.
+
+## fork
+
+A copy of someone else's repository that lives in your own GitHub account. Forking lets you experiment with changes to a project without affecting the original. When you're ready, you can open a pull request to propose your changes.
+
+## repository
+
+**Repo.** A folder that Git tracks — containing your project files and their complete history. Repositories can be local (on your machine) or remote (on GitHub). Use `git init` to start tracking a folder, or `git clone` to copy a remote repo locally.
+
 ## TUI
 
 **Terminal User Interface.** A text-based interface that runs inside your terminal. OpenCode's TUI looks like a chat app but runs entirely in the terminal — no mouse needed. It's the original way to use OpenCode, and it's popular with developers who are comfortable in the terminal. Compare with [GUI](#gui) and [CLI](#cli).
