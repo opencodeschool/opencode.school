@@ -117,14 +117,6 @@ You'll also load at least $5 in credits into the gateway for Unified Billing. Th
 - **Add models** from at least two different providers to your OpenCode config (e.g. Claude Sonnet and GPT-4.1)
 - **Test it** by chatting through the gateway and checking the logs in the Cloudflare dashboard
 
-## Dashboard navigation tips
-
-The Cloudflare dashboard UI changes over time. Here's what to look for as of the current interface:
-
-- **Create gateway**: the button is labeled "Create custom gateway" (not "Create gateway")
-- **Load credits**: go to the main AI Gateway page (the gateway list), find the "Credits Available" card at the top right, then click Manage > Top-up credits. Unified Billing works automatically once credits are loaded — there is no Settings toggle to enable
-- **Create authentication token**: the button is available on the main AI Gateway page, or inside your gateway's Authentication tab
-
 ## A note on environment variables
 
 The gateway uses a token (starting with `cfut_`) that's different from a regular Cloudflare API token. If you already have `CLOUDFLARE_API_TOKEN` set in your shell for wrangler or other Cloudflare tools, OpenCode will use that instead of the gateway token. The agent will help you sort this out during setup. Wrangler itself doesn't need that environment variable if you've run `wrangler login` — it has its own OAuth session.
