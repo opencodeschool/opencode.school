@@ -15,18 +15,25 @@ agentInstructions: |
      help them sign up at https://dash.cloudflare.com/sign-up.
 
   2. Create an AI Gateway in the Cloudflare dashboard: navigate to AI >
-     AI Gateway > Create gateway. Name it "opencode". Enable
+     AI Gateway > Create custom gateway. Name it "opencode". Enable
      authentication and logging.
 
-  3. Enable Unified Billing: go to the gateway's Settings tab, enable
-     "Unified Billing", and load at least $5 in credits. Explain that
-     Unified Billing lets the gateway pay providers (Anthropic, OpenAI,
-     etc.) on their behalf — no separate API keys needed for each
-     provider.
+     Note: if the student already has a gateway (e.g. from a previous
+     attempt), they can reuse it. The dashboard will show existing
+     gateways instead of the Create button.
 
-  4. Create a gateway authentication token: go to the gateway's
-     Authentication tab and create a new token. Copy the token (it starts
-     with cfut_). This token is different from a regular Cloudflare API
+  3. Load credits for Unified Billing: on the main AI Gateway page (the
+     gateway list page), find the Credits Available card (top right),
+     click Manage > Top-up credits, and load at least $5. Unified
+     Billing is enabled automatically once credits are loaded — there
+     is no separate Settings toggle. Explain that Unified Billing
+     lets the gateway pay providers (Anthropic, OpenAI, etc.) on their
+     behalf — no separate API keys needed for each provider.
+
+  4. Create a gateway authentication token: on the main AI Gateway page
+     (or inside the gateway's Authentication tab), click
+     Create authentication token. Copy the token (it starts with
+     cfut_). This token is different from a regular Cloudflare API
      token — it authenticates requests to the gateway specifically.
 
   5. Set environment variables. The student needs CLOUDFLARE_ACCOUNT_ID
@@ -105,10 +112,18 @@ You'll also load at least $5 in credits into the gateway for Unified Billing. Th
 ## What you'll do
 
 - **Create a gateway** in the Cloudflare dashboard with authentication and logging enabled
-- **Enable Unified Billing** so Cloudflare handles payments to Anthropic, OpenAI, and other providers on your behalf
+- **Load credits** so Cloudflare handles payments to Anthropic, OpenAI, and other providers on your behalf via Unified Billing
 - **Store the gateway token** in OpenCode so it can authenticate with the gateway
 - **Add models** from at least two different providers to your OpenCode config (e.g. Claude Sonnet and GPT-4.1)
 - **Test it** by chatting through the gateway and checking the logs in the Cloudflare dashboard
+
+## Dashboard navigation tips
+
+The Cloudflare dashboard UI changes over time. Here's what to look for as of the current interface:
+
+- **Create gateway**: the button is labeled "Create custom gateway" (not "Create gateway")
+- **Load credits**: go to the main AI Gateway page (the gateway list), find the "Credits Available" card at the top right, then click Manage > Top-up credits. Unified Billing works automatically once credits are loaded — there is no Settings toggle to enable
+- **Create authentication token**: the button is available on the main AI Gateway page, or inside your gateway's Authentication tab
 
 ## A note on environment variables
 
