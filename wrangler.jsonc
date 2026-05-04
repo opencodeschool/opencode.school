@@ -7,15 +7,17 @@
     "directory": "./dist",
   },
   // Public, non-secret values read by `astro.config.mjs` at build time and
-  // inlined into the prerendered HTML.
+  // inlined into the prerendered HTML. These are read once at build time, not
+  // exposed at runtime, so changing them requires a redeploy.
   //   - SITE_URL drives canonical URLs, OG image URLs, the sitemap, and the
   //     RSS feed. Change this when deploying to a different domain.
   //   - AI_SEARCH_API_URL is the Cloudflare AI Search instance the search
-  //     widget queries. Manage the instance at:
+  //     widget queries. Leave it empty to disable the search UI entirely.
+  //     Manage the instance at:
   //       https://dash.cloudflare.com/?to=/:account/ai/ai-search
   "vars": {
-    "SITE_URL": "https://opencodeschool.conflare.workers.dev",
-    "AI_SEARCH_API_URL": "https://b2003c29-236c-4271-a658-54d0ab255dfb.search.ai.cloudflare.com",
+    "SITE_URL": "https://opencode.school",
+    "AI_SEARCH_API_URL": "https://a0c9576f-1b8e-4024-8628-51e34c6d34fe.search.ai.cloudflare.com",
   },
   // The R2 bucket and KV namespace below are for the production deployment.
   // You only need these if you're deploying to your own Cloudflare account.
@@ -29,7 +31,7 @@
   "kv_namespaces": [
     {
       "binding": "PROGRESS",
-      "id": "ef33b4b6ae0f4b80916d91445154380e",
+      "id": "8ff29749cd3f4b95ba6245727b7ba5e0",
     },
   ],
   "env": {
