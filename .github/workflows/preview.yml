@@ -6,7 +6,9 @@ on:
 
 jobs:
   deploy-preview:
-    if: github.event.action != 'closed'
+    # Skip for fork PRs: GITHUB_TOKEN is read-only and CLOUDFLARE_API_TOKEN
+    # is not exposed to pull_request runs from forks.
+    if: github.event.action != 'closed' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -58,7 +60,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   cleanup-preview:
-    if: github.event.action == 'closed'
+    # Skip for fork PRs (no preview was deployed for them).
+    if: github.event.action == 'closed' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
