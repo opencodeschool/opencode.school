@@ -11,6 +11,10 @@ export function GET(context: APIContext) {
 	return rss({
 		title: "OpenCode School Changelog",
 		description: "What's new on OpenCode School.",
+		// `context.site` always comes from `astro.config.mjs`, which now reads
+		// SITE_URL from wrangler.jsonc. The absolute fallback is here as a
+		// safety net so any RSS link in the feed still resolves correctly if
+		// `context.site` is ever unset.
 		site: context.site?.toString() ?? "https://opencode.school",
 		items: changelogEntries.map((entry) => ({
 			title: entry.title,

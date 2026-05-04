@@ -148,6 +148,31 @@
   border-top-color: var(--theme-link-dark);
 }
 
+/*
+  Cloudflare AI Search widget theme integration.
+
+  The widget exposes ~50 CSS variables under the --search-snippet-* prefix.
+  We override only the few that drive accent and typography so the widget
+  inherits the active student color theme and the site's font stack.
+  Everything else falls back to the widget's own light/dark defaults.
+*/
+search-modal-snippet,
+search-bar-snippet,
+chat-bubble-snippet,
+chat-page-snippet {
+  --search-snippet-primary-color: var(--theme-link);
+  --search-snippet-primary-hover: var(--theme-solid-hover);
+  --search-snippet-font-family: var(--font-sans);
+  --search-snippet-font-family-mono: var(--font-mono);
+}
+
+.dark search-modal-snippet,
+.dark search-bar-snippet,
+.dark chat-bubble-snippet,
+.dark chat-page-snippet {
+  --search-snippet-primary-color: var(--theme-link-dark);
+}
+
 .theme-link {
   color: var(--theme-link);
   transition: color 150ms ease;

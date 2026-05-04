@@ -11,6 +11,13 @@ export interface ChangelogEntry {
 
 export const changelogEntries: ChangelogEntry[] = [
 	{
+		slug: "site-search",
+		date: "2026-05-04",
+		title: "Site search",
+		description:
+			"You can now search lessons, exercises, and changelog entries from any page. Click the magnifying glass in the top-right corner or press ⌘K (Ctrl+K on Windows/Linux) to open the search modal. Powered by [Cloudflare AI Search](https://developers.cloudflare.com/ai-search/), with the search UI contributed by [Confidence Okoghenun](https://github.com/megaconfidence).",
+	},
+	{
 		slug: "config-permission-overrides",
 		date: "2026-04-24",
 		title: "Permission overrides in config",

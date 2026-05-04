@@ -22,6 +22,8 @@
     "@astrojs/cloudflare": "^13.1.1",
     "@astrojs/mdx": "^5.0.0",
     "@astrojs/rss": "^4.0.18",
+    "@astrojs/sitemap": "^3.7.2",
+    "@cloudflare/ai-search-snippet": "^0.0.39",
     "@fontsource/inter": "^5.2.8",
     "@fontsource/jetbrains-mono": "^5.2.8",
     "@resvg/resvg-js": "^2.6.2",
@@ -36,6 +38,7 @@
     "@cloudflare/workers-types": "^4.20260313.1",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.2.1",
+    "jsonc-parser": "^3.3.1",
     "tailwindcss": "^4.2.1",
     "vitest": "^4.1.0",
     "wrangler": "^4.73.0"
