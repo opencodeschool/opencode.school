@@ -17,7 +17,7 @@
   //       https://dash.cloudflare.com/?to=/:account/ai/ai-search
   "vars": {
     "SITE_URL": "https://opencode.school",
-    "AI_SEARCH_API_URL": "https://a0c9576f-1b8e-4024-8628-51e34c6d34fe.search.ai.cloudflare.com",
+    "AI_SEARCH_API_URL": "https://c16d5e20-b6d1-427a-bdcc-83cf6059d16e.search.ai.cloudflare.com",
   },
   // The R2 bucket and KV namespace below are for the production deployment.
   // You only need these if you're deploying to your own Cloudflare account.
