@@ -42,6 +42,12 @@ const currentPath = Astro.url.pathname;
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
+    {/* Custom metadata for AI Search ranking. Lessons rank above exercises;
+        everything else has no priority and falls below both groups. The
+        AI Search instance has a `content_priority` (number) field defined
+        in its custom_metadata schema. */}
+    {currentPath.startsWith("/lessons/") && <meta name="content_priority" content="2" />}
+    {currentPath.startsWith("/exercises/") && <meta name="content_priority" content="1" />}
     <title>{pageTitle}</title>
     {rssHref && <link rel="alternate" type="application/rss+xml" title="OpenCode School Changelog" href={rssHref} />}
     <script is:inline>
