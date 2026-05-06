@@ -6,7 +6,7 @@ export const prerender = true;
 
 import Base from "../layouts/Base.astro";
 import { marked } from "marked";
-import cheatsheetRaw from "../../lessons/cheatsheet.md?raw";
+import cheatsheetRaw from "../content/pages/cheatsheet.md?raw";
 
 const renderer = new marked.Renderer();
 renderer.heading = function ({ text, depth }) {

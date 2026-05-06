@@ -6,7 +6,7 @@ export const prerender = true;
 
 import Base from "../layouts/Base.astro";
 import { marked } from "marked";
-import glossaryRaw from "../../lessons/glossary.md?raw";
+import glossaryRaw from "../content/pages/glossary.md?raw";
 
 const renderer = new marked.Renderer();
 renderer.heading = function ({ text, depth }) {
