@@ -10,7 +10,17 @@ agentInstructions: |
 
   Core steps (always do these):
 
-  1. Install GitHub Desktop as the primary on-ramp. Direct the student to
+  1. Explain what Git is, concisely: a version control system that records
+     every change to every file. Every commit is a snapshot you can return
+     to, so nothing is ever truly lost. Git is useful even locally with no
+     remote.
+
+  2. Explain what GitHub is, concisely: a cloud platform for hosting Git
+     repositories. It backs up projects, makes them shareable, and is
+     where open-source collaboration happens. Git is the tool; GitHub is
+     a place to host the repos that Git creates.
+
+  3. Install GitHub Desktop as the primary on-ramp. Direct the student to
      https://desktop.github.com/ and have them install it. Explain why
      this is the recommended starting point: GitHub Desktop bundles three
      things into one install. It installs Git on their machine, it lets
@@ -24,7 +34,7 @@ agentInstructions: |
      can still install GitHub Desktop for the diff GUI, or skip it. Verify
      Git is available with `git --version` either way.
 
-  2. Install the gh CLI. This is required for this exercise, not optional.
+  4. Install the gh CLI. This is required for this exercise, not optional.
      Explain why: agents like OpenCode can use `gh` to read issues, open
      pull requests, fetch PR diffs, comment on PRs, check CI status, and
      create repos, all without the student leaving their OpenCode session
@@ -40,7 +50,7 @@ agentInstructions: |
      step is needed even if the student is already signed in to Desktop.
      Verify with `gh auth status` and `gh --version`.
 
-  3. Suggest adding a gh rule to the student's global AGENTS.md at
+  5. Suggest adding a gh rule to the student's global AGENTS.md at
      `~/.config/opencode/AGENTS.md`. Show the student the proposed text
      before writing anything, for example:
 
@@ -51,14 +61,6 @@ agentInstructions: |
      Ask the student if they want you to append this rule to their global
      AGENTS.md. If they say yes, append it. If the file does not exist
      yet, offer to create it. Do not write to AGENTS.md silently.
-
-  4. Explain what Git is: a version control system that records every
-     change to every file. Emphasize that Git is useful even locally with
-     no remote: every commit is a snapshot you can return to, so nothing
-     is ever truly lost.
-
-  5. Explain what GitHub is: a cloud platform for hosting Git
-     repositories, backing up projects, collaborating, and sharing work.
 
   6. Create or navigate to a project folder and initialize a Git
      repository with `git init`. Explain what this does (creates a hidden
@@ -149,15 +151,21 @@ agentInstructions: |
 
 import AgentPrompt from '../../components/AgentPrompt.astro'
 
-When OpenCode edits files in your project, you want to know exactly what changed. [Git](https://git-scm.com) gives you that visibility. It's a version control system that tracks every change to every file in a project: what was added, what was removed, and when. It's the tool software developers use to manage source code, and it's the backbone of nearly every open-source project.
-
-But you don't need to be a developer or share your work with anyone to benefit from Git. Even if you only use it locally, Git gives you a complete history of your project. Every commit is a snapshot you can return to. If OpenCode makes a change you don't like, you can revert it. You never have to worry about accidentally losing or overwriting work.
-
-[GitHub](https://github.com) is a platform for hosting Git repositories in the cloud. It makes it easy to back up your projects, share them publicly, and collaborate with others. Together, Git and GitHub form the standard toolkit for managing code, and they work just as well for any project with files you want to track.
-
-This exercise sets you up with two ways to interact with GitHub: a GUI for inspecting changes (GitHub Desktop), and a CLI that OpenCode itself can drive on your behalf (the `gh` CLI).
+Git gives you a way to see every change as it happens, so you're not flying blind while OpenCode works on your project. GitHub gives you a place to safely store your work and collaborate with others. Learning these tools will give you more confidence on your own projects, and set you up to become an open-source contributor.
 
 <AgentPrompt title="Use Git and GitHub" prompt='Let&#39;s work on the "Use Git and GitHub" exercise together!' />
+
+## What is Git?
+
+[Git](https://git-scm.com) is a version control system that records every change to every file in a project. Each commit is a snapshot you can return to, so nothing is ever truly lost: if OpenCode makes a change you don't like, you can revert it.
+
+Git works entirely on your own machine. You don't need an account, a server, or an internet connection to benefit from it. Even with no remote, Git gives you a complete history of your project.
+
+## What is GitHub?
+
+[GitHub](https://github.com) is a cloud platform for hosting Git repositories. It's where you back up your work, share projects publicly or privately, and collaborate with other people. It's also where most of the open-source world lives.
+
+The two are easy to mix up: Git is the tool that tracks changes on your machine, and GitHub is one popular place to host the repositories that Git creates.
 
 ## Get started with GitHub Desktop
 
