@@ -171,33 +171,19 @@ The two are easy to mix up: Git is the tool that tracks changes on your machine,
 
 The recommended starting point is to install [GitHub Desktop](https://desktop.github.com/). It is the easiest way to get from zero to a working Git setup, because it does three things in one install:
 
-1. Installs Git on your machine, so commands like `git --version` and `git push` work in your terminal.
+1. Installs Git on your machine.
 2. Lets you sign up for GitHub or sign in to an existing account directly from the app.
-3. Authenticates the Git CLI for you, so you can push to GitHub from the command line without setting up SSH keys or personal access tokens.
+3. Authenticates the Git CLI for you, so you can push to GitHub without setting up SSH keys or personal access tokens.
 
-Once you've cloned or created a repository in GitHub Desktop, it also gives you a GUI for browsing your project's history and visualizing exactly what changed in each commit. That visualization is the simplest way to review what OpenCode did to your files: every addition is highlighted in green, every removal in red.
+Once you've cloned or created a repository in GitHub Desktop, it also gives you a GUI for browsing your project's history and visualizing exactly what changed in each commit. That visualization is the simplest way to review what OpenCode did to your files.
 
 If you already have Git and a GitHub account, you can skip GitHub Desktop. The exercise still works.
 
 ## Install the gh CLI
 
-The [`gh` CLI](https://cli.github.com/) is GitHub's official command-line tool. Installing it is required for this exercise. The reason is simple: with `gh` installed, OpenCode can read issues, open pull requests, fetch PR diffs, leave comments, check CI status, and create repositories on your behalf, all without you leaving your OpenCode session or clicking around on github.com.
+The [`gh` CLI](https://cli.github.com/) is GitHub's official command-line tool. With `gh` installed, OpenCode can read issues, open pull requests, fetch PR diffs, leave comments, check CI status, and create repositories on your behalf, all without you leaving your session.
 
-Install it for your platform:
-
-- macOS: `brew install gh`
-- Windows: `winget install --id GitHub.cli`
-- Linux: follow the [official Linux instructions](https://github.com/cli/cli/blob/trunk/docs/install_linux.md)
-
-Then authenticate:
-
-```
-gh auth login
-```
-
-The web flow is the fastest path. Note that signing in to GitHub Desktop does not authenticate `gh` for you, so you need this step even if Desktop is already set up. Verify with `gh auth status`.
-
-While you're at it, OpenCode will offer to add a rule to your global `~/.config/opencode/AGENTS.md` reminding it to prefer `gh` for any GitHub task. Say yes if you'd like every future session to default to using the CLI for issues, PRs, and repos.
+You'll install it as part of this exercise and start using it from OpenCode right away.
 
 ## What you'll do
 
