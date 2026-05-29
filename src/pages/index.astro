@@ -165,7 +165,7 @@ const exercises = (await getCollection("exercises")).sort((a, b) => a.data.order
         <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="rose"    aria-label="Rose"    title="Rose"    style="background:#e11d48;--i:16"></button>
         <button type="button" class="enrollment-color-option h-12 w-full rounded-xl border-2 border-transparent shadow-sm" data-theme-color="slate"   aria-label="Slate"   title="Slate"   style="background:#475569;--i:17"></button>
       </div>
-      <p id="enroll-error" class="mt-2 text-red-500 text-sm hidden">Something went wrong. Please try again.</p>
+      <p id="enroll-error" class="mt-2 text-red-500 text-sm hidden">Something went wrong. Please try again. If it keeps happening, clear site data or disable browser extensions for this site.</p>
     </div>
   </div>
 
@@ -438,6 +438,7 @@ const exercises = (await getCollection("exercises")).sort((a, b) => a.data.order
             var data = await window.school.enroll();
             showEnrolled(data.studentId, true, false);
           } catch (e) {
+            console.error("Enrollment failed", e);
             enrollError.classList.remove("hidden");
             setPickerState("Choose a color for your student ID card and site theme.", false);
             isSubmitting = false;
