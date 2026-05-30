@@ -321,26 +321,53 @@ const currentPath = Astro.url.pathname;
     </script>
     <script is:inline>
       // Progress tracking API — defined in <head> so page-level scripts can use it
+      const schoolMemoryStorage = {};
+
+      function readSchoolStorage(key) {
+        try {
+          const value = localStorage.getItem(key);
+          return value === null ? schoolMemoryStorage[key] || null : value;
+        } catch {
+          return schoolMemoryStorage[key] || null;
+        }
+      }
+
+      function writeSchoolStorage(key, value) {
+        schoolMemoryStorage[key] = value;
+        try {
+          localStorage.setItem(key, value);
+        } catch {
+          // Some browsers/extensions block localStorage. Keep the current page working.
+        }
+      }
+
+      function createDeviceId() {
+        if (window.crypto && typeof window.crypto.randomUUID === "function") {
+          return window.crypto.randomUUID();
+        }
+        return `device-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      }
+
       window.school = {
         getStudentId() {
-          return localStorage.getItem("studentId");
+          return readSchoolStorage("studentId");
         },
 
         setStudentId(id) {
-          localStorage.setItem("studentId", id);
+          writeSchoolStorage("studentId", id);
         },
 
         getDeviceId() {
-          let deviceId = localStorage.getItem("deviceId");
+          let deviceId = readSchoolStorage("deviceId");
           if (!deviceId) {
-            deviceId = crypto.randomUUID();
-            localStorage.setItem("deviceId", deviceId);
+            deviceId = createDeviceId();
+            writeSchoolStorage("deviceId", deviceId);
           }
           return deviceId;
         },
 
         getThemeColor() {
-          return localStorage.getItem("themeColor") || "blue";
+          return readSchoolStorage("themeColor") || "blue";
         },
 
         getThemePalettes() {
@@ -350,14 +377,14 @@ const currentPath = Astro.url.pathname;
         setThemeColor(themeName) {
           const palettes = this.getThemePalettes();
           const nextTheme = palettes[themeName] ? themeName : "blue";
-          localStorage.setItem("themeColor", nextTheme);
+          writeSchoolStorage("themeColor", nextTheme);
           window.__applySchoolTheme(nextTheme);
           return nextTheme;
         },
 
         getCachedProgress() {
           try {
-            const p = JSON.parse(localStorage.getItem("progress") || "null");
+            const p = JSON.parse(readSchoolStorage("progress") || "null");
             this._progressCache = p;
             return p;
           } catch { return null; }
@@ -365,7 +392,7 @@ const currentPath = Astro.url.pathname;
 
         setCachedProgress(progress) {
           this._progressCache = progress;
-          localStorage.setItem("progress", JSON.stringify(progress));
+          writeSchoolStorage("progress", JSON.stringify(progress));
         },
 
         _progressCache: null,
@@ -396,7 +423,7 @@ const currentPath = Astro.url.pathname;
 
         getVisitedLessons() {
           try {
-            return JSON.parse(localStorage.getItem("visitedLessons") || "[]");
+            return JSON.parse(readSchoolStorage("visitedLessons") || "[]");
           } catch { return []; }
         },
 
@@ -408,7 +435,7 @@ const currentPath = Astro.url.pathname;
           const visited = this.getVisitedLessons();
           if (!visited.includes(slug)) {
             visited.push(slug);
-            localStorage.setItem("visitedLessons", JSON.stringify(visited));
+            writeSchoolStorage("visitedLessons", JSON.stringify(visited));
           }
         },
 
