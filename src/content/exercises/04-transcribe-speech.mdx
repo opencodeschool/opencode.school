@@ -10,10 +10,11 @@ agentInstructions: |
   Steps:
 
   1. Install whisper-cpp and ffmpeg. On macOS:
-     `brew install whisper-cpp ffmpeg`. On Linux: use the system package
-     manager or build from source
-     (https://github.com/ggerganov/whisper.cpp). Verify with
-     `whisper-cpp --help` and `ffmpeg -version`.
+      `brew install whisper-cpp ffmpeg`. On Linux: use the system package
+      manager or build from source
+      (https://github.com/ggerganov/whisper.cpp). Verify with
+      `whisper-cpp --help` (or `whisper-cli --help` on macOS) and
+      `ffmpeg -version`.
 
   2. Download a Whisper model. Use the ggml-large-v3-q5_0 model (good
      balance of quality and size, ~1GB):
@@ -35,7 +36,8 @@ agentInstructions: |
      needed.
 
   5. Run transcription:
-     `whisper-cpp -m ggml-large-v3-q5_0.bin input.wav --output-txt`. This
+       `whisper-cpp -m ggml-large-v3-q5_0.bin input.wav --output-txt`.
+      On macOS the binary may be named `whisper-cli` instead. This
      produces a timestamped transcript on stdout and saves a plain text
      file. Walk through the output together.
 
