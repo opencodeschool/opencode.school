@@ -1,15 +1,15 @@
 ---
 title: "Edit videos"
 slug: edit-videos
-description: "Edit videos from the command line using FFMPEG and yt-dlp."
+description: "Edit videos from the command line using FFmpeg and yt-dlp."
 order: 3
 agentInstructions: |
-  Guide the student through video editing with FFMPEG and yt-dlp. Adapt
+  Guide the student through video editing with FFmpeg and yt-dlp. Adapt
   depth to their profile.
 
   Steps:
 
-  1. Install FFMPEG and yt-dlp. On macOS use Homebrew:
+  1. Install FFmpeg and yt-dlp. On macOS use Homebrew:
      `brew install ffmpeg yt-dlp`. On Linux: use the system package
      manager (apt, dnf, etc.) or Homebrew. On Windows: guide them to
      download from ffmpeg.org and github.com/yt-dlp/yt-dlp. Verify both
@@ -53,9 +53,9 @@ agentInstructions: |
 
 import AgentPrompt from '../../components/AgentPrompt.astro'
 
-FFMPEG is one of the most powerful and widely-used tools in the world for working with audio and video. It powers the encoding behind YouTube, Netflix, Spotify, and countless other services. It can convert between formats, extract audio, chop clips, generate thumbnails, create GIFs, add watermarks, and much more — all from the command line.
+FFmpeg is one of the most powerful and widely-used tools in the world for working with audio and video. It powers the encoding behind YouTube, Netflix, Spotify, and countless other services. It can convert between formats, extract audio, chop clips, generate thumbnails, create GIFs, add watermarks, and much more — all from the command line.
 
-In this exercise, you'll pair FFMPEG with [yt-dlp](https://github.com/yt-dlp/yt-dlp), a tool for downloading video from YouTube and other sites. Together they're a toolkit for downloading, inspecting, and manipulating video — and OpenCode makes the whole process conversational.
+In this exercise, you'll pair FFmpeg with [yt-dlp](https://github.com/yt-dlp/yt-dlp), a tool for downloading video from YouTube and other sites. Together they're a toolkit for downloading, inspecting, and manipulating video — and OpenCode makes the whole process conversational.
 
 <AgentPrompt title="Edit videos" prompt='Let&#39;s work on the "Edit videos" exercise together!' />
 
@@ -67,7 +67,7 @@ Both tools are available through [Homebrew](https://brew.sh) on macOS:
 brew install ffmpeg yt-dlp
 ```
 
-On Linux, use your system package manager or Homebrew. On Windows, download FFMPEG from [ffmpeg.org](https://ffmpeg.org/download.html) and yt-dlp from [GitHub](https://github.com/yt-dlp/yt-dlp/releases).
+On Linux, use your system package manager or Homebrew. On Windows, download FFmpeg from [ffmpeg.org](https://ffmpeg.org/download.html) and yt-dlp from [GitHub](https://github.com/yt-dlp/yt-dlp/releases).
 
 ## Find a video
 
@@ -77,7 +77,7 @@ To find one: search YouTube for a topic that interests you. On the search result
 
 ## What you'll do
 
-Once you have a video, you'll use FFMPEG to take it apart and put it back together:
+Once you have a video, you'll use FFmpeg to take it apart and put it back together:
 
 - **Download** the video from YouTube using yt-dlp
 - **Inspect** the video's metadata — resolution, duration, codecs, frame rate

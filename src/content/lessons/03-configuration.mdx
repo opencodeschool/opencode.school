@@ -157,7 +157,7 @@ Here's what your config file will look like:
 
 We'll substitute your actual student ID when we create the file. A few things to note:
 
-- `"default_agent": "plan"` means every new session starts in [Plan mode](/glossary#agent) — a read-only agent that can read your files and discuss your project but won't make any changes. When you're ready to act, you switch to Build. We'll cover this in detail in the [Agents](/agents) lesson.
+- `"default_agent": "plan"` means every new session starts in [Plan mode](/glossary#agent) — a read-only agent that can read your files and discuss your project but won't make any changes. When you're ready to act, you switch to Build. We'll cover this in detail in the [Agents](/lessons/agents) lesson.
 - `"edit": "allow"` and `"webfetch": "allow"` are set explicitly because some providers push a remote config (via `.well-known/opencode`) that sets these tools to `"ask"`. Explicit per-tool rules override the `"*"` wildcard during config merging, so without these you may still get prompted for every file edit and web fetch even though you set `"*": "allow"`.
 - `"external_directory": "ask"` means OpenCode will pause and ask before reading or editing files outside the current project directory. This is the default behavior, but setting it explicitly makes the config self-documenting.
 - The `"bash"` block inside `"permission"` adds safety guardrails for shell commands. Most commands run automatically, but `rm` (delete files) and `rmdir` (remove directories) will pause and ask for your approval first. We'll add more permission rules in the next lesson.
