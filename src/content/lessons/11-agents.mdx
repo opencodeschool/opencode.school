@@ -45,7 +45,7 @@ OpenCode ships with two built-in agents: **Plan** and **Build**.
 
 Plan is a read-only conversational agent. It can read your files and discuss your project, but it won't make any changes. No files written, no commands run, nothing modified.
 
-You already set `"default_agent": "plan"` in your global config back in the [Configuration](/configuration) lesson, so every new session starts here. That's intentional — you think first, then act.
+You already set `"default_agent": "plan"` in your global config back in the [Configuration](/lessons/configuration) lesson, so every new session starts here. That's intentional — you think first, then act.
 
 That said, Plan mode is an instruction to the model, not a hard sandbox. Occasionally the agent may still make API calls or run commands that have side effects, so it's not a guaranteed protection against unintended changes.
 
