@@ -63,6 +63,19 @@ import Base from "../layouts/Base.astro";
       instructions.
     </p>
 
+    <h2>Nudge the agent when it goes quiet</h2>
+    <p>
+      Sometimes the model gets stuck and you will see nothing happening for a
+      long period of time. The agent is still running, but it is no longer
+      making useful progress.
+    </p>
+    <p>
+      When this happens, hit <kbd>Esc</kbd> twice to interrupt the current
+      turn, then send a message like "Hey, are you awake?" or "I think you
+      got stuck — keep going." This gives the agent a chance to recover,
+      summarize what it has done so far, and resume from a clean state.
+    </p>
+
     <h2>Open a higher-level directory for broader access</h2>
     <p>
       OpenCode is scoped to the directory where you start it. If you have been
