@@ -63,6 +63,8 @@ Not all models can interpret images. Here's what's confirmed:
 | Kimi K2.5 | OpenCode Go | Yes |
 | Big Pickle, MiMo, Nemotron, MiniMax Free | Zen (free tier) | Not confirmed |
 
+Vision support depends on two things: the model family must support images, and the provider route in OpenCode must expose image input for that model. GPT-4 and GPT-5 family models support vision when the configured provider route exposes image input — not every route to a vision-capable family does. The table above reflects the routes confirmed to work as of writing.
+
 If you're on a free Zen model and the model doesn't acknowledge your image or seems to ignore it, that's expected — switch to a confirmed vision model. Kimi K2.5 via OpenCode Go ($10/month) is the most affordable confirmed option. Any Claude or GPT-4+ model from your own Anthropic or OpenAI key will also work.
 
 ## What vision is useful for
