@@ -43,7 +43,10 @@ agentInstructions: |
      Install commands by platform:
      - macOS: `brew install gh`
      - Windows: `winget install --id GitHub.cli` (or use scoop/choco)
-     - Linux: follow https://github.com/cli/cli/blob/trunk/docs/install_linux.md
+      - Linux: download the `.deb` from https://cli.github.com/ and install it with
+        `sudo dpkg -i gh_*.deb`, or follow
+        https://github.com/cli/cli/blob/trunk/docs/install_linux.md for apt and
+        other package managers.
 
      Then authenticate with `gh auth login` (the web flow is fastest).
      GitHub Desktop's authentication does not carry over to gh, so this
